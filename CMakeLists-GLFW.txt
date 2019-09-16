@@ -1,0 +1,15 @@
+include(ExternalProject)
+
+set(GLFW_INCLUDE_DIR "${CMAKE_BINARY_DIR}/libs/glfw/include/")
+set(GLFW_LIBRARY_DIR "${CMAKE_BINARY_DIR}/libs/glfw/lib/")
+
+EXTERNALPROJECT_ADD(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG 3.3
+    CMAKE_ARGS 
+        "-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/libs/glfw"
+        "-DGLFW_BUILD_DOCS=FALSE"
+        "-DGLFW_BUILD_TESTS=FALSE"
+        "-DGLFW_BUILD_EXAMPLES=FALSE"
+)

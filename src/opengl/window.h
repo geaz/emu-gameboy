@@ -32,12 +32,9 @@ class Window
         void handleKeys(const int key, const int scancode, const int action, const int mods) const;
         std::vector<Screen*> getScreensInRow(const int row) const;
         int getMaxRowIndex() const;
-        void calculateFPS();
 
-        GLFWwindow* window;
-        int framesCounter = 0;
-        double lastLoopTime = 0;
         char* title;
+        GLFWwindow* window;
         std::vector<Screen*> screenVec;
 };
 

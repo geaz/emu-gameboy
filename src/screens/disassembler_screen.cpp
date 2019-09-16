@@ -2,20 +2,44 @@
 #include <iomanip>
 #include <algorithm>
 
+#include <imgui.h>
+
 #include "disassembler_screen.h"
 #include "../helper/string_helper.h"
-#include "../opengl/widgets/rect.h"
-DisassemblerScreen::DisassemblerScreen(int row, int column, Rom rom) : Screen(row, column)
+
+DisassemblerScreen::DisassemblerScreen(int row, int column, Rom rom) : Screen(row, column), rom(rom)
 {     
     disassembler.parseRom(rom);
-
-    textWidget = new TextWidget(5, 20);    
-    addWidget(textWidget);
 }
 
 void DisassemblerScreen::update()
 { 
-    ParsedInstruction currentInstruction = disassembler.currentInstruction;
+    ImGui::Begin("Disassembly", 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
+    ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+    ImGui::SetWindowSize(ImVec2(500, 800), ImGuiCond_Always);
+    ImGui::Text(("Loaded rom: " + rom.romPath).c_str());
+    ImGui::Spacing();
 
-    textWidget->setText("(" + std::to_string(currentInstruction.number) + ")     " + std::to_string(currentInstruction.bytePosition) + "    " + StringHelper::IntToHexString(currentInstruction.bytes, 2, false) + "    " + currentInstruction.definition.getMnemonic(currentInstruction.bytes));
+    ImGui::Columns(4, "disassembly", false);
+    ImGui::Text("ID"); ImGui::NextColumn();
+    ImGui::Text("Position"); ImGui::NextColumn();
+    ImGui::Text("Opcode"); ImGui::NextColumn();
+    ImGui::Text("Mnemonic"); ImGui::NextColumn();
+    ImGui::Separator();
+
+    ImGuiListClipper clipper(disassembler.parsedInstructions.size());
+    while (clipper.Step())
+    {
+        for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+        {
+            ParsedInstruction parsedInstruction = disassembler.parsedInstructions[i];
+            ImGui::Selectable(std::to_string(parsedInstruction.number).c_str(), false, ImGuiSelectableFlags_SpanAllColumns);
+            ImGui::NextColumn();
+            ImGui::Text(std::to_string(parsedInstruction.bytePosition).c_str()); ImGui::NextColumn();
+            ImGui::Text(StringHelper::IntToHexString(parsedInstruction.bytes, 6, false).c_str()); ImGui::NextColumn();
+            ImGui::Text(parsedInstruction.definition.getMnemonic(parsedInstruction.bytes).c_str()); ImGui::NextColumn();
+        }
+    }
+
+    ImGui::End();
 }

@@ -4,8 +4,6 @@
 
 #include <vector>
 
-#include "widgets/widget.h"
-
 class Screen {
    public:
 
@@ -14,16 +12,7 @@ class Screen {
       void render()
       {        
          update();
-         for(Widget* widget : widgets)
-         {
-            widget->draw(startX, startY);
-         }
       }    
-
-      void addWidget(Widget* widget)
-      {
-         widgets.push_back(widget);
-      }
 
       void setScreenCords(const float newStartX, const float newStartY, const float newEndX, const float newEndY)
       {
@@ -38,9 +27,6 @@ class Screen {
 
       int row, column;
       float startX, startY, endX, endY; 
-
-   private:
-      std::vector<Widget*> widgets;
 };
 
 #endif // SCREEN_H

@@ -1,5 +1,9 @@
 #include <algorithm>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include "window.h"
 #include "resource_manager.h"
 
@@ -44,6 +48,14 @@ Window::Window(char* title, const int width, const int height) : title(title)
     {
         throw "Failed to initialize OpenGL context";
     }
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsLight();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");    
+    io.Fonts->AddFontFromFileTTF("PixelType.ttf", 16.0f);
 }
 
 void Window::setClearColor(const GLfloat red, const GLfloat green, const GLfloat blue, const GLfloat alpha) const
@@ -53,15 +65,24 @@ void Window::setClearColor(const GLfloat red, const GLfloat green, const GLfloat
 
 void Window::startLoop()
 {
+    bool show_demo_window = true;
     while(!glfwWindowShouldClose(window))
     {        
-        calculateFPS();
+        glClear(GL_COLOR_BUFFER_BIT);  
 
-        glClear(GL_COLOR_BUFFER_BIT);        
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+      
         for(Screen* screen : screenVec)
         {
             screen->render();
         }
+
+        ImGui::ShowDemoWindow(&show_demo_window);
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
         glfwPollEvents();    
@@ -186,24 +207,4 @@ std::vector<Screen*> Window::getScreensInRow(const int row) const
     std::sort(screensInRow.begin(), screensInRow.end(), columnCompare);    
 
     return screensInRow;
-}
-
-void Window::calculateFPS()
-{
-    if(lastLoopTime == 0) lastLoopTime = glfwGetTime();
-
-    framesCounter++;
-    double currentTime = glfwGetTime();
-    double delta = currentTime - lastLoopTime;
-    if(delta >= 1.0) // Last count was more than 1 sec ago
-    {
-        int fps = (int)(framesCounter / delta);
-
-        std::stringstream ss;
-        ss << title << " " << "(FPS: " << fps << ")";
-
-        glfwSetWindowTitle(window, ss.str().c_str());
-        framesCounter = 0;
-        lastLoopTime = currentTime;
-    }
 }

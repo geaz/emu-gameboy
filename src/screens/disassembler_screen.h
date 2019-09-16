@@ -2,8 +2,8 @@
 #ifndef DISASSEMBLERSCREEN_H
 #define DISASSEMBLERSCREEN_H
 
+#include "../opengl/structs.h"
 #include "../opengl/screen.h"
-#include "../opengl/widgets/text.h"
 
 #include "../disassembler.h"
 #include "../rom.h"
@@ -15,6 +15,7 @@ class DisassemblerScreen : public Screen
 
         void update() override;
 
+        Rom rom;
         Disassembler disassembler;
 
     private:        
@@ -23,8 +24,6 @@ class DisassemblerScreen : public Screen
         Color blue = { 17, 90, 198, 255 };
         Color orange = { 255, 165, 0, 255};
         Color red = { 255, 0, 0, 255 };
-
-        TextWidget* textWidget;
 };
 
 #endif // DISASSEMBLERSCREEN_H

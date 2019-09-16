@@ -18,7 +18,7 @@ int main(int argc, char** args) {
 
     Rom rom(args[1]);
 
-    Window window("Gameboy", 864, 480);
+    Window window("Gameboy", 800, 800);
     window.setClearColor(255, 255, 255, 255);
     window.addColumnDefinition({ 0,100.0f });
     window.addRowDefinition({ 0,100.0f });

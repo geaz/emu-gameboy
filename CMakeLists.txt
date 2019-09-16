@@ -21,7 +21,7 @@ add_executable(emu-gameboy ${EMU_SOURCES})
 add_dependencies(emu-gameboy glfw)
 target_link_libraries(emu-gameboy glfw3 ${OPENGL_LIBRARIES})
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fonts/Minecraft.ttf Minecraft.ttf COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/opengl/fonts/Minecraft.ttf Minecraft.ttf COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/shaders/rect.vshader shaders/rect.vshader COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/shaders/rect.fshader shaders/rect.fshader COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/shaders/text.vshader shaders/text.vshader COPYONLY)

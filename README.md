@@ -6,7 +6,7 @@ This is why each instruction group is implemented in an own class to provide a b
 
 Each instruction group contains a group of the *struct Instruction*. The *struct* contains everything necessary to process the given instruction. This way it should be easy to tell how the **dissasembly**, **interpreter mode** and **jit mode** for each single instruction works.
 
-```
+```cpp
 struct Instruction
 {
     short length;
@@ -18,6 +18,7 @@ struct Instruction
 ```
 
 Further more the emulator contains a simple dissasembler and aims to be cycle accurate.
+
 If you are just interested on how the implementation of the instructions were done, just look into the *src/instructions* subfolders.
 You will find the hardware implementation of the emulator in the *src/hardware* folder. 
 

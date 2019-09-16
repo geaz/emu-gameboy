@@ -11,17 +11,18 @@
 class TextWidget : public Widget
 {
     public:
-        TextWidget(const std::string fontName, const std::string fontPath, const float x, const float y);
+        TextWidget(const float x, const float y);
 
-        void setText(const std::string text);
         void setColor(const Color color);
+        void setText(const std::string text);
+        void setFont(const std::string fontName, const std::string fontPath);
         void draw(const float offsetX, const float offsetY) override;
 
     private:
-        Font font;
         float x, y;
         std::string currentText;
         Color currentColor = { 50, 50, 50, 255 };
+        Font font = ResourceManager::LoadFont("Minecraft", "Minecraft.ttf");
 };
 
 #endif // TEXTWIDGET_H

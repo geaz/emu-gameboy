@@ -1,8 +1,7 @@
 #include "rect.h"
 
 RectWidget::RectWidget(const float x, const float y, const float width, const float height)
-    : rectShader(ResourceManager::LoadShader("RectShader", "shaders\\rect.vshader", "shaders\\rect.fshader")), 
-        x(x), y(y), width(width), height(height)
+    : x(x), y(y), width(width), height(height)
 {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

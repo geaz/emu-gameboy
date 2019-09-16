@@ -9,7 +9,7 @@ DisassemblerScreen::DisassemblerScreen(int row, int column, Rom rom) : Screen(ro
 {     
     disassembler.parseRom(rom);
 
-    textWidget = new TextWidget("Minecraft", "Minecraft.ttf", 5, 20);    
+    textWidget = new TextWidget(5, 20);    
     addWidget(textWidget);
 }
 

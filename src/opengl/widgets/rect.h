@@ -17,9 +17,9 @@ class RectWidget : public Widget
         void draw(const float offsetX, const float offsetY) override;
 
     private:
-        Shader rectShader;
         float x, y, width, height;
         unsigned int VBO, VAO, EBO;
+        Shader rectShader = ResourceManager::LoadShader("RectShader", "shaders\\rect.vshader", "shaders\\rect.fshader");
 };
 
 #endif // RECTWIDGET_H

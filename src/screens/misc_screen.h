@@ -5,16 +5,17 @@
 #include "../opengl/structs.h"
 #include "../opengl/screen.h"
 
+#include "../disassembler.h"
 #include "../rom.h"
 
 class MiscScreen : public Screen
 {   
     public:
-        MiscScreen(Rom rom);
+        MiscScreen(const Disassembler disassembler);
 
         void update() override;
 
-        Rom rom;
+        Disassembler disassembler;
 };
 
 #endif // MISCSCREEN_H

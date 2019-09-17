@@ -59,7 +59,7 @@ Window::Window(char* title, const int width, const int height) : title(title)
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.19f, 0.19f, 0.19f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.96f, 0.96f, 0.96f, 255.00f));
-    ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.78f, 0.78f, 0.78f, 0.40f));
+    ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.90f, 0.90f, 0.90f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.78f, 0.78f, 0.78f, 0.40f));
     ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.78f, 0.78f, 0.78f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0.19f, 0.19f, 0.19f, 1.00f));
@@ -83,7 +83,7 @@ Window::Window(char* title, const int width, const int height) : title(title)
 
 void Window::setClearColor(const GLfloat red, const GLfloat green, const GLfloat blue, const GLfloat alpha) const
 {
-    glClearColor(red, green, blue, alpha);
+    glClearColor(red/255, green/255, blue/255, alpha/255);
 }
 
 void Window::startLoop()

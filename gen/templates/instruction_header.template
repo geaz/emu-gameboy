@@ -1,0 +1,13 @@
+#pragma once
+#ifndef ${mnemonic_upper}_H
+#define ${mnemonic_upper}_H
+
+#include "../instruction_group.h"
+
+class ${mnemonic_title} : public InstructionGroup
+{
+    public:
+        ${mnemonic_title}();
+};
+
+#endif // ${mnemonic_upper}_H

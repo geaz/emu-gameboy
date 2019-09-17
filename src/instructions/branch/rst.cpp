@@ -1,45 +1,48 @@
 #include "rst.h"
+#include "../../helper/string_helper.h"
 
 Rst::Rst()
 {
-    group[0xC7] =
+    Rst* self = this;
+    group[0xc7] =
     {
-        1, 0xC7,
-        [](int opcode) -> std::string { return "RST  00H"; }
+        1,
+        [self](int opcode) -> std::string { return "RST  00H"; }
     };
-    group[0xD7] =
+    group[0xcf] =
     {
-        1, 0xD7,
-        [](int opcode) -> std::string { return "RST  10H"; }
+        1,
+        [self](int opcode) -> std::string { return "RST  08H"; }
     };
-    group[0xE7] =
+    group[0xd7] =
     {
-        1, 0xE7,
-        [](int opcode) -> std::string { return "RST  20H"; }
+        1,
+        [self](int opcode) -> std::string { return "RST  10H"; }
     };
-    group[0xF7] =
+    group[0xdf] =
     {
-        1, 0xF7,
-        [](int opcode) -> std::string { return "RST  30H"; }
+        1,
+        [self](int opcode) -> std::string { return "RST  18H"; }
     };
-    group[0xCF] =
+    group[0xe7] =
     {
-        1, 0xCF,
-        [](int opcode) -> std::string { return "RST  08H"; }
+        1,
+        [self](int opcode) -> std::string { return "RST  20H"; }
     };
-    group[0xDF] =
+    group[0xef] =
     {
-        1, 0xDF,
-        [](int opcode) -> std::string { return "RST  18H"; }
+        1,
+        [self](int opcode) -> std::string { return "RST  28H"; }
     };
-    group[0xEF] =
+    group[0xf7] =
     {
-        1, 0xEF,
-        [](int opcode) -> std::string { return "RST  28H"; }
+        1,
+        [self](int opcode) -> std::string { return "RST  30H"; }
     };
-    group[0xFF] =
+    group[0xff] =
     {
-        1, 0xFF,
-        [](int opcode) -> std::string { return "RST  38H"; }
+        1,
+        [self](int opcode) -> std::string { return "RST  38H"; }
     };
+
 }

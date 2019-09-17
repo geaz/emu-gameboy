@@ -9,7 +9,7 @@
 #include "../helper/string_helper.h"
 
 
-MiscScreen::MiscScreen(Rom rom) : rom(rom)
+MiscScreen::MiscScreen(const Disassembler disassembler) : disassembler(disassembler)
 { }
 
 void MiscScreen::update()
@@ -32,8 +32,9 @@ void MiscScreen::update()
     
     if(ImGui::BeginTabItem("Info"))
     {
-        ImGui::Text(("Loaded rom: " + rom.romPath).c_str());
-    
+        ImGui::Text(("Loaded rom: " + disassembler.currentRom.romPath).c_str());
+        ImGui::Text(("Parsed Instructions: " + std::to_string(disassembler.getInstructionCount())).c_str());
+
         static bool showAppMetrics = false;
         if(ImGui::Button("UI Metrics", ImVec2(100, 20))) { showAppMetrics = true; }
         if (showAppMetrics) { ImGui::ShowMetricsWindow(&showAppMetrics); }

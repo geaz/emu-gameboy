@@ -1,10 +1,13 @@
 #include "nop.h"
+#include "../../helper/string_helper.h"
 
 Nop::Nop()
 {
+    Nop* self = this;
     group[0x00] =
     {
-        1, 0x00,
-        [](int opcode) -> std::string { return "NOP"; }
+        1,
+        [self](int opcode) -> std::string { return "NOP  "; }
     };
+
 }

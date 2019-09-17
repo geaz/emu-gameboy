@@ -1,0 +1,5 @@
+    group[${opcode}] =
+    {
+        ${length},
+        [self](int opcode) -> std::string { return ${cMnemonic}; }
+    };

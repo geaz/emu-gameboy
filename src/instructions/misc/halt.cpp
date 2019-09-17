@@ -1,10 +1,13 @@
 #include "halt.h"
+#include "../../helper/string_helper.h"
 
 Halt::Halt()
 {
+    Halt* self = this;
     group[0x76] =
     {
-        1, 0x76,
-        [](int opcode) -> std::string { return "HALT"; }
+        1,
+        [self](int opcode) -> std::string { return "HALT "; }
     };
+
 }

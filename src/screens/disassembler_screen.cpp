@@ -8,16 +8,14 @@
 #include "disassembler_screen.h"
 #include "../helper/string_helper.h"
 
-DisassemblerScreen::DisassemblerScreen(Rom rom) : rom(rom)
-{     
-    disassembler.parseRom(rom);
-}
+DisassemblerScreen::DisassemblerScreen(const Disassembler disassembler) : disassembler(disassembler)
+{ }
 
 void DisassemblerScreen::update()
 { 
-    ImGui::Begin("Disassembly (Instructions only)", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
+    ImGui::Begin("Instructions", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
     ImGui::SetWindowPos(ImVec2(320, -1), ImGuiCond_Always);
-    ImGui::SetWindowSize(ImVec2(381, 590), ImGuiCond_Always);
+    ImGui::SetWindowSize(ImVec2(421, 590), ImGuiCond_Always);
 
     ImGuiListClipper clipper(disassembler.parsedInstructions.size());
     while (clipper.Step())
@@ -27,8 +25,8 @@ void DisassemblerScreen::update()
             ParsedInstruction parsedInstruction = disassembler.parsedInstructions[i];
 
             std::stringstream rowLabel;
-            rowLabel << "(" << StringHelper::Pad(std::to_string(parsedInstruction.number), 4, '0') << ") ";
-            rowLabel << StringHelper::Pad(std::to_string(parsedInstruction.bytePosition), 4, '0');
+            rowLabel << "(" << StringHelper::Pad(std::to_string(parsedInstruction.number), 5, '0') << ") ";
+            rowLabel << StringHelper::Pad(std::to_string(parsedInstruction.bytePosition), 5, '0');
             
             if(parsedInstruction.definition.length == 1)
             {

@@ -18,12 +18,14 @@ int main(int argc, char** args) {
     }
 
     Rom rom(args[1]);
+    Disassembler disassembler;
+    disassembler.parseRom(rom);
 
-    Window window("Gameboy", 700, 588);
-    window.setClearColor(255, 255, 255, 255);
+    Window window("Gameboy", 740, 588);
+    window.setClearColor(224, 248, 208, 255);
     
-    MiscScreen miscScreen(rom);
-    DisassemblerScreen disassemblerScreen(rom);
+    MiscScreen miscScreen(disassembler);
+    DisassemblerScreen disassemblerScreen(disassembler);
 
     window.addScreen(&miscScreen);
     window.addScreen(&disassemblerScreen);

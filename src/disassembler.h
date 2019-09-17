@@ -3,7 +3,6 @@
 #define DISASSEMBLER_H
 
 #include <vector>
-#include <optional>
 #include <map>
 
 #include "rom.h"
@@ -19,12 +18,12 @@ class Disassembler
         unsigned long getInstructionPosition();
         unsigned long getInstructionCount();
 
+        Rom currentRom;
         ParsedInstruction currentInstruction;
         std::vector<ParsedInstruction> parsedInstructions;
 
     private:
         InstructionSet instructionSet;
-        std::optional<Rom> currentRom;
         unsigned long instructionPosition = 0;
         unsigned long bytePosition = 0;
 };

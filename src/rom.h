@@ -7,6 +7,7 @@
 class Rom
 {
     public:
+        Rom() { };
         Rom(std::string path);
 
         std::string romPath;

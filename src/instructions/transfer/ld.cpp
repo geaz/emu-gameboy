@@ -3,295 +3,456 @@
 
 Ld::Ld()
 {
-    Ld* ld = this;
-    group[0x40] =
-    {
-        1, 0x40,
-        [](int opcode) -> std::string { return "LD   B, B"; }
-    };
-    group[0x50] =
-    {
-        1, 0x50,
-        [](int opcode) -> std::string { return "LD   D, B"; }
-    };
-    group[0x60] =
-    {
-        1, 0x60,
-        [](int opcode) -> std::string { return "LD   H, B"; }
-    };
-    group[0x70] =
-    {
-        1, 0x70,
-        [](int opcode) -> std::string { return "LD   (HL), B"; }
-    };
-    group[0xE0] =
-    {
-        2, 0xE0,
-        [](int opcode) -> std::string { return "LDH  (" + StringHelper::IntToHexString(opcode & 0x00FF, 2) + "), A"; }
-    };
-    group[0xF0] =
-    {
-        2, 0xF0,
-        [](int opcode) -> std::string { return "LDH  A, (" + StringHelper::IntToHexString(opcode & 0x00FF, 2) + ")"; }
-    };
+    Ld* self = this;
     group[0x01] =
     {
-        3, 0x01,
-        [ld](int opcode) -> std::string { return "LD   BC, " + StringHelper::IntToHexString(ld->getAddrFrom16Bit(opcode)); }
-    };
-    group[0x11] =
-    {
-        3, 0x11,
-        [ld](int opcode) -> std::string { return "LD   DE, " + StringHelper::IntToHexString(ld->getAddrFrom16Bit(opcode)); }
-    };
-    group[0x21] =
-    {
-        3, 0x21,
-        [ld](int opcode) -> std::string { return "LD   HL, " + StringHelper::IntToHexString(ld->getAddrFrom16Bit(opcode)); }
-    };
-    group[0x31] =
-    {
-        3, 0x31,
-        [ld](int opcode) -> std::string { return "LD   SP, " + StringHelper::IntToHexString(ld->getAddrFrom16Bit(opcode)); }
-    };
-    group[0x41] =
-    {
-        1, 0x41,
-        [](int opcode) -> std::string { return "LD   B, C"; }
-    };
-    group[0x51] =
-    {
-        1, 0x51,
-        [](int opcode) -> std::string { return "LD   D, C"; }
-    };
-    group[0x61] =
-    {
-        1, 0x61,
-        [](int opcode) -> std::string { return "LD   H, C"; }
-    };
-    group[0x71] =
-    {
-        1, 0x71,
-        [](int opcode) -> std::string { return "LD   (HL), C"; }
+        3,
+        [self](int opcode) -> std::string { return "LD   BC, " + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode)); }
     };
     group[0x02] =
     {
-        1, 0x02,
-        [](int opcode) -> std::string { return "LD   (BC), A"; }
-    };
-    group[0x12] =
-    {
-        1, 0x12,
-        [](int opcode) -> std::string { return "LD   (DE), A"; }
-    };
-    group[0x22] =
-    {
-        1, 0x22,
-        [](int opcode) -> std::string { return "LD   (HL+), A"; }
-    };
-    group[0x32] =
-    {
-        1, 0x32,
-        [](int opcode) -> std::string { return "LD   (HL-), A"; }
-    };
-    group[0x42] =
-    {
-        1, 0x42,
-        [](int opcode) -> std::string { return "LD   B, D"; }
-    };
-    group[0x52] =
-    {
-        1, 0x52,
-        [](int opcode) -> std::string { return "LD   D, D"; }
-    };
-    group[0x62] =
-    {
-        1, 0x62,
-        [](int opcode) -> std::string { return "LD   H, D"; }
-    };
-    group[0x72] =
-    {
-        1, 0x72,
-        [](int opcode) -> std::string { return "LD   (HL), D"; }
-    };
-    group[0xE2] =
-    {
-        1, 0xE2,
-        [](int opcode) -> std::string { return "LD   (C), A"; }
-    };
-    group[0xF2] =
-    {
-        1, 0xF2,
-        [](int opcode) -> std::string { return "LD   A, (C)"; }
-    };
-    group[0x43] =
-    {
-        1, 0x43,
-        [](int opcode) -> std::string { return "LD   B, E"; }
-    };
-    group[053] =
-    {
-        1, 0x53,
-        [](int opcode) -> std::string { return "LD   D, E"; }
-    };
-    group[0x63] =
-    {
-        1, 0x63,
-        [](int opcode) -> std::string { return "LD   H, E"; }
-    };
-    group[0x73] =
-    {
-        1, 0x73,
-        [](int opcode) -> std::string { return "LD   (HL), E"; }
-    };
-    group[0x44] =
-    {
-        1, 0x44,
-        [](int opcode) -> std::string { return "LD   B, H"; }
-    };
-    group[0x54] =
-    {
-        1, 0x54,
-        [](int opcode) -> std::string { return "LD   D, H"; }
-    };
-    group[0x64] =
-    {
-        1, 0x64,
-        [](int opcode) -> std::string { return "LD   H, H"; }
-    };
-    group[0x74] =
-    {
-        1, 0x74,
-        [](int opcode) -> std::string { return "LD   (HL), H"; }
-    };
-    group[0x45] =
-    {
-        1, 0x45,
-        [](int opcode) -> std::string { return "LD   B, L"; }
-    };
-    group[0x55] =
-    {
-        1, 0x55,
-        [](int opcode) -> std::string { return "LD   D, L"; }
-    };
-    group[0x65] =
-    {
-        1, 0x65,
-        [](int opcode) -> std::string { return "LD   H, L"; }
-    };
-    group[0x75] =
-    {
-        1, 0x75,
-        [](int opcode) -> std::string { return "LD   (HL), L"; }
+        1,
+        [self](int opcode) -> std::string { return "LD   (BC), A"; }
     };
     group[0x06] =
     {
-        2, 0x06,
-        [](int opcode) -> std::string { return "LD   B, " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
-    };
-    group[0x16] =
-    {
-        2, 0x16,
-        [](int opcode) -> std::string { return "LD   D, " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
-    };
-    group[0x26] =
-    {
-        2, 0x26,
-        [](int opcode) -> std::string { return "LD   H, " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
-    };
-    group[0x36] =
-    {
-        2, 0x36,
-        [](int opcode) -> std::string { return "LD   (HL), " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
-    };
-    group[0x46] =
-    {
-        1, 0x46,
-        [](int opcode) -> std::string { return "LD   B, (HL)"; }
-    };
-    group[0x56] =
-    {
-        1, 0x56,
-        [](int opcode) -> std::string { return "LD   D, (HL)"; }
-    };
-    group[0x66] =
-    {
-        1, 0x66,
-        [](int opcode) -> std::string { return "LD   H, (HL)"; }
-    };
-    group[0x47] =
-    {
-        1, 0x47,
-        [](int opcode) -> std::string { return "LD   B, A"; }
-    };
-    group[0x57] =
-    {
-        1, 0x57,
-        [](int opcode) -> std::string { return "LD   D, A"; }
-    };
-    group[0x67] =
-    {
-        1, 0x67,
-        [](int opcode) -> std::string { return "LD   H, A"; }
-    };
-    group[0x77] =
-    {
-        1, 0x77,
-        [](int opcode) -> std::string { return "LD   (HL), A"; }
+        2,
+        [self](int opcode) -> std::string { return "LD   B, " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
     };
     group[0x08] =
     {
-        3, 0x08,
-        [ld](int opcode) -> std::string { return "LD   (" + StringHelper::IntToHexString(ld->getAddrFrom16Bit(opcode)) + "), SP"; }
+        3,
+        [self](int opcode) -> std::string { return "LD   (a16), SP"; }
+    };
+    group[0x0a] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   A, (BC)"; }
+    };
+    group[0x0e] =
+    {
+        2,
+        [self](int opcode) -> std::string { return "LD   C, " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+    };
+    group[0x11] =
+    {
+        3,
+        [self](int opcode) -> std::string { return "LD   DE, " + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode)); }
+    };
+    group[0x12] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   (DE), A"; }
+    };
+    group[0x16] =
+    {
+        2,
+        [self](int opcode) -> std::string { return "LD   D, " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+    };
+    group[0x1a] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   A, (DE)"; }
+    };
+    group[0x1e] =
+    {
+        2,
+        [self](int opcode) -> std::string { return "LD   E, " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+    };
+    group[0x21] =
+    {
+        3,
+        [self](int opcode) -> std::string { return "LD   HL, " + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode)); }
+    };
+    group[0x22] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   (HL+), A"; }
+    };
+    group[0x26] =
+    {
+        2,
+        [self](int opcode) -> std::string { return "LD   H, " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+    };
+    group[0x2a] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   A, (HL+)"; }
+    };
+    group[0x2e] =
+    {
+        2,
+        [self](int opcode) -> std::string { return "LD   L, " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+    };
+    group[0x31] =
+    {
+        3,
+        [self](int opcode) -> std::string { return "LD   SP, " + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode)); }
+    };
+    group[0x32] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   (HL-), A"; }
+    };
+    group[0x36] =
+    {
+        2,
+        [self](int opcode) -> std::string { return "LD   (HL), " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+    };
+    group[0x3a] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   A, (HL-)"; }
+    };
+    group[0x3e] =
+    {
+        2,
+        [self](int opcode) -> std::string { return "LD   A, " + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+    };
+    group[0x40] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   B, B"; }
+    };
+    group[0x41] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   B, C"; }
+    };
+    group[0x42] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   B, D"; }
+    };
+    group[0x43] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   B, E"; }
+    };
+    group[0x44] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   B, H"; }
+    };
+    group[0x45] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   B, L"; }
+    };
+    group[0x46] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   B, (HL)"; }
+    };
+    group[0x47] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   B, A"; }
     };
     group[0x48] =
     {
-        1, 0x48,
-        [](int opcode) -> std::string { return "LD   C, B"; }
-    };
-    group[0x58] =
-    {
-        1, 0x58,
-        [](int opcode) -> std::string { return "LD   E, B"; }
-    };
-    group[0x68] =
-    {
-        1, 0x68,
-        [](int opcode) -> std::string { return "LD   L, B"; }
-    };
-    group[0x78] =
-    {
-        1, 0x78,
-        [](int opcode) -> std::string { return "LD   A, B"; }
-    };
-    group[0xF8] =
-    {
-        2, 0xF8,
-        [](int opcode) -> std::string { return "LD   HL, SP+" + StringHelper::IntToHexString(opcode, 2); }
+        1,
+        [self](int opcode) -> std::string { return "LD   C, B"; }
     };
     group[0x49] =
     {
-        1, 0x49,
-        [](int opcode) -> std::string { return "LD   C, C"; }
+        1,
+        [self](int opcode) -> std::string { return "LD   C, C"; }
+    };
+    group[0x4a] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   C, D"; }
+    };
+    group[0x4b] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   C, E"; }
+    };
+    group[0x4c] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   C, H"; }
+    };
+    group[0x4d] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   C, L"; }
+    };
+    group[0x4e] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   C, (HL)"; }
+    };
+    group[0x4f] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   C, A"; }
+    };
+    group[0x50] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   D, B"; }
+    };
+    group[0x51] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   D, C"; }
+    };
+    group[0x52] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   D, D"; }
+    };
+    group[0x53] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   D, E"; }
+    };
+    group[0x54] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   D, H"; }
+    };
+    group[0x55] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   D, L"; }
+    };
+    group[0x56] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   D, (HL)"; }
+    };
+    group[0x57] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   D, A"; }
+    };
+    group[0x58] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   E, B"; }
     };
     group[0x59] =
     {
-        1, 0x59,
-        [](int opcode) -> std::string { return "LD   E, C"; }
+        1,
+        [self](int opcode) -> std::string { return "LD   E, C"; }
+    };
+    group[0x5a] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   E, D"; }
+    };
+    group[0x5b] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   E, E"; }
+    };
+    group[0x5c] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   E, H"; }
+    };
+    group[0x5d] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   E, L"; }
+    };
+    group[0x5e] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   E, (HL)"; }
+    };
+    group[0x5f] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   E, A"; }
+    };
+    group[0x60] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   H, B"; }
+    };
+    group[0x61] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   H, C"; }
+    };
+    group[0x62] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   H, D"; }
+    };
+    group[0x63] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   H, E"; }
+    };
+    group[0x64] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   H, H"; }
+    };
+    group[0x65] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   H, L"; }
+    };
+    group[0x66] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   H, (HL)"; }
+    };
+    group[0x67] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   H, A"; }
+    };
+    group[0x68] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   L, B"; }
     };
     group[0x69] =
     {
-        1, 0x69,
-        [](int opcode) -> std::string { return "LD   L, C"; }
+        1,
+        [self](int opcode) -> std::string { return "LD   L, C"; }
+    };
+    group[0x6a] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   L, D"; }
+    };
+    group[0x6b] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   L, E"; }
+    };
+    group[0x6c] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   L, H"; }
+    };
+    group[0x6d] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   L, L"; }
+    };
+    group[0x6e] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   L, (HL)"; }
+    };
+    group[0x6f] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   L, A"; }
+    };
+    group[0x70] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   (HL), B"; }
+    };
+    group[0x71] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   (HL), C"; }
+    };
+    group[0x72] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   (HL), D"; }
+    };
+    group[0x73] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   (HL), E"; }
+    };
+    group[0x74] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   (HL), H"; }
+    };
+    group[0x75] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   (HL), L"; }
+    };
+    group[0x77] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   (HL), A"; }
+    };
+    group[0x78] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   A, B"; }
     };
     group[0x79] =
     {
-        1, 0x79,
-        [](int opcode) -> std::string { return "LD   A, C"; }
+        1,
+        [self](int opcode) -> std::string { return "LD   A, C"; }
     };
-    group[0xF9] =
+    group[0x7a] =
     {
-        1, 0xF9,
-        [](int opcode) -> std::string { return "LD   SP, HL"; }
+        1,
+        [self](int opcode) -> std::string { return "LD   A, D"; }
     };
+    group[0x7b] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   A, E"; }
+    };
+    group[0x7c] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   A, H"; }
+    };
+    group[0x7d] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   A, L"; }
+    };
+    group[0x7e] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   A, (HL)"; }
+    };
+    group[0x7f] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   A, A"; }
+    };
+    group[0xe2] =
+    {
+        2,
+        [self](int opcode) -> std::string { return "LD   (C), A"; }
+    };
+    group[0xea] =
+    {
+        3,
+        [self](int opcode) -> std::string { return "LD   (a16), A"; }
+    };
+    group[0xf2] =
+    {
+        2,
+        [self](int opcode) -> std::string { return "LD   A, (C)"; }
+    };
+    group[0xf8] =
+    {
+        2,
+        [self](int opcode) -> std::string { return "LD   HL, SP+r8"; }
+    };
+    group[0xf9] =
+    {
+        1,
+        [self](int opcode) -> std::string { return "LD   SP, HL"; }
+    };
+    group[0xfa] =
+    {
+        3,
+        [self](int opcode) -> std::string { return "LD   A, (a16)"; }
+    };
+
 }

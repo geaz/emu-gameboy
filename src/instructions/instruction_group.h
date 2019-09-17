@@ -9,7 +9,6 @@
 struct Instruction
 {
     short length;                                   // Byte Length of the Instruction
-    unsigned char opcode;                           // The opcode to identify the Instruction
     std::function<std::string (int)> getMnemonic;   // Method which returns the mnemonic for the given opcode
 };
 

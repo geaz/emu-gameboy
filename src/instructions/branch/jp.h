@@ -8,9 +8,6 @@ class Jp : public InstructionGroup
 {
     public:
         Jp();
-    
-    private:
-        int getAddress(int opcode);
 };
 
 #endif // JP_H

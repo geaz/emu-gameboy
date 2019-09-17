@@ -3,35 +3,36 @@
 
 Jp::Jp()
 {
-    Jp* jp = this;
-    group[0xC2] =
+    Jp* self = this;
+    group[0xc2] =
     {
-        3, 0xC2,
-        [jp](int opcode) -> std::string { return "JP   NZ, " + StringHelper::IntToHexString(jp->getAddrFrom16Bit(opcode)); }
+        3,
+        [self](int opcode) -> std::string { return "JP   NZ, a'" + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode)); }
     };
-    group[0xD2] =
+    group[0xc3] =
     {
-        3, 0xD2,
-        [jp](int opcode) -> std::string { return "JP   NZ, " + StringHelper::IntToHexString(jp->getAddrFrom16Bit(opcode)); }
+        3,
+        [self](int opcode) -> std::string { return "JP   a'" + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode)); }
     };
-    group[0xC3] =
+    group[0xca] =
     {
-        3, 0xC3,
-        [jp](int opcode) -> std::string { return "JP   " + StringHelper::IntToHexString(jp->getAddrFrom16Bit(opcode)); }
+        3,
+        [self](int opcode) -> std::string { return "JP   Z, a'" + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode)); }
     };
-    group[0xE9] =
+    group[0xd2] =
     {
-        1, 0xE9,
-        [](int opcode) -> std::string { return "JP   (HL)"; }
+        3,
+        [self](int opcode) -> std::string { return "JP   NC, a'" + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode)); }
     };
-    group[0xCA] =
+    group[0xda] =
     {
-        3, 0xCA,
-        [jp](int opcode) -> std::string { return "JP   Z, " + StringHelper::IntToHexString(jp->getAddrFrom16Bit(opcode)); }
+        3,
+        [self](int opcode) -> std::string { return "JP   C, a'" + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode)); }
     };
-    group[0xDA] =
+    group[0xe9] =
     {
-        3, 0xDA,
-        [jp](int opcode) -> std::string { return "JP   C, " + StringHelper::IntToHexString(jp->getAddrFrom16Bit(opcode)); }
+        1,
+        [self](int opcode) -> std::string { return "JP   (HL)"; }
     };
+
 }

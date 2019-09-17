@@ -22,6 +22,14 @@ Further more the emulator contains a simple dissasembler and aims to be cycle ac
 If you are just interested on how the implementation of the instructions were done, just look into the *src/instructions* subfolders.
 You will find the hardware implementation of the emulator in the *src/hardware* folder. 
 
+## TODOs
+- Add all Instructions (Mnemonic)
+  - Aritmetic
+  - Prefix Instructions
+- Implement CPU
+- Implement Interpreter
+- Implement JIT
+
 ## Ressources
 
 - http://gbdev.gg8.se/wiki/articles/Pan_Docs

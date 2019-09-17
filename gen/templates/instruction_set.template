@@ -1,0 +1,41 @@
+#pragma once
+#ifndef INSTRUCTION_INCLUDE_H
+#define INSTRUCTION_INCLUDE_H
+
+#include <functional>
+
+#include "../hardware/cpu.h"
+#include "groups/aritmetic.h"
+#include "groups/branch.h"
+#include "groups/transfer.h"
+#include "groups/misc.h"
+
+typedef short (*OpcodeFunc)(Cpu*);
+struct Instruction
+{
+    short length;                   // Byte Length of the Instruction
+    std::string mnemonic;           // Mnemonic of the Instruction
+    OpcodeFunc executeInterpreter;  // Function Pointer to execute interpreter mode for given opcode
+    OpcodeFunc eecuteJit;           // Function Pointer to execute jit mode for given opcode
+};
+
+struct ParsedInstruction
+{
+    int bytes;
+    int number;
+    int bytePosition;
+    Instruction definition;
+};
+
+class InstructionSet
+{
+    public:
+        InstructionSet()
+        {  
+${instruction_items}        }
+
+        std::map<unsigned char, Instruction> set; 
+        std::map<unsigned char, Instruction> prefixSet;   
+};
+
+#endif // INSTRUCTION_INCLUDE_H

@@ -1,0 +1,1 @@
+            set[${opcode}] = { ${length}, "${mnemonic_complete}", &${mnemonic_title}::i${mnemonic_title}${opcode_noprefix}, &${mnemonic_title}::j${mnemonic_title}${opcode_noprefix} };

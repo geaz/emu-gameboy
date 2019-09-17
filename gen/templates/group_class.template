@@ -1,0 +1,4 @@
+#include "${group_name}.h"
+#include <stdexcept>
+
+${group_class_items}

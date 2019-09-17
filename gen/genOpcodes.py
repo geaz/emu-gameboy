@@ -30,10 +30,8 @@ class OpcodeScraper():
                     # List contains empty entries - filter them
                     if(len(opcode.contents) > 1):
                         new_opcode = Opcode(i - 1, j, opcode)
-
                         if(new_opcode.mnemonic not in self.scraped_opcodes):
                             self.scraped_opcodes[new_opcode.mnemonic] = []
-
                         self.scraped_opcodes[new_opcode.mnemonic].append(new_opcode)
 
 
@@ -43,6 +41,7 @@ class Opcode:
     cycles = 0
     opcode = 0x00
     mnemonic = ''
+    mnemonicComplete = ''
     param1 = ''
     param2 = ''
 
@@ -53,6 +52,7 @@ class Opcode:
         mnemonic = self.table_content.contents[0].split(' ')[0].strip()
         splitted_params = self.table_content.contents[0].replace(mnemonic, '').split(',')
 
+        self.mnemonicComplete = self.table_content.contents[0]
         self.mnemonic = mnemonic
         self.param1 = splitted_params[0].strip()
         if(len(splitted_params) > 1): self.param2 = splitted_params[1].strip()
@@ -61,10 +61,12 @@ class Opcode:
         self.length = splitted_info[0].strip()
         self.cycles = splitted_info[1].strip()
 
-    def get_opcode_as_string(self):
-        return "{0:#0{1}x}".format(self.opcode,4)
+    def get_opcode_as_string(self, prefix):
+        returnValue = "{0:0{1}x}".format(self.opcode,2)
+        if(prefix): returnValue = "{0:#0{1}x}".format(self.opcode,4)
+        return returnValue
 
-    def get_target_folder(self):
+    def get_target_group(self):
         switcher = {
             'ADC': 'aritmetic', 'ADD': 'aritmetic', 'AND': 'aritmetic',
             'CCF': 'aritmetic', 'CP': 'aritmetic', 'CPL': 'aritmetic',
@@ -78,41 +80,19 @@ class Opcode:
             'RLA': 'misc', 'RRCA': 'misc', 'RRA': 'misc',
             'CALL': 'branch', 'JP': 'branch', 'JR': 'branch',
             'RET': 'branch', 'RETI': 'branch', 'RST': 'branch',
-            'RES': 'prefix', 'BIT': 'prefix', 'SET': 'prefix',
-            'RL': 'prefix', 'RLC': 'prefix', 'RR': 'prefix',
-            'RRC': 'prefix', 'SLA': 'prefix', 'SRA': 'prefix',
-            'SRL': 'prefix', 'SWAP': 'prefix',
+            'RES': 'aritmetic', 'BIT': 'aritmetic', 'SET': 'aritmetic',
+            'RL': 'aritmetic', 'RLC': 'aritmetic', 'RR': 'aritmetic',
+            'RRC': 'aritmetic', 'SLA': 'aritmetic', 'SRA': 'aritmetic',
+            'SRL': 'aritmetic', 'SWAP': 'aritmetic',
         }
-        return switcher.get(self.mnemonic, 'undefined')
-
+        return switcher.get(self.mnemonic, 'undefined')  
 
     def display(self):
-        display_string = self.get_opcode_as_string()
+        display_string = self.get_opcode_as_string(True)
         display_string += ' (' + str(self.length) + ')'
         display_string += ': ' + self.mnemonic + ' ' + self.param1
         if(self.param2 != ''): display_string += ', ' + self.param2
-        return display_string    
-
-    def get_cMnemonic(self):
-        result = '"' + self.mnemonic + (5 - len(self.mnemonic)) * ' '
-        result += self._get_param_for_template(self.param1, self.param2 == '')
-
-        if(self.param2 != ''):
-            result += ', ' + self._get_param_for_template(self.param2, True)
-
-        return result
-
-    def _get_param_for_template(self, param, addApostrophe):
-        result = param
-        if(addApostrophe): result += '"'
-
-        if(param == "d8"): result = '" + StringHelper::IntToHexString(opcode & 0x00FF, 2)' 
-        if(param == "d16"): result = '" + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode))' 
-        if(param == "a8"): result = '($FF00" + StringHelper::IntToHexString(opcode & 0x00FF, 2) + ")"' 
-        if(param == "a16"): result = 'a\'" + StringHelper::IntToHexString(self->getAddrFrom16Bit(opcode))' 
-        if(param == "r8"): result = 'a\'" + StringHelper::IntToHexString(opcode & 0x00FF, 2)' 
-
-        return result
+        return display_string 
 
 
 def write_template(templateFile, templateData, outputFile):
@@ -129,15 +109,19 @@ def write_template(templateFile, templateData, outputFile):
     output.close()
 
 
-def get_group_output(group):
+def get_rendered_template_list(items, templatePath):
     output = ''
-    for opcode in group:
-        filein = open('templates/group.template')
-        template = Template(filein.read())
-        result = template.substitute(opcode)
-        filein.close()
-        output += result
+    for item in items:
+        output += get_rendered_template(item, templatePath)
     return output
+
+
+def get_rendered_template(objects, templatePath):
+    filein = open(templatePath)
+    template = Template(filein.read())
+    result = template.substitute(objects)
+    filein.close()
+    return result
 
 
 scraper = OpcodeScraper()
@@ -146,22 +130,51 @@ scraper.scrape_opcodes()
 if not os.path.exists('output'):
     os.makedirs('output')
 
-for opcode_group_mnemonic, opcode_group in scraper.scraped_opcodes.items():
-    mnemonic = opcode_group[0].mnemonic
-    mnemonic_upper = opcode_group[0].mnemonic.upper()
-    mnemonic_lower = opcode_group[0].mnemonic.lower()    
-    group = []
-    for opcode in opcode_group:
-        group.append(
-            {'opcode': opcode.get_opcode_as_string(), 'length': opcode.length, 
-            'cycles': opcode.cycles, 'cMnemonic': opcode.get_cMnemonic() })
+# Group Opcode by group name
+grouped_opcodes = {}
+for mnemonic_name, mnemonic_group in scraper.scraped_opcodes.items():
+    group_name = mnemonic_group[0].get_target_group()
+    if(group_name not in grouped_opcodes):
+        grouped_opcodes[group_name] = []
+    grouped_opcodes[group_name].append(mnemonic_group)
 
+instruction_items = []
+for group_name, opcode_groups in grouped_opcodes.items():
+    if(group_name == 'undefined'):
+        print('Undefined: ' + opcode_groups[0][0].display())
+        continue
+    group_class_items = ''
+    group_class_definitions = ''
+    for opcode_group in opcode_groups:
+        group_items = []
+        for opcode in opcode_group:
+            instruction_items.append(
+                {'opcode': opcode.get_opcode_as_string(True), 'length': opcode.length, 
+                'mnemonic_complete': opcode.mnemonicComplete, 
+                'opcode_noprefix': opcode.get_opcode_as_string(False).upper(),
+                'mnemonic_title': opcode.mnemonic.title() })
+            group_items.append({
+                'opcode_noprefix': opcode.get_opcode_as_string(False).upper(),
+                'mnemonic_title': opcode.mnemonic.title(),
+                'cycles': opcode.cycles
+            })
+        group_class_items += get_rendered_template_list(group_items, 'templates/group_class_items.template')
+        group_class_definitions += get_rendered_template({ 
+            'group_class_items': get_rendered_template_list(group_items, 'templates/group_header_class_item.template'),
+            'mnemonic_title': opcode.mnemonic.title() }, 'templates/group_header_class.template')
     write_template(
-        'templates/instruction_header.template',
-        {'mnemonic_title': mnemonic.title(), 'mnemonic_upper': mnemonic_upper },
-        'output/' + opcode_group[0].get_target_folder() + '/' + mnemonic_lower + '.h')
+        'templates/group_class.template',
+        {'group_class_items': group_class_items, 'group_name': group_name },
+        'output/groups/' + group_name + '.cpp')
+    write_template(
+        'templates/group_header.template',
+        {'group_class_definitions': group_class_definitions, 'group_name_upper': group_name.upper() },
+        'output/groups/' + group_name + '.h')
+        
+    
 
-    write_template(
-        'templates/instruction.template',
-        {'mnemonic_title': mnemonic.title(), 'mnemonic_lower': mnemonic_lower, 'group': get_group_output(group) },
-        'output/' + opcode_group[0].get_target_folder() + '/' + mnemonic_lower + '.cpp')
+
+write_template(
+    'templates/instruction_set.template',
+    {'instruction_items': get_rendered_template_list(instruction_items, 'templates/instruction_set_item.template') },
+    'output/instruction_set.h')

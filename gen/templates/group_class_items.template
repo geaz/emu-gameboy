@@ -1,0 +1,14 @@
+short ${mnemonic_title}::i${mnemonic_title}${opcode_noprefix}(Cpu* cpu)
+{
+    throw std::runtime_error("Not implemented!");
+    // Cycles ${cycles}
+    return 0;
+}
+
+short ${mnemonic_title}::j${mnemonic_title}${opcode_noprefix}(Cpu* cpu)
+{
+    throw std::runtime_error("Not implemented!");
+    // Cycles ${cycles}
+    return 0;
+}
+

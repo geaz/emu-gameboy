@@ -1,8 +1,0 @@
-#include "${mnemonic_lower}.h"
-#include "../../helper/string_helper.h"
-
-$mnemonic_title::${mnemonic_title}()
-{
-    ${mnemonic_title}* self = this;
-${group}
-}

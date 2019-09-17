@@ -1,0 +1,5 @@
+class ${mnemonic_title}
+{
+    public:
+${group_class_items}};
+

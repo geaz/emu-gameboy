@@ -1,0 +1,7 @@
+#pragma once
+#ifndef ${group_name_upper}_H
+#define ${group_name_upper}_H
+
+#include "../../hardware/cpu.h"
+
+${group_class_definitions}#endif // ${group_name_upper}_H

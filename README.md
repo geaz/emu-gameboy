@@ -4,7 +4,7 @@ I started this project to create an emulator which is capable to do emulation in
 This is not a highly optimized emulator. The aim was to create a code base which is easy to follow for beginners.
 This is why each instruction group is implemented in an own class to provide a better implementation overview.
 
-Each instruction group contains a group of the *struct Instruction*. The *struct* contains everything necessary to process the given instruction. This way it should be easy to tell how the **dissasembly**, **interpreter mode** and **jit mode** for each single instruction works.
+Each instruction group contains a group of the *struct Instruction*. The *struct* contains everything necessary to process the given instruction. This way it should be easy to tell how the **interpreter mode** and **jit mode** for each single instruction works.
 
 ```cpp
 struct Instruction

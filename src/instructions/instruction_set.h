@@ -2,31 +2,43 @@
 #ifndef INSTRUCTION_INCLUDE_H
 #define INSTRUCTION_INCLUDE_H
 
-#include "aritmetic/add.h"
-#include "aritmetic/sub.h"
-#include "aritmetic/and.h"
-#include "aritmetic/or.h"
-#include "aritmetic/inc.h"
-#include "aritmetic/dec.h"
-#include "aritmetic/daa.h"
-#include "aritmetic/scf.h"
 #include "aritmetic/adc.h"
-#include "aritmetic/sbc.h"
-#include "aritmetic/xor.h"
+#include "aritmetic/add.h"
+#include "aritmetic/and.h"
+#include "aritmetic/ccf.h"
 #include "aritmetic/cp.h"
-#include "branch/rst.h"
-#include "branch/ret.h"
+#include "aritmetic/cpl.h"
+#include "aritmetic/daa.h"
+#include "aritmetic/dec.h"
+#include "aritmetic/inc.h"
+#include "aritmetic/or.h"
+#include "aritmetic/sbc.h"
+#include "aritmetic/scf.h"
+#include "aritmetic/sub.h"
+#include "aritmetic/xor.h"
+
+#include "branch/call.h"
 #include "branch/jp.h"
 #include "branch/jr.h"
-#include "branch/call.h"
-#include "transfer/ld.h"
-#include "transfer/push.h"
-#include "transfer/pop.h"
-#include "misc/nop.h"
-#include "misc/stop.h"
-#include "misc/halt.h"
-#include "misc/ei.h"
+#include "branch/ret.h"
+#include "branch/reti.h"
+#include "branch/rst.h"
+
 #include "misc/di.h"
+#include "misc/ei.h"
+#include "misc/halt.h"
+#include "misc/nop.h"
+#include "misc/rla.h"
+#include "misc/rlca.h"
+#include "misc/rra.h"
+#include "misc/rrca.h"
+#include "misc/stop.h"
+
+#include "transfer/ld.h"
+#include "transfer/ldh.h"
+#include "transfer/pop.h"
+#include "transfer/push.h"
+
 #include "instruction_group_prefix.h"
 
 class InstructionSet
@@ -34,59 +46,79 @@ class InstructionSet
     public:
         InstructionSet()
         {  
-            Add addInst;
-            Sub sub;
-            And andInst;
-            Or or;
-            Inc inc;
-            Dec dec;
-            Daa daa;
-            Scf scf;
             Adc adc;
-            Sbc sbc;
-            Xor xor;
+            Add addInst;
+            And andInst;
+            Ccf ccf;
             Cp cp;
-            add(addInst.group);
-            add(sub.group);
-            add(andInst.group);
-            add(or.group);
-            add(inc.group);
-            add(dec.group);
-            add(daa.group);
-            add(scf.group);
-            add(adc.group);
-            add(sbc.group);
-            add(xor.group);
-            add(cp.group);
+            Cpl cpl;
+            Daa daa;
+            Dec dec;
+            Inc inc;
+            Or or;
+            Sbc sbc;
+            Scf scf;
+            Sub sub;
+            Xor xor;
 
-            Rst rst;
-            Ret ret;
+            add(adc.group);
+            add(addInst.group);
+            add(andInst.group);
+            add(ccf.group);
+            add(cp.group);
+            add(cpl.group);
+            add(daa.group);
+            add(dec.group);
+            add(inc.group);
+            add(or.group);
+            add(sbc.group);
+            add(scf.group);
+            add(sub.group);
+            add(xor.group);
+
+            Call call;
             Jp jp;
             Jr jr;
-            Call call;
-            add(rst.group);
-            add(ret.group);
+            Ret ret;
+            Reti reti;
+            Rst rst;
+
+            add(call.group);
             add(jp.group);
             add(jr.group);
-            add(call.group);
+            add(ret.group);
+            add(reti.group);
+            add(rst.group);
+
+            Di di;         
+            Ei ei;  
+            Halt halt; 
+            Nop nop;
+            Rla rla;
+            Rlca rlca;
+            Rra rra;
+            Rrca rrca;
+            Stop stop;  
+
+            add(di.group);
+            add(ei.group);
+            add(halt.group);
+            add(nop.group);
+            add(rla.group);
+            add(rlca.group);
+            add(rra.group);
+            add(rrca.group);
+            add(stop.group);
 
             Ld ld;
+            Ldh ldh;
             Pop pop;
             Push push;
+
             add(ld.group);
+            add(ldh.group);
             add(pop.group);
             add(push.group);
-
-            Nop nop;
-            Stop stop;  
-            Halt halt;     
-            Ei ei;
-            Di di;       
-            add(nop.group);
-            add(stop.group);
-            add(halt.group);
-            add(ei.group);
-            add(di.group);
 
             add(instructionGroupPrefix.group);
         }

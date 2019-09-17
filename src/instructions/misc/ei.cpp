@@ -7,7 +7,8 @@ Ei::Ei()
     group[0xfb] =
     {
         1,
-        [self](int opcode) -> std::string { return "EI   "; }
+        [self](int opcode) -> std::string { return "EI   "; },
+        // Cycles: 4
     };
 
 }

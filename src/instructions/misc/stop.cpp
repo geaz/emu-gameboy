@@ -7,7 +7,8 @@ Stop::Stop()
     group[0x10] =
     {
         2,
-        [self](int opcode) -> std::string { return "STOP 0"; }
+        [self](int opcode) -> std::string { return "STOP 0"; },
+        // Cycles: 4
     };
 
 }

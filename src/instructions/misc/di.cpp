@@ -7,7 +7,8 @@ Di::Di()
     group[0xf3] =
     {
         1,
-        [self](int opcode) -> std::string { return "DI   "; }
+        [self](int opcode) -> std::string { return "DI   "; },
+        // Cycles: 4
     };
 
 }

@@ -7,7 +7,8 @@ Rlca::Rlca()
     group[0x07] =
     {
         1,
-        [self](int opcode) -> std::string { return "RLCA "; }
+        [self](int opcode) -> std::string { return "RLCA "; },
+        // Cycles: 4
     };
 
 }

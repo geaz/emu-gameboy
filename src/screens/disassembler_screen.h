@@ -2,7 +2,6 @@
 #ifndef DISASSEMBLERSCREEN_H
 #define DISASSEMBLERSCREEN_H
 
-#include "../opengl/structs.h"
 #include "../opengl/screen.h"
 
 #include "../disassembler.h"

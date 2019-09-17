@@ -12,7 +12,7 @@ struct Instruction
     short length;
     unsigned char opcode;
     std::function<std::string (int)> getMnemonic;
-    //TODO Interpreter executeInterpreter(CPU);
+    std::function<short (Cpu)> executeInterpreter;
     //TODO JIT with DynASM getAsm();
 };
 ```
@@ -23,9 +23,6 @@ If you are just interested on how the implementation of the instructions were do
 You will find the hardware implementation of the emulator in the *src/hardware* folder. 
 
 ## TODOs
-- Add all Instructions (Mnemonic)
-  - Aritmetic
-  - Prefix Instructions
 - Implement CPU
 - Implement Interpreter
 - Implement JIT

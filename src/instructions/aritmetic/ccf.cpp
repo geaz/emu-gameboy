@@ -7,7 +7,8 @@ Ccf::Ccf()
     group[0x3f] =
     {
         1,
-        [self](int opcode) -> std::string { return "CCF  "; }
+        [self](int opcode) -> std::string { return "CCF  "; },
+        // Cycles: 4
     };
 
 }

@@ -7,7 +7,8 @@ Scf::Scf()
     group[0x37] =
     {
         1,
-        [self](int opcode) -> std::string { return "SCF  "; }
+        [self](int opcode) -> std::string { return "SCF  "; },
+        // Cycles: 4
     };
 
 }

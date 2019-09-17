@@ -7,27 +7,32 @@ Jr::Jr()
     group[0x18] =
     {
         2,
-        [self](int opcode) -> std::string { return "JR   a'" + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+        [self](int opcode) -> std::string { return "JR   a'" + StringHelper::IntToHexString(opcode & 0x00FF, 2); },
+        // Cycles: 12
     };
     group[0x20] =
     {
         2,
-        [self](int opcode) -> std::string { return "JR   NZ, a'" + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+        [self](int opcode) -> std::string { return "JR   NZ, a'" + StringHelper::IntToHexString(opcode & 0x00FF, 2); },
+        // Cycles: 12/8
     };
     group[0x28] =
     {
         2,
-        [self](int opcode) -> std::string { return "JR   Z, a'" + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+        [self](int opcode) -> std::string { return "JR   Z, a'" + StringHelper::IntToHexString(opcode & 0x00FF, 2); },
+        // Cycles: 12/8
     };
     group[0x30] =
     {
         2,
-        [self](int opcode) -> std::string { return "JR   NC, a'" + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+        [self](int opcode) -> std::string { return "JR   NC, a'" + StringHelper::IntToHexString(opcode & 0x00FF, 2); },
+        // Cycles: 12/8
     };
     group[0x38] =
     {
         2,
-        [self](int opcode) -> std::string { return "JR   C, a'" + StringHelper::IntToHexString(opcode & 0x00FF, 2); }
+        [self](int opcode) -> std::string { return "JR   C, a'" + StringHelper::IntToHexString(opcode & 0x00FF, 2); },
+        // Cycles: 12/8
     };
 
 }

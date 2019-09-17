@@ -7,7 +7,8 @@ Daa::Daa()
     group[0x27] =
     {
         1,
-        [self](int opcode) -> std::string { return "DAA  "; }
+        [self](int opcode) -> std::string { return "DAA  "; },
+        // Cycles: 4
     };
 
 }

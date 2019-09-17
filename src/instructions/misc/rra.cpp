@@ -7,7 +7,8 @@ Rra::Rra()
     group[0x1f] =
     {
         1,
-        [self](int opcode) -> std::string { return "RRA  "; }
+        [self](int opcode) -> std::string { return "RRA  "; },
+        // Cycles: 4
     };
 
 }

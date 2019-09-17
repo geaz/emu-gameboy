@@ -7,6 +7,7 @@
 
 #include "rom.h"
 #include "opengl/window.h"
+#include "screens/rom_screen.h"
 #include "screens/disassembler_screen.h"
 #include "screens/misc_screen.h"
 
@@ -24,10 +25,11 @@ int main(int argc, char** args) {
     Window window("Gameboy", 740, 588);
     window.setClearColor(224, 248, 208, 255);
     
+    RomScreen romScreen(rom);
     MiscScreen miscScreen(disassembler);
     DisassemblerScreen disassemblerScreen(disassembler);
 
     window.addScreen(&miscScreen);
-    window.addScreen(&disassemblerScreen);
+    window.addScreen(&romScreen);
     window.startLoop();
 }

@@ -7,7 +7,8 @@ Nop::Nop()
     group[0x00] =
     {
         1,
-        [self](int opcode) -> std::string { return "NOP  "; }
+        [self](int opcode) -> std::string { return "NOP  "; },
+        // Cycles: 4
     };
 
 }

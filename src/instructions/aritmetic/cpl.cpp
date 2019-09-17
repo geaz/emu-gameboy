@@ -7,7 +7,8 @@ Cpl::Cpl()
     group[0x2f] =
     {
         1,
-        [self](int opcode) -> std::string { return "CPL  "; }
+        [self](int opcode) -> std::string { return "CPL  "; },
+        // Cycles: 4
     };
 
 }

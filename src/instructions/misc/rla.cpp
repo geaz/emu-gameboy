@@ -7,7 +7,8 @@ Rla::Rla()
     group[0x17] =
     {
         1,
-        [self](int opcode) -> std::string { return "RLA  "; }
+        [self](int opcode) -> std::string { return "RLA  "; },
+        // Cycles: 4
     };
 
 }

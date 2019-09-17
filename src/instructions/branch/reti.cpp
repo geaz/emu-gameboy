@@ -7,7 +7,8 @@ Reti::Reti()
     group[0xd9] =
     {
         1,
-        [self](int opcode) -> std::string { return "RETI "; }
+        [self](int opcode) -> std::string { return "RETI "; },
+        // Cycles: 16
     };
 
 }

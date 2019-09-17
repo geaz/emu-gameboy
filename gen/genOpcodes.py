@@ -152,7 +152,9 @@ for opcode_group_mnemonic, opcode_group in scraper.scraped_opcodes.items():
     mnemonic_lower = opcode_group[0].mnemonic.lower()    
     group = []
     for opcode in opcode_group:
-        group.append({'opcode': opcode.get_opcode_as_string(), 'length': opcode.length, 'cMnemonic': opcode.get_cMnemonic() })
+        group.append(
+            {'opcode': opcode.get_opcode_as_string(), 'length': opcode.length, 
+            'cycles': opcode.cycles, 'cMnemonic': opcode.get_cMnemonic() })
 
     write_template(
         'templates/instruction_header.template',

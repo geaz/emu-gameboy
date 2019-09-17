@@ -6,10 +6,14 @@
 #include <string>
 #include <functional>
 
+#include "../hardware/cpu.h"
+
 struct Instruction
 {
     short length;                                   // Byte Length of the Instruction
     std::function<std::string (int)> getMnemonic;   // Method which returns the mnemonic for the given opcode
+    std::function<short (Cpu)> executeInterpreter;  // Method to execute interpreter mode for given opcode
+    //std::function<short (Cpu)> executeJit;          // Method to execute jit mode for given opcode
 };
 
 struct ParsedInstruction

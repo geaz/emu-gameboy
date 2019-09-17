@@ -7,22 +7,26 @@ Pop::Pop()
     group[0xc1] =
     {
         1,
-        [self](int opcode) -> std::string { return "POP  BC"; }
+        [self](int opcode) -> std::string { return "POP  BC"; },
+        // Cycles: 12
     };
     group[0xd1] =
     {
         1,
-        [self](int opcode) -> std::string { return "POP  DE"; }
+        [self](int opcode) -> std::string { return "POP  DE"; },
+        // Cycles: 12
     };
     group[0xe1] =
     {
         1,
-        [self](int opcode) -> std::string { return "POP  HL"; }
+        [self](int opcode) -> std::string { return "POP  HL"; },
+        // Cycles: 12
     };
     group[0xf1] =
     {
         1,
-        [self](int opcode) -> std::string { return "POP  AF"; }
+        [self](int opcode) -> std::string { return "POP  AF"; },
+        // Cycles: 12
     };
 
 }

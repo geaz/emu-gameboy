@@ -7,12 +7,14 @@ Ldh::Ldh()
     group[0xe0] =
     {
         2,
-        [self](int opcode) -> std::string { return "LDH  (a8), A"; }
+        [self](int opcode) -> std::string { return "LDH  (a8), A"; },
+        // Cycles: 12
     };
     group[0xf0] =
     {
         2,
-        [self](int opcode) -> std::string { return "LDH  A, (a8)"; }
+        [self](int opcode) -> std::string { return "LDH  A, (a8)"; },
+        // Cycles: 12
     };
 
 }

@@ -7,42 +7,50 @@ Rrc::Rrc()
     group[0x08] =
     {
         2,
-        [self](int opcode) -> std::string { return "RRC  B"; }
+        [self](int opcode) -> std::string { return "RRC  B"; },
+        // Cycles: 8
     };
     group[0x09] =
     {
         2,
-        [self](int opcode) -> std::string { return "RRC  C"; }
+        [self](int opcode) -> std::string { return "RRC  C"; },
+        // Cycles: 8
     };
     group[0x0a] =
     {
         2,
-        [self](int opcode) -> std::string { return "RRC  D"; }
+        [self](int opcode) -> std::string { return "RRC  D"; },
+        // Cycles: 8
     };
     group[0x0b] =
     {
         2,
-        [self](int opcode) -> std::string { return "RRC  E"; }
+        [self](int opcode) -> std::string { return "RRC  E"; },
+        // Cycles: 8
     };
     group[0x0c] =
     {
         2,
-        [self](int opcode) -> std::string { return "RRC  H"; }
+        [self](int opcode) -> std::string { return "RRC  H"; },
+        // Cycles: 8
     };
     group[0x0d] =
     {
         2,
-        [self](int opcode) -> std::string { return "RRC  L"; }
+        [self](int opcode) -> std::string { return "RRC  L"; },
+        // Cycles: 8
     };
     group[0x0e] =
     {
         2,
-        [self](int opcode) -> std::string { return "RRC  (HL)"; }
+        [self](int opcode) -> std::string { return "RRC  (HL)"; },
+        // Cycles: 16
     };
     group[0x0f] =
     {
         2,
-        [self](int opcode) -> std::string { return "RRC  A"; }
+        [self](int opcode) -> std::string { return "RRC  A"; },
+        // Cycles: 8
     };
 
 }

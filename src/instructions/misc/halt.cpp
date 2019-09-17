@@ -7,7 +7,8 @@ Halt::Halt()
     group[0x76] =
     {
         1,
-        [self](int opcode) -> std::string { return "HALT "; }
+        [self](int opcode) -> std::string { return "HALT "; },
+        // Cycles: 4
     };
 
 }

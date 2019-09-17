@@ -7,7 +7,8 @@ Rrca::Rrca()
     group[0x0f] =
     {
         1,
-        [self](int opcode) -> std::string { return "RRCA "; }
+        [self](int opcode) -> std::string { return "RRCA "; },
+        // Cycles: 4
     };
 
 }

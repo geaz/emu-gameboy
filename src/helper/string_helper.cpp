@@ -20,3 +20,13 @@ std::string StringHelper::IntToHexString(const int data, int stringWidth, bool w
         : hexString;
     return returnValue;
 }
+
+std::string StringHelper::Pad(const std::string text, int width, const char fillChar)
+{
+    std::stringstream stringStream; 
+    stringStream.str(std::string());    
+    stringStream << std::setfill(fillChar);
+    stringStream << std::setw(width) << text;
+
+    return stringStream.str();
+}

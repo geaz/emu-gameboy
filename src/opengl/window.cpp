@@ -37,7 +37,6 @@ Window::Window(char* title, const int width, const int height) : title(title)
             glViewport(0, 0, width, height); 
             ResourceManager::ViewportWidth = width;
             ResourceManager::ViewportHeight = height;
-            Window::windowPointer->resize();
         });
     glfwSetKeyCallback(window, 
         [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -55,7 +54,31 @@ Window::Window(char* title, const int width, const int height) : title(title)
     ImGui::StyleColorsLight();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");    
-    io.Fonts->AddFontFromFileTTF("PixelType.ttf", 16.0f);
+    io.Fonts->AddFontFromFileTTF("FiraMono-Regular.ttf", 16.0f);
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.19f, 0.19f, 0.19f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.96f, 0.96f, 0.96f, 255.00f));
+    ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.78f, 0.78f, 0.78f, 0.40f));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.78f, 0.78f, 0.78f, 0.40f));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.78f, 0.78f, 0.78f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0.19f, 0.19f, 0.19f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImVec4(0.43f, 0.43f, 0.43f, 0.78f));
+    ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(0.19f, 0.19f, 0.19f, 0.60f));
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.78f, 0.78f, 0.78f, 0.40f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.86f, 0.86f, 0.86f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.78f, 0.78f, 0.78f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_ResizeGripHovered, ImVec4(0.86f, 0.86f, 0.86f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_ResizeGripActive, ImVec4(0.78f, 0.78f, 0.78f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.78f, 0.78f, 0.78f, 0.40f));
+    ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.74f, 0.74f, 0.74f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.86f, 0.86f, 0.86f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.86f, 0.86f, 0.86f, 0.62f));
+    ImGui::PushStyleColor(ImGuiCol_SeparatorHovered, ImVec4(0.00f, 0.45f, 1.00f, 0.78f));
+    ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0.78f, 0.78f, 0.78f, 0.40f));
+    ImGui::PushStyleColor(ImGuiCol_TabHovered, ImVec4(0.86f, 0.86f, 0.86f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_TabActive, ImVec4(0.78f, 0.78f, 0.78f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_TabUnfocusedActive, ImVec4(0.92f, 0.93f, 0.93f, 0.98f));
 }
 
 void Window::setClearColor(const GLfloat red, const GLfloat green, const GLfloat blue, const GLfloat alpha) const
@@ -76,10 +99,8 @@ void Window::startLoop()
       
         for(Screen* screen : screenVec)
         {
-            screen->render();
+            screen->update();
         }
-
-        ImGui::ShowDemoWindow(&show_demo_window);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -90,98 +111,9 @@ void Window::startLoop()
     glfwTerminate();
 }
 
-bool Window::addRowDefinition(const GridDefinition rowDefinition)
+void Window::addScreen(Screen* screen)
 {
-    bool result = true;
-    for(GridDefinition existingDef : rowDefinitionVec)
-    {
-        if(existingDef.index == rowDefinition.index)
-        {
-            result = false;
-            std::cout << "WARN::WINDOW::ROWINDEX_ALREADY_DEFINED";   
-            break;
-        }
-    }
-    if(result) rowDefinitionVec.push_back(rowDefinition);
-    std::sort(rowDefinitionVec.begin(), rowDefinitionVec.end());
-
-    return result;
-}
-
-bool Window::addColumnDefinition(const GridDefinition columnDefinition)
-{
-    bool result = true;
-    for(GridDefinition existingDef : columnDefinitionVec)
-    {
-        if(existingDef.index == columnDefinition.index)
-        {
-            result = false;
-            std::cout << "WARN::WINDOW::COLUMNINDEX_ALREADY_DEFINED";   
-            break;
-        }
-    }
-    if(result) columnDefinitionVec.push_back(columnDefinition);
-    std::sort(columnDefinitionVec.begin(), columnDefinitionVec.end());
-
-    return result;
-}
-
-bool Window::addScreen(Screen* screen)
-{
-    bool result = true;
-    
-    for(Screen* registeredScreen : screenVec)
-    {
-        if(registeredScreen->row == screen->row
-        && registeredScreen->column == screen->column)
-        {
-            result = false;
-            std::cout << "WARN::WINDOW::ROW_COLUMN_TAKEN";    
-            break;
-        }
-
-        if(screen->column >= (int) columnDefinitionVec.size()
-        || screen->row >= (int) rowDefinitionVec.size())
-        {
-            result = false;
-            std::cout << "WARN::WINDOW::ROW_OR_COLUMN_NOT_DEFINED";    
-            break;
-        }
-    }
-    screenVec.push_back(screen);        
-    resize();
-
-    return result;
-}
-
-void Window::resize() const
-{   
-    float onePercentageWidth = ResourceManager::ViewportWidth / 100.0f;
-    float onePercentageHeight = ResourceManager::ViewportHeight / 100.0f;
-
-    float rowStartY = 0;
-    for(int rowIndex = 0; rowIndex < (int) rowDefinitionVec.size(); rowIndex++)
-    {
-        GridDefinition rowDefinition = rowDefinitionVec.at(rowIndex);
-        float rowHeight = rowDefinition.sizePercentage * onePercentageHeight;
-
-        float columnStartX = 0;
-        std::vector<Screen*> rowScreenVec = getScreensInRow(rowIndex);
-        for(int colIndex = 0; colIndex < (int) rowScreenVec.size(); colIndex++)
-        {
-            GridDefinition columnDefinition = columnDefinitionVec.at(colIndex);
-            float columnWidth = columnDefinition.sizePercentage * onePercentageWidth;
-            
-            if(colIndex == (int) rowScreenVec.size() - 1 && columnWidth + columnStartX < ResourceManager::ViewportWidth)
-            {
-                columnWidth = ResourceManager::ViewportWidth - columnStartX;
-            }
-
-            rowScreenVec.at(colIndex)->setScreenCords(columnStartX, rowStartY, columnStartX + columnWidth, rowStartY + rowHeight);
-            columnStartX += columnWidth;
-        }        
-        rowStartY += rowHeight;
-    }
+    screenVec.push_back(screen);     
 }
 
 void Window::handleKeys(const int key, const int scancode, const int action, const int mods) const
@@ -190,21 +122,4 @@ void Window::handleKeys(const int key, const int scancode, const int action, con
     {
         screen->handleKeys(key, scancode, action, mods);
     }
-}
-
-std::vector<Screen*> Window::getScreensInRow(const int row) const
-{
-    std::vector<Screen*> screensInRow;
-    for(Screen* registeredScreen : screenVec)
-    {
-        if(registeredScreen->row == row)
-        {
-            screensInRow.push_back(registeredScreen);
-        }
-    }
-
-    auto columnCompare = [](Screen *s, Screen *s2) { return s->column < s2->column; };
-    std::sort(screensInRow.begin(), screensInRow.end(), columnCompare);    
-
-    return screensInRow;
 }

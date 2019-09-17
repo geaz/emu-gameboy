@@ -11,7 +11,7 @@
 class DisassemblerScreen : public Screen
 {   
     public:
-        DisassemblerScreen(int row, int column, Rom rom);
+        DisassemblerScreen(Rom rom);
 
         void update() override;
 

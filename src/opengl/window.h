@@ -18,20 +18,12 @@ class Window
         void setClearColor(const GLfloat red, const GLfloat green, const GLfloat blue, const GLfloat alpha) const;
         void startLoop();
 
-        bool Window::addRowDefinition(const GridDefinition rowDefinition);
-        bool Window::addColumnDefinition(const GridDefinition columnDefinition);
-        bool addScreen(Screen* screen);
-
-        std::vector<GridDefinition> columnDefinitionVec;
-        std::vector<GridDefinition> rowDefinitionVec;
+        void addScreen(Screen* screen);
 
         static Window* windowPointer;
 
     private:
-        void resize() const;
         void handleKeys(const int key, const int scancode, const int action, const int mods) const;
-        std::vector<Screen*> getScreensInRow(const int row) const;
-        int getMaxRowIndex() const;
 
         char* title;
         GLFWwindow* window;

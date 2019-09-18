@@ -2,135 +2,541 @@
 #ifndef INSTRUCTION_INCLUDE_H
 #define INSTRUCTION_INCLUDE_H
 
-#include "aritmetic/adc.h"
-#include "aritmetic/add.h"
-#include "aritmetic/and.h"
-#include "aritmetic/ccf.h"
-#include "aritmetic/cp.h"
-#include "aritmetic/cpl.h"
-#include "aritmetic/daa.h"
-#include "aritmetic/dec.h"
-#include "aritmetic/inc.h"
-#include "aritmetic/or.h"
-#include "aritmetic/sbc.h"
-#include "aritmetic/scf.h"
-#include "aritmetic/sub.h"
-#include "aritmetic/xor.h"
+#include <map>
+#include <functional>
 
-#include "branch/call.h"
-#include "branch/jp.h"
-#include "branch/jr.h"
-#include "branch/ret.h"
-#include "branch/reti.h"
-#include "branch/rst.h"
+#include "groups/aritmetic.h"
+#include "groups/branch.h"
+#include "groups/transfer.h"
+#include "groups/misc.h"
+#include "groups/prefix.h"
 
-#include "misc/di.h"
-#include "misc/ei.h"
-#include "misc/halt.h"
-#include "misc/nop.h"
-#include "misc/rla.h"
-#include "misc/rlca.h"
-#include "misc/rra.h"
-#include "misc/rrca.h"
-#include "misc/stop.h"
+typedef unsigned char (*OpcodeFunc)(Cpu*);
+struct Instruction
+{
+    unsigned char length;           // Byte Length of the Instruction
+    std::string mnemonic;           // Mnemonic of the Instruction
+    OpcodeFunc executeInterpreter;  // Function Pointer to execute interpreter mode for given opcode
+    //TODO OpcodeFunc? eecuteJit;   // Function Pointer to execute jit mode for given opcode
+};
 
-#include "transfer/ld.h"
-#include "transfer/ldh.h"
-#include "transfer/pop.h"
-#include "transfer/push.h"
-
-#include "instruction_group_prefix.h"
+struct ParsedInstruction
+{
+    int bytes;
+    int bytePosition;
+    Instruction definition;
+};
 
 class InstructionSet
 {
     public:
         InstructionSet()
         {  
-            Adc adc;
-            Add addInst;
-            And andInst;
-            Ccf ccf;
-            Cp cp;
-            Cpl cpl;
-            Daa daa;
-            Dec dec;
-            Inc inc;
-            Or or;
-            Sbc sbc;
-            Scf scf;
-            Sub sub;
-            Xor xor;
-
-            add(adc.group);
-            add(addInst.group);
-            add(andInst.group);
-            add(ccf.group);
-            add(cp.group);
-            add(cpl.group);
-            add(daa.group);
-            add(dec.group);
-            add(inc.group);
-            add(or.group);
-            add(sbc.group);
-            add(scf.group);
-            add(sub.group);
-            add(xor.group);
-
-            Call call;
-            Jp jp;
-            Jr jr;
-            Ret ret;
-            Reti reti;
-            Rst rst;
-
-            add(call.group);
-            add(jp.group);
-            add(jr.group);
-            add(ret.group);
-            add(reti.group);
-            add(rst.group);
-
-            Di di;         
-            Ei ei;  
-            Halt halt; 
-            Nop nop;
-            Rla rla;
-            Rlca rlca;
-            Rra rra;
-            Rrca rrca;
-            Stop stop;  
-
-            add(di.group);
-            add(ei.group);
-            add(halt.group);
-            add(nop.group);
-            add(rla.group);
-            add(rlca.group);
-            add(rra.group);
-            add(rrca.group);
-            add(stop.group);
-
-            Ld ld;
-            Ldh ldh;
-            Pop pop;
-            Push push;
-
-            add(ld.group);
-            add(ldh.group);
-            add(pop.group);
-            add(push.group);
-
-            add(instructionGroupPrefix.group);
+            set[0x00] = { 1, "NOP", &Nop::Nop00 };
+            set[0x07] = { 1, "RLCA", &Rlca::Rlca07 };
+            set[0x0f] = { 1, "RRCA", &Rrca::Rrca0F };
+            set[0x10] = { 2, "STOP 0", &Stop::Stop10 };
+            set[0x17] = { 1, "RLA", &Rla::Rla17 };
+            set[0x1f] = { 1, "RRA", &Rra::Rra1F };
+            set[0x76] = { 1, "HALT", &Halt::Halt76 };
+            set[0xf3] = { 1, "DI", &Di::DiF3 };
+            set[0xfb] = { 1, "EI", &Ei::EiFB };
+            set[0x01] = { 3, "LD BC,d16", &Ld::Ld01 };
+            set[0x02] = { 1, "LD (BC),A", &Ld::Ld02 };
+            set[0x06] = { 2, "LD B,d8", &Ld::Ld06 };
+            set[0x08] = { 3, "LD (a16),SP", &Ld::Ld08 };
+            set[0x0a] = { 1, "LD A,(BC)", &Ld::Ld0A };
+            set[0x0e] = { 2, "LD C,d8", &Ld::Ld0E };
+            set[0x11] = { 3, "LD DE,d16", &Ld::Ld11 };
+            set[0x12] = { 1, "LD (DE),A", &Ld::Ld12 };
+            set[0x16] = { 2, "LD D,d8", &Ld::Ld16 };
+            set[0x1a] = { 1, "LD A,(DE)", &Ld::Ld1A };
+            set[0x1e] = { 2, "LD E,d8", &Ld::Ld1E };
+            set[0x21] = { 3, "LD HL,d16", &Ld::Ld21 };
+            set[0x22] = { 1, "LD (HL+),A", &Ld::Ld22 };
+            set[0x26] = { 2, "LD H,d8", &Ld::Ld26 };
+            set[0x2a] = { 1, "LD A,(HL+)", &Ld::Ld2A };
+            set[0x2e] = { 2, "LD L,d8", &Ld::Ld2E };
+            set[0x31] = { 3, "LD SP,d16", &Ld::Ld31 };
+            set[0x32] = { 1, "LD (HL-),A", &Ld::Ld32 };
+            set[0x36] = { 2, "LD (HL),d8", &Ld::Ld36 };
+            set[0x3a] = { 1, "LD A,(HL-)", &Ld::Ld3A };
+            set[0x3e] = { 2, "LD A,d8", &Ld::Ld3E };
+            set[0x40] = { 1, "LD B,B", &Ld::Ld40 };
+            set[0x41] = { 1, "LD B,C", &Ld::Ld41 };
+            set[0x42] = { 1, "LD B,D", &Ld::Ld42 };
+            set[0x43] = { 1, "LD B,E", &Ld::Ld43 };
+            set[0x44] = { 1, "LD B,H", &Ld::Ld44 };
+            set[0x45] = { 1, "LD B,L", &Ld::Ld45 };
+            set[0x46] = { 1, "LD B,(HL)", &Ld::Ld46 };
+            set[0x47] = { 1, "LD B,A", &Ld::Ld47 };
+            set[0x48] = { 1, "LD C,B", &Ld::Ld48 };
+            set[0x49] = { 1, "LD C,C", &Ld::Ld49 };
+            set[0x4a] = { 1, "LD C,D", &Ld::Ld4A };
+            set[0x4b] = { 1, "LD C,E", &Ld::Ld4B };
+            set[0x4c] = { 1, "LD C,H", &Ld::Ld4C };
+            set[0x4d] = { 1, "LD C,L", &Ld::Ld4D };
+            set[0x4e] = { 1, "LD C,(HL)", &Ld::Ld4E };
+            set[0x4f] = { 1, "LD C,A", &Ld::Ld4F };
+            set[0x50] = { 1, "LD D,B", &Ld::Ld50 };
+            set[0x51] = { 1, "LD D,C", &Ld::Ld51 };
+            set[0x52] = { 1, "LD D,D", &Ld::Ld52 };
+            set[0x53] = { 1, "LD D,E", &Ld::Ld53 };
+            set[0x54] = { 1, "LD D,H", &Ld::Ld54 };
+            set[0x55] = { 1, "LD D,L", &Ld::Ld55 };
+            set[0x56] = { 1, "LD D,(HL)", &Ld::Ld56 };
+            set[0x57] = { 1, "LD D,A", &Ld::Ld57 };
+            set[0x58] = { 1, "LD E,B", &Ld::Ld58 };
+            set[0x59] = { 1, "LD E,C", &Ld::Ld59 };
+            set[0x5a] = { 1, "LD E,D", &Ld::Ld5A };
+            set[0x5b] = { 1, "LD E,E", &Ld::Ld5B };
+            set[0x5c] = { 1, "LD E,H", &Ld::Ld5C };
+            set[0x5d] = { 1, "LD E,L", &Ld::Ld5D };
+            set[0x5e] = { 1, "LD E,(HL)", &Ld::Ld5E };
+            set[0x5f] = { 1, "LD E,A", &Ld::Ld5F };
+            set[0x60] = { 1, "LD H,B", &Ld::Ld60 };
+            set[0x61] = { 1, "LD H,C", &Ld::Ld61 };
+            set[0x62] = { 1, "LD H,D", &Ld::Ld62 };
+            set[0x63] = { 1, "LD H,E", &Ld::Ld63 };
+            set[0x64] = { 1, "LD H,H", &Ld::Ld64 };
+            set[0x65] = { 1, "LD H,L", &Ld::Ld65 };
+            set[0x66] = { 1, "LD H,(HL)", &Ld::Ld66 };
+            set[0x67] = { 1, "LD H,A", &Ld::Ld67 };
+            set[0x68] = { 1, "LD L,B", &Ld::Ld68 };
+            set[0x69] = { 1, "LD L,C", &Ld::Ld69 };
+            set[0x6a] = { 1, "LD L,D", &Ld::Ld6A };
+            set[0x6b] = { 1, "LD L,E", &Ld::Ld6B };
+            set[0x6c] = { 1, "LD L,H", &Ld::Ld6C };
+            set[0x6d] = { 1, "LD L,L", &Ld::Ld6D };
+            set[0x6e] = { 1, "LD L,(HL)", &Ld::Ld6E };
+            set[0x6f] = { 1, "LD L,A", &Ld::Ld6F };
+            set[0x70] = { 1, "LD (HL),B", &Ld::Ld70 };
+            set[0x71] = { 1, "LD (HL),C", &Ld::Ld71 };
+            set[0x72] = { 1, "LD (HL),D", &Ld::Ld72 };
+            set[0x73] = { 1, "LD (HL),E", &Ld::Ld73 };
+            set[0x74] = { 1, "LD (HL),H", &Ld::Ld74 };
+            set[0x75] = { 1, "LD (HL),L", &Ld::Ld75 };
+            set[0x77] = { 1, "LD (HL),A", &Ld::Ld77 };
+            set[0x78] = { 1, "LD A,B", &Ld::Ld78 };
+            set[0x79] = { 1, "LD A,C", &Ld::Ld79 };
+            set[0x7a] = { 1, "LD A,D", &Ld::Ld7A };
+            set[0x7b] = { 1, "LD A,E", &Ld::Ld7B };
+            set[0x7c] = { 1, "LD A,H", &Ld::Ld7C };
+            set[0x7d] = { 1, "LD A,L", &Ld::Ld7D };
+            set[0x7e] = { 1, "LD A,(HL)", &Ld::Ld7E };
+            set[0x7f] = { 1, "LD A,A", &Ld::Ld7F };
+            set[0xe2] = { 2, "LD (C),A", &Ld::LdE2 };
+            set[0xea] = { 3, "LD (a16),A", &Ld::LdEA };
+            set[0xf2] = { 2, "LD A,(C)", &Ld::LdF2 };
+            set[0xf8] = { 2, "LD HL,SP+r8", &Ld::LdF8 };
+            set[0xf9] = { 1, "LD SP,HL", &Ld::LdF9 };
+            set[0xfa] = { 3, "LD A,(a16)", &Ld::LdFA };
+            set[0xc1] = { 1, "POP BC", &Pop::PopC1 };
+            set[0xd1] = { 1, "POP DE", &Pop::PopD1 };
+            set[0xe1] = { 1, "POP HL", &Pop::PopE1 };
+            set[0xf1] = { 1, "POP AF", &Pop::PopF1 };
+            set[0xc5] = { 1, "PUSH BC", &Push::PushC5 };
+            set[0xd5] = { 1, "PUSH DE", &Push::PushD5 };
+            set[0xe5] = { 1, "PUSH HL", &Push::PushE5 };
+            set[0xf5] = { 1, "PUSH AF", &Push::PushF5 };
+            set[0xe0] = { 2, "LDH (a8),A", &Ldh::LdhE0 };
+            set[0xf0] = { 2, "LDH A,(a8)", &Ldh::LdhF0 };
+            set[0x03] = { 1, "INC BC", &Inc::Inc03 };
+            set[0x04] = { 1, "INC B", &Inc::Inc04 };
+            set[0x0c] = { 1, "INC C", &Inc::Inc0C };
+            set[0x13] = { 1, "INC DE", &Inc::Inc13 };
+            set[0x14] = { 1, "INC D", &Inc::Inc14 };
+            set[0x1c] = { 1, "INC E", &Inc::Inc1C };
+            set[0x23] = { 1, "INC HL", &Inc::Inc23 };
+            set[0x24] = { 1, "INC H", &Inc::Inc24 };
+            set[0x2c] = { 1, "INC L", &Inc::Inc2C };
+            set[0x33] = { 1, "INC SP", &Inc::Inc33 };
+            set[0x34] = { 1, "INC (HL)", &Inc::Inc34 };
+            set[0x3c] = { 1, "INC A", &Inc::Inc3C };
+            set[0x05] = { 1, "DEC B", &Dec::Dec05 };
+            set[0x0b] = { 1, "DEC BC", &Dec::Dec0B };
+            set[0x0d] = { 1, "DEC C", &Dec::Dec0D };
+            set[0x15] = { 1, "DEC D", &Dec::Dec15 };
+            set[0x1b] = { 1, "DEC DE", &Dec::Dec1B };
+            set[0x1d] = { 1, "DEC E", &Dec::Dec1D };
+            set[0x25] = { 1, "DEC H", &Dec::Dec25 };
+            set[0x2b] = { 1, "DEC HL", &Dec::Dec2B };
+            set[0x2d] = { 1, "DEC L", &Dec::Dec2D };
+            set[0x35] = { 1, "DEC (HL)", &Dec::Dec35 };
+            set[0x3b] = { 1, "DEC SP", &Dec::Dec3B };
+            set[0x3d] = { 1, "DEC A", &Dec::Dec3D };
+            set[0x09] = { 1, "ADD HL,BC", &Add::Add09 };
+            set[0x19] = { 1, "ADD HL,DE", &Add::Add19 };
+            set[0x29] = { 1, "ADD HL,HL", &Add::Add29 };
+            set[0x39] = { 1, "ADD HL,SP", &Add::Add39 };
+            set[0x80] = { 1, "ADD A,B", &Add::Add80 };
+            set[0x81] = { 1, "ADD A,C", &Add::Add81 };
+            set[0x82] = { 1, "ADD A,D", &Add::Add82 };
+            set[0x83] = { 1, "ADD A,E", &Add::Add83 };
+            set[0x84] = { 1, "ADD A,H", &Add::Add84 };
+            set[0x85] = { 1, "ADD A,L", &Add::Add85 };
+            set[0x86] = { 1, "ADD A,(HL)", &Add::Add86 };
+            set[0x87] = { 1, "ADD A,A", &Add::Add87 };
+            set[0xc6] = { 2, "ADD A,d8", &Add::AddC6 };
+            set[0xe8] = { 2, "ADD SP,r8", &Add::AddE8 };
+            set[0x27] = { 1, "DAA", &Daa::Daa27 };
+            set[0x2f] = { 1, "CPL", &Cpl::Cpl2F };
+            set[0x37] = { 1, "SCF", &Scf::Scf37 };
+            set[0x3f] = { 1, "CCF", &Ccf::Ccf3F };
+            set[0x88] = { 1, "ADC A,B", &Adc::Adc88 };
+            set[0x89] = { 1, "ADC A,C", &Adc::Adc89 };
+            set[0x8a] = { 1, "ADC A,D", &Adc::Adc8A };
+            set[0x8b] = { 1, "ADC A,E", &Adc::Adc8B };
+            set[0x8c] = { 1, "ADC A,H", &Adc::Adc8C };
+            set[0x8d] = { 1, "ADC A,L", &Adc::Adc8D };
+            set[0x8e] = { 1, "ADC A,(HL)", &Adc::Adc8E };
+            set[0x8f] = { 1, "ADC A,A", &Adc::Adc8F };
+            set[0xce] = { 2, "ADC A,d8", &Adc::AdcCE };
+            set[0x90] = { 1, "SUB B", &Sub::Sub90 };
+            set[0x91] = { 1, "SUB C", &Sub::Sub91 };
+            set[0x92] = { 1, "SUB D", &Sub::Sub92 };
+            set[0x93] = { 1, "SUB E", &Sub::Sub93 };
+            set[0x94] = { 1, "SUB H", &Sub::Sub94 };
+            set[0x95] = { 1, "SUB L", &Sub::Sub95 };
+            set[0x96] = { 1, "SUB (HL)", &Sub::Sub96 };
+            set[0x97] = { 1, "SUB A", &Sub::Sub97 };
+            set[0xd6] = { 2, "SUB d8", &Sub::SubD6 };
+            set[0x98] = { 1, "SBC A,B", &Sbc::Sbc98 };
+            set[0x99] = { 1, "SBC A,C", &Sbc::Sbc99 };
+            set[0x9a] = { 1, "SBC A,D", &Sbc::Sbc9A };
+            set[0x9b] = { 1, "SBC A,E", &Sbc::Sbc9B };
+            set[0x9c] = { 1, "SBC A,H", &Sbc::Sbc9C };
+            set[0x9d] = { 1, "SBC A,L", &Sbc::Sbc9D };
+            set[0x9e] = { 1, "SBC A,(HL)", &Sbc::Sbc9E };
+            set[0x9f] = { 1, "SBC A,A", &Sbc::Sbc9F };
+            set[0xde] = { 2, "SBC A,d8", &Sbc::SbcDE };
+            set[0xa0] = { 1, "AND B", &And::AndA0 };
+            set[0xa1] = { 1, "AND C", &And::AndA1 };
+            set[0xa2] = { 1, "AND D", &And::AndA2 };
+            set[0xa3] = { 1, "AND E", &And::AndA3 };
+            set[0xa4] = { 1, "AND H", &And::AndA4 };
+            set[0xa5] = { 1, "AND L", &And::AndA5 };
+            set[0xa6] = { 1, "AND (HL)", &And::AndA6 };
+            set[0xa7] = { 1, "AND A", &And::AndA7 };
+            set[0xe6] = { 2, "AND d8", &And::AndE6 };
+            set[0xa8] = { 1, "XOR B", &Xor::XorA8 };
+            set[0xa9] = { 1, "XOR C", &Xor::XorA9 };
+            set[0xaa] = { 1, "XOR D", &Xor::XorAA };
+            set[0xab] = { 1, "XOR E", &Xor::XorAB };
+            set[0xac] = { 1, "XOR H", &Xor::XorAC };
+            set[0xad] = { 1, "XOR L", &Xor::XorAD };
+            set[0xae] = { 1, "XOR (HL)", &Xor::XorAE };
+            set[0xaf] = { 1, "XOR A", &Xor::XorAF };
+            set[0xee] = { 2, "XOR d8", &Xor::XorEE };
+            set[0xb0] = { 1, "OR B", &Or::OrB0 };
+            set[0xb1] = { 1, "OR C", &Or::OrB1 };
+            set[0xb2] = { 1, "OR D", &Or::OrB2 };
+            set[0xb3] = { 1, "OR E", &Or::OrB3 };
+            set[0xb4] = { 1, "OR H", &Or::OrB4 };
+            set[0xb5] = { 1, "OR L", &Or::OrB5 };
+            set[0xb6] = { 1, "OR (HL)", &Or::OrB6 };
+            set[0xb7] = { 1, "OR A", &Or::OrB7 };
+            set[0xf6] = { 2, "OR d8", &Or::OrF6 };
+            set[0xb8] = { 1, "CP B", &Cp::CpB8 };
+            set[0xb9] = { 1, "CP C", &Cp::CpB9 };
+            set[0xba] = { 1, "CP D", &Cp::CpBA };
+            set[0xbb] = { 1, "CP E", &Cp::CpBB };
+            set[0xbc] = { 1, "CP H", &Cp::CpBC };
+            set[0xbd] = { 1, "CP L", &Cp::CpBD };
+            set[0xbe] = { 1, "CP (HL)", &Cp::CpBE };
+            set[0xbf] = { 1, "CP A", &Cp::CpBF };
+            set[0xfe] = { 2, "CP d8", &Cp::CpFE };
+            set[0x18] = { 2, "JR r8", &Jr::Jr18 };
+            set[0x20] = { 2, "JR NZ,r8", &Jr::Jr20 };
+            set[0x28] = { 2, "JR Z,r8", &Jr::Jr28 };
+            set[0x30] = { 2, "JR NC,r8", &Jr::Jr30 };
+            set[0x38] = { 2, "JR C,r8", &Jr::Jr38 };
+            set[0xc0] = { 1, "RET NZ", &Ret::RetC0 };
+            set[0xc8] = { 1, "RET Z", &Ret::RetC8 };
+            set[0xc9] = { 1, "RET", &Ret::RetC9 };
+            set[0xd0] = { 1, "RET NC", &Ret::RetD0 };
+            set[0xd8] = { 1, "RET C", &Ret::RetD8 };
+            set[0xc2] = { 3, "JP NZ,a16", &Jp::JpC2 };
+            set[0xc3] = { 3, "JP a16", &Jp::JpC3 };
+            set[0xca] = { 3, "JP Z,a16", &Jp::JpCA };
+            set[0xd2] = { 3, "JP NC,a16", &Jp::JpD2 };
+            set[0xda] = { 3, "JP C,a16", &Jp::JpDA };
+            set[0xe9] = { 1, "JP (HL)", &Jp::JpE9 };
+            set[0xc4] = { 3, "CALL NZ,a16", &Call::CallC4 };
+            set[0xcc] = { 3, "CALL Z,a16", &Call::CallCC };
+            set[0xcd] = { 3, "CALL a16", &Call::CallCD };
+            set[0xd4] = { 3, "CALL NC,a16", &Call::CallD4 };
+            set[0xdc] = { 3, "CALL C,a16", &Call::CallDC };
+            set[0xc7] = { 1, "RST 00H", &Rst::RstC7 };
+            set[0xcf] = { 1, "RST 08H", &Rst::RstCF };
+            set[0xd7] = { 1, "RST 10H", &Rst::RstD7 };
+            set[0xdf] = { 1, "RST 18H", &Rst::RstDF };
+            set[0xe7] = { 1, "RST 20H", &Rst::RstE7 };
+            set[0xef] = { 1, "RST 28H", &Rst::RstEF };
+            set[0xf7] = { 1, "RST 30H", &Rst::RstF7 };
+            set[0xff] = { 1, "RST 38H", &Rst::RstFF };
+            set[0xd9] = { 1, "RETI", &Reti::RetiD9 };
+     
+            prefixSet[0x00] = { 2, "RLC B", &Rlc::Rlc00 };
+            prefixSet[0x01] = { 2, "RLC C", &Rlc::Rlc01 };
+            prefixSet[0x02] = { 2, "RLC D", &Rlc::Rlc02 };
+            prefixSet[0x03] = { 2, "RLC E", &Rlc::Rlc03 };
+            prefixSet[0x04] = { 2, "RLC H", &Rlc::Rlc04 };
+            prefixSet[0x05] = { 2, "RLC L", &Rlc::Rlc05 };
+            prefixSet[0x06] = { 2, "RLC (HL)", &Rlc::Rlc06 };
+            prefixSet[0x07] = { 2, "RLC A", &Rlc::Rlc07 };
+            prefixSet[0x08] = { 2, "RRC B", &Rrc::Rrc08 };
+            prefixSet[0x09] = { 2, "RRC C", &Rrc::Rrc09 };
+            prefixSet[0x0a] = { 2, "RRC D", &Rrc::Rrc0A };
+            prefixSet[0x0b] = { 2, "RRC E", &Rrc::Rrc0B };
+            prefixSet[0x0c] = { 2, "RRC H", &Rrc::Rrc0C };
+            prefixSet[0x0d] = { 2, "RRC L", &Rrc::Rrc0D };
+            prefixSet[0x0e] = { 2, "RRC (HL)", &Rrc::Rrc0E };
+            prefixSet[0x0f] = { 2, "RRC A", &Rrc::Rrc0F };
+            prefixSet[0x10] = { 2, "RL B", &Rl::Rl10 };
+            prefixSet[0x11] = { 2, "RL C", &Rl::Rl11 };
+            prefixSet[0x12] = { 2, "RL D", &Rl::Rl12 };
+            prefixSet[0x13] = { 2, "RL E", &Rl::Rl13 };
+            prefixSet[0x14] = { 2, "RL H", &Rl::Rl14 };
+            prefixSet[0x15] = { 2, "RL L", &Rl::Rl15 };
+            prefixSet[0x16] = { 2, "RL (HL)", &Rl::Rl16 };
+            prefixSet[0x17] = { 2, "RL A", &Rl::Rl17 };
+            prefixSet[0x18] = { 2, "RR B", &Rr::Rr18 };
+            prefixSet[0x19] = { 2, "RR C", &Rr::Rr19 };
+            prefixSet[0x1a] = { 2, "RR D", &Rr::Rr1A };
+            prefixSet[0x1b] = { 2, "RR E", &Rr::Rr1B };
+            prefixSet[0x1c] = { 2, "RR H", &Rr::Rr1C };
+            prefixSet[0x1d] = { 2, "RR L", &Rr::Rr1D };
+            prefixSet[0x1e] = { 2, "RR (HL)", &Rr::Rr1E };
+            prefixSet[0x1f] = { 2, "RR A", &Rr::Rr1F };
+            prefixSet[0x20] = { 2, "SLA B", &Sla::Sla20 };
+            prefixSet[0x21] = { 2, "SLA C", &Sla::Sla21 };
+            prefixSet[0x22] = { 2, "SLA D", &Sla::Sla22 };
+            prefixSet[0x23] = { 2, "SLA E", &Sla::Sla23 };
+            prefixSet[0x24] = { 2, "SLA H", &Sla::Sla24 };
+            prefixSet[0x25] = { 2, "SLA L", &Sla::Sla25 };
+            prefixSet[0x26] = { 2, "SLA (HL)", &Sla::Sla26 };
+            prefixSet[0x27] = { 2, "SLA A", &Sla::Sla27 };
+            prefixSet[0x28] = { 2, "SRA B", &Sra::Sra28 };
+            prefixSet[0x29] = { 2, "SRA C", &Sra::Sra29 };
+            prefixSet[0x2a] = { 2, "SRA D", &Sra::Sra2A };
+            prefixSet[0x2b] = { 2, "SRA E", &Sra::Sra2B };
+            prefixSet[0x2c] = { 2, "SRA H", &Sra::Sra2C };
+            prefixSet[0x2d] = { 2, "SRA L", &Sra::Sra2D };
+            prefixSet[0x2e] = { 2, "SRA (HL)", &Sra::Sra2E };
+            prefixSet[0x2f] = { 2, "SRA A", &Sra::Sra2F };
+            prefixSet[0x30] = { 2, "SWAP B", &Swap::Swap30 };
+            prefixSet[0x31] = { 2, "SWAP C", &Swap::Swap31 };
+            prefixSet[0x32] = { 2, "SWAP D", &Swap::Swap32 };
+            prefixSet[0x33] = { 2, "SWAP E", &Swap::Swap33 };
+            prefixSet[0x34] = { 2, "SWAP H", &Swap::Swap34 };
+            prefixSet[0x35] = { 2, "SWAP L", &Swap::Swap35 };
+            prefixSet[0x36] = { 2, "SWAP (HL)", &Swap::Swap36 };
+            prefixSet[0x37] = { 2, "SWAP A", &Swap::Swap37 };
+            prefixSet[0x38] = { 2, "SRL B", &Srl::Srl38 };
+            prefixSet[0x39] = { 2, "SRL C", &Srl::Srl39 };
+            prefixSet[0x3a] = { 2, "SRL D", &Srl::Srl3A };
+            prefixSet[0x3b] = { 2, "SRL E", &Srl::Srl3B };
+            prefixSet[0x3c] = { 2, "SRL H", &Srl::Srl3C };
+            prefixSet[0x3d] = { 2, "SRL L", &Srl::Srl3D };
+            prefixSet[0x3e] = { 2, "SRL (HL)", &Srl::Srl3E };
+            prefixSet[0x3f] = { 2, "SRL A", &Srl::Srl3F };
+            prefixSet[0x40] = { 2, "BIT 0,B", &Bit::Bit40 };
+            prefixSet[0x41] = { 2, "BIT 0,C", &Bit::Bit41 };
+            prefixSet[0x42] = { 2, "BIT 0,D", &Bit::Bit42 };
+            prefixSet[0x43] = { 2, "BIT 0,E", &Bit::Bit43 };
+            prefixSet[0x44] = { 2, "BIT 0,H", &Bit::Bit44 };
+            prefixSet[0x45] = { 2, "BIT 0,L", &Bit::Bit45 };
+            prefixSet[0x46] = { 2, "BIT 0,(HL)", &Bit::Bit46 };
+            prefixSet[0x47] = { 2, "BIT 0,A", &Bit::Bit47 };
+            prefixSet[0x48] = { 2, "BIT 1,B", &Bit::Bit48 };
+            prefixSet[0x49] = { 2, "BIT 1,C", &Bit::Bit49 };
+            prefixSet[0x4a] = { 2, "BIT 1,D", &Bit::Bit4A };
+            prefixSet[0x4b] = { 2, "BIT 1,E", &Bit::Bit4B };
+            prefixSet[0x4c] = { 2, "BIT 1,H", &Bit::Bit4C };
+            prefixSet[0x4d] = { 2, "BIT 1,L", &Bit::Bit4D };
+            prefixSet[0x4e] = { 2, "BIT 1,(HL)", &Bit::Bit4E };
+            prefixSet[0x4f] = { 2, "BIT 1,A", &Bit::Bit4F };
+            prefixSet[0x50] = { 2, "BIT 2,B", &Bit::Bit50 };
+            prefixSet[0x51] = { 2, "BIT 2,C", &Bit::Bit51 };
+            prefixSet[0x52] = { 2, "BIT 2,D", &Bit::Bit52 };
+            prefixSet[0x53] = { 2, "BIT 2,E", &Bit::Bit53 };
+            prefixSet[0x54] = { 2, "BIT 2,H", &Bit::Bit54 };
+            prefixSet[0x55] = { 2, "BIT 2,L", &Bit::Bit55 };
+            prefixSet[0x56] = { 2, "BIT 2,(HL)", &Bit::Bit56 };
+            prefixSet[0x57] = { 2, "BIT 2,A", &Bit::Bit57 };
+            prefixSet[0x58] = { 2, "BIT 3,B", &Bit::Bit58 };
+            prefixSet[0x59] = { 2, "BIT 3,C", &Bit::Bit59 };
+            prefixSet[0x5a] = { 2, "BIT 3,D", &Bit::Bit5A };
+            prefixSet[0x5b] = { 2, "BIT 3,E", &Bit::Bit5B };
+            prefixSet[0x5c] = { 2, "BIT 3,H", &Bit::Bit5C };
+            prefixSet[0x5d] = { 2, "BIT 3,L", &Bit::Bit5D };
+            prefixSet[0x5e] = { 2, "BIT 3,(HL)", &Bit::Bit5E };
+            prefixSet[0x5f] = { 2, "BIT 3,A", &Bit::Bit5F };
+            prefixSet[0x60] = { 2, "BIT 4,B", &Bit::Bit60 };
+            prefixSet[0x61] = { 2, "BIT 4,C", &Bit::Bit61 };
+            prefixSet[0x62] = { 2, "BIT 4,D", &Bit::Bit62 };
+            prefixSet[0x63] = { 2, "BIT 4,E", &Bit::Bit63 };
+            prefixSet[0x64] = { 2, "BIT 4,H", &Bit::Bit64 };
+            prefixSet[0x65] = { 2, "BIT 4,L", &Bit::Bit65 };
+            prefixSet[0x66] = { 2, "BIT 4,(HL)", &Bit::Bit66 };
+            prefixSet[0x67] = { 2, "BIT 4,A", &Bit::Bit67 };
+            prefixSet[0x68] = { 2, "BIT 5,B", &Bit::Bit68 };
+            prefixSet[0x69] = { 2, "BIT 5,C", &Bit::Bit69 };
+            prefixSet[0x6a] = { 2, "BIT 5,D", &Bit::Bit6A };
+            prefixSet[0x6b] = { 2, "BIT 5,E", &Bit::Bit6B };
+            prefixSet[0x6c] = { 2, "BIT 5,H", &Bit::Bit6C };
+            prefixSet[0x6d] = { 2, "BIT 5,L", &Bit::Bit6D };
+            prefixSet[0x6e] = { 2, "BIT 5,(HL)", &Bit::Bit6E };
+            prefixSet[0x6f] = { 2, "BIT 5,A", &Bit::Bit6F };
+            prefixSet[0x70] = { 2, "BIT 6,B", &Bit::Bit70 };
+            prefixSet[0x71] = { 2, "BIT 6,C", &Bit::Bit71 };
+            prefixSet[0x72] = { 2, "BIT 6,D", &Bit::Bit72 };
+            prefixSet[0x73] = { 2, "BIT 6,E", &Bit::Bit73 };
+            prefixSet[0x74] = { 2, "BIT 6,H", &Bit::Bit74 };
+            prefixSet[0x75] = { 2, "BIT 6,L", &Bit::Bit75 };
+            prefixSet[0x76] = { 2, "BIT 6,(HL)", &Bit::Bit76 };
+            prefixSet[0x77] = { 2, "BIT 6,A", &Bit::Bit77 };
+            prefixSet[0x78] = { 2, "BIT 7,B", &Bit::Bit78 };
+            prefixSet[0x79] = { 2, "BIT 7,C", &Bit::Bit79 };
+            prefixSet[0x7a] = { 2, "BIT 7,D", &Bit::Bit7A };
+            prefixSet[0x7b] = { 2, "BIT 7,E", &Bit::Bit7B };
+            prefixSet[0x7c] = { 2, "BIT 7,H", &Bit::Bit7C };
+            prefixSet[0x7d] = { 2, "BIT 7,L", &Bit::Bit7D };
+            prefixSet[0x7e] = { 2, "BIT 7,(HL)", &Bit::Bit7E };
+            prefixSet[0x7f] = { 2, "BIT 7,A", &Bit::Bit7F };
+            prefixSet[0x80] = { 2, "RES 0,B", &Res::Res80 };
+            prefixSet[0x81] = { 2, "RES 0,C", &Res::Res81 };
+            prefixSet[0x82] = { 2, "RES 0,D", &Res::Res82 };
+            prefixSet[0x83] = { 2, "RES 0,E", &Res::Res83 };
+            prefixSet[0x84] = { 2, "RES 0,H", &Res::Res84 };
+            prefixSet[0x85] = { 2, "RES 0,L", &Res::Res85 };
+            prefixSet[0x86] = { 2, "RES 0,(HL)", &Res::Res86 };
+            prefixSet[0x87] = { 2, "RES 0,A", &Res::Res87 };
+            prefixSet[0x88] = { 2, "RES 1,B", &Res::Res88 };
+            prefixSet[0x89] = { 2, "RES 1,C", &Res::Res89 };
+            prefixSet[0x8a] = { 2, "RES 1,D", &Res::Res8A };
+            prefixSet[0x8b] = { 2, "RES 1,E", &Res::Res8B };
+            prefixSet[0x8c] = { 2, "RES 1,H", &Res::Res8C };
+            prefixSet[0x8d] = { 2, "RES 1,L", &Res::Res8D };
+            prefixSet[0x8e] = { 2, "RES 1,(HL)", &Res::Res8E };
+            prefixSet[0x8f] = { 2, "RES 1,A", &Res::Res8F };
+            prefixSet[0x90] = { 2, "RES 2,B", &Res::Res90 };
+            prefixSet[0x91] = { 2, "RES 2,C", &Res::Res91 };
+            prefixSet[0x92] = { 2, "RES 2,D", &Res::Res92 };
+            prefixSet[0x93] = { 2, "RES 2,E", &Res::Res93 };
+            prefixSet[0x94] = { 2, "RES 2,H", &Res::Res94 };
+            prefixSet[0x95] = { 2, "RES 2,L", &Res::Res95 };
+            prefixSet[0x96] = { 2, "RES 2,(HL)", &Res::Res96 };
+            prefixSet[0x97] = { 2, "RES 2,A", &Res::Res97 };
+            prefixSet[0x98] = { 2, "RES 3,B", &Res::Res98 };
+            prefixSet[0x99] = { 2, "RES 3,C", &Res::Res99 };
+            prefixSet[0x9a] = { 2, "RES 3,D", &Res::Res9A };
+            prefixSet[0x9b] = { 2, "RES 3,E", &Res::Res9B };
+            prefixSet[0x9c] = { 2, "RES 3,H", &Res::Res9C };
+            prefixSet[0x9d] = { 2, "RES 3,L", &Res::Res9D };
+            prefixSet[0x9e] = { 2, "RES 3,(HL)", &Res::Res9E };
+            prefixSet[0x9f] = { 2, "RES 3,A", &Res::Res9F };
+            prefixSet[0xa0] = { 2, "RES 4,B", &Res::ResA0 };
+            prefixSet[0xa1] = { 2, "RES 4,C", &Res::ResA1 };
+            prefixSet[0xa2] = { 2, "RES 4,D", &Res::ResA2 };
+            prefixSet[0xa3] = { 2, "RES 4,E", &Res::ResA3 };
+            prefixSet[0xa4] = { 2, "RES 4,H", &Res::ResA4 };
+            prefixSet[0xa5] = { 2, "RES 4,L", &Res::ResA5 };
+            prefixSet[0xa6] = { 2, "RES 4,(HL)", &Res::ResA6 };
+            prefixSet[0xa7] = { 2, "RES 4,A", &Res::ResA7 };
+            prefixSet[0xa8] = { 2, "RES 5,B", &Res::ResA8 };
+            prefixSet[0xa9] = { 2, "RES 5,C", &Res::ResA9 };
+            prefixSet[0xaa] = { 2, "RES 5,D", &Res::ResAA };
+            prefixSet[0xab] = { 2, "RES 5,E", &Res::ResAB };
+            prefixSet[0xac] = { 2, "RES 5,H", &Res::ResAC };
+            prefixSet[0xad] = { 2, "RES 5,L", &Res::ResAD };
+            prefixSet[0xae] = { 2, "RES 5,(HL)", &Res::ResAE };
+            prefixSet[0xaf] = { 2, "RES 5,A", &Res::ResAF };
+            prefixSet[0xb0] = { 2, "RES 6,B", &Res::ResB0 };
+            prefixSet[0xb1] = { 2, "RES 6,C", &Res::ResB1 };
+            prefixSet[0xb2] = { 2, "RES 6,D", &Res::ResB2 };
+            prefixSet[0xb3] = { 2, "RES 6,E", &Res::ResB3 };
+            prefixSet[0xb4] = { 2, "RES 6,H", &Res::ResB4 };
+            prefixSet[0xb5] = { 2, "RES 6,L", &Res::ResB5 };
+            prefixSet[0xb6] = { 2, "RES 6,(HL)", &Res::ResB6 };
+            prefixSet[0xb7] = { 2, "RES 6,A", &Res::ResB7 };
+            prefixSet[0xb8] = { 2, "RES 7,B", &Res::ResB8 };
+            prefixSet[0xb9] = { 2, "RES 7,C", &Res::ResB9 };
+            prefixSet[0xba] = { 2, "RES 7,D", &Res::ResBA };
+            prefixSet[0xbb] = { 2, "RES 7,E", &Res::ResBB };
+            prefixSet[0xbc] = { 2, "RES 7,H", &Res::ResBC };
+            prefixSet[0xbd] = { 2, "RES 7,L", &Res::ResBD };
+            prefixSet[0xbe] = { 2, "RES 7,(HL)", &Res::ResBE };
+            prefixSet[0xbf] = { 2, "RES 7,A", &Res::ResBF };
+            prefixSet[0xc0] = { 2, "SET 0,B", &Set::SetC0 };
+            prefixSet[0xc1] = { 2, "SET 0,C", &Set::SetC1 };
+            prefixSet[0xc2] = { 2, "SET 0,D", &Set::SetC2 };
+            prefixSet[0xc3] = { 2, "SET 0,E", &Set::SetC3 };
+            prefixSet[0xc4] = { 2, "SET 0,H", &Set::SetC4 };
+            prefixSet[0xc5] = { 2, "SET 0,L", &Set::SetC5 };
+            prefixSet[0xc6] = { 2, "SET 0,(HL)", &Set::SetC6 };
+            prefixSet[0xc7] = { 2, "SET 0,A", &Set::SetC7 };
+            prefixSet[0xc8] = { 2, "SET 1,B", &Set::SetC8 };
+            prefixSet[0xc9] = { 2, "SET 1,C", &Set::SetC9 };
+            prefixSet[0xca] = { 2, "SET 1,D", &Set::SetCA };
+            prefixSet[0xcb] = { 2, "SET 1,E", &Set::SetCB };
+            prefixSet[0xcc] = { 2, "SET 1,H", &Set::SetCC };
+            prefixSet[0xcd] = { 2, "SET 1,L", &Set::SetCD };
+            prefixSet[0xce] = { 2, "SET 1,(HL)", &Set::SetCE };
+            prefixSet[0xcf] = { 2, "SET 1,A", &Set::SetCF };
+            prefixSet[0xd0] = { 2, "SET 2,B", &Set::SetD0 };
+            prefixSet[0xd1] = { 2, "SET 2,C", &Set::SetD1 };
+            prefixSet[0xd2] = { 2, "SET 2,D", &Set::SetD2 };
+            prefixSet[0xd3] = { 2, "SET 2,E", &Set::SetD3 };
+            prefixSet[0xd4] = { 2, "SET 2,H", &Set::SetD4 };
+            prefixSet[0xd5] = { 2, "SET 2,L", &Set::SetD5 };
+            prefixSet[0xd6] = { 2, "SET 2,(HL)", &Set::SetD6 };
+            prefixSet[0xd7] = { 2, "SET 2,A", &Set::SetD7 };
+            prefixSet[0xd8] = { 2, "SET 3,B", &Set::SetD8 };
+            prefixSet[0xd9] = { 2, "SET 3,C", &Set::SetD9 };
+            prefixSet[0xda] = { 2, "SET 3,D", &Set::SetDA };
+            prefixSet[0xdb] = { 2, "SET 3,E", &Set::SetDB };
+            prefixSet[0xdc] = { 2, "SET 3,H", &Set::SetDC };
+            prefixSet[0xdd] = { 2, "SET 3,L", &Set::SetDD };
+            prefixSet[0xde] = { 2, "SET 3,(HL)", &Set::SetDE };
+            prefixSet[0xdf] = { 2, "SET 3,A", &Set::SetDF };
+            prefixSet[0xe0] = { 2, "SET 4,B", &Set::SetE0 };
+            prefixSet[0xe1] = { 2, "SET 4,C", &Set::SetE1 };
+            prefixSet[0xe2] = { 2, "SET 4,D", &Set::SetE2 };
+            prefixSet[0xe3] = { 2, "SET 4,E", &Set::SetE3 };
+            prefixSet[0xe4] = { 2, "SET 4,H", &Set::SetE4 };
+            prefixSet[0xe5] = { 2, "SET 4,L", &Set::SetE5 };
+            prefixSet[0xe6] = { 2, "SET 4,(HL)", &Set::SetE6 };
+            prefixSet[0xe7] = { 2, "SET 4,A", &Set::SetE7 };
+            prefixSet[0xe8] = { 2, "SET 5,B", &Set::SetE8 };
+            prefixSet[0xe9] = { 2, "SET 5,C", &Set::SetE9 };
+            prefixSet[0xea] = { 2, "SET 5,D", &Set::SetEA };
+            prefixSet[0xeb] = { 2, "SET 5,E", &Set::SetEB };
+            prefixSet[0xec] = { 2, "SET 5,H", &Set::SetEC };
+            prefixSet[0xed] = { 2, "SET 5,L", &Set::SetED };
+            prefixSet[0xee] = { 2, "SET 5,(HL)", &Set::SetEE };
+            prefixSet[0xef] = { 2, "SET 5,A", &Set::SetEF };
+            prefixSet[0xf0] = { 2, "SET 6,B", &Set::SetF0 };
+            prefixSet[0xf1] = { 2, "SET 6,C", &Set::SetF1 };
+            prefixSet[0xf2] = { 2, "SET 6,D", &Set::SetF2 };
+            prefixSet[0xf3] = { 2, "SET 6,E", &Set::SetF3 };
+            prefixSet[0xf4] = { 2, "SET 6,H", &Set::SetF4 };
+            prefixSet[0xf5] = { 2, "SET 6,L", &Set::SetF5 };
+            prefixSet[0xf6] = { 2, "SET 6,(HL)", &Set::SetF6 };
+            prefixSet[0xf7] = { 2, "SET 6,A", &Set::SetF7 };
+            prefixSet[0xf8] = { 2, "SET 7,B", &Set::SetF8 };
+            prefixSet[0xf9] = { 2, "SET 7,C", &Set::SetF9 };
+            prefixSet[0xfa] = { 2, "SET 7,D", &Set::SetFA };
+            prefixSet[0xfb] = { 2, "SET 7,E", &Set::SetFB };
+            prefixSet[0xfc] = { 2, "SET 7,H", &Set::SetFC };
+            prefixSet[0xfd] = { 2, "SET 7,L", &Set::SetFD };
+            prefixSet[0xfe] = { 2, "SET 7,(HL)", &Set::SetFE };
+            prefixSet[0xff] = { 2, "SET 7,A", &Set::SetFF };
         }
 
-        InstructionGroupPrefix instructionGroupPrefix;
-        std::map<unsigned char, Instruction> set;       
-
-    private:
-        void add(std::map<unsigned char, Instruction> instructionGroup)
-        {
-            set.insert(instructionGroup.begin(), instructionGroup.end());
-        }
+        std::map<unsigned char, Instruction> set; 
+        std::map<unsigned char, Instruction> prefixSet;   
 };
 
 #endif // INSTRUCTION_INCLUDE_H

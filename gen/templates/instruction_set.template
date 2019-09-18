@@ -2,27 +2,27 @@
 #ifndef INSTRUCTION_INCLUDE_H
 #define INSTRUCTION_INCLUDE_H
 
+#include <map>
 #include <functional>
 
-#include "../hardware/cpu.h"
 #include "groups/aritmetic.h"
 #include "groups/branch.h"
 #include "groups/transfer.h"
 #include "groups/misc.h"
+#include "groups/prefix.h"
 
-typedef short (*OpcodeFunc)(Cpu*);
+typedef unsigned char (*OpcodeFunc)(Cpu*);
 struct Instruction
 {
-    short length;                   // Byte Length of the Instruction
+    unsigned char length;           // Byte Length of the Instruction
     std::string mnemonic;           // Mnemonic of the Instruction
     OpcodeFunc executeInterpreter;  // Function Pointer to execute interpreter mode for given opcode
-    OpcodeFunc eecuteJit;           // Function Pointer to execute jit mode for given opcode
+    //TODO OpcodeFunc? eecuteJit;   // Function Pointer to execute jit mode for given opcode
 };
 
 struct ParsedInstruction
 {
     int bytes;
-    int number;
     int bytePosition;
     Instruction definition;
 };
@@ -32,7 +32,8 @@ class InstructionSet
     public:
         InstructionSet()
         {  
-${instruction_items}        }
+${instruction_items}     
+${prefix_items}        }
 
         std::map<unsigned char, Instruction> set; 
         std::map<unsigned char, Instruction> prefixSet;   

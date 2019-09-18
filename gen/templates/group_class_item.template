@@ -1,0 +1,8 @@
+unsigned char ${mnemonic_title}::${mnemonic_title}${opcode_noprefix}(Cpu* cpu)
+{
+    // Mnemonic: ${mnemonic_complete}
+    // Cycles: ${cycles}
+    throw std::runtime_error("Not implemented!");
+    return 0;
+}
+

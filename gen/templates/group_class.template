@@ -1,4 +1,6 @@
-#include "${group_name}.h"
 #include <stdexcept>
+
+#include "${group_name}.h"
+#include "../../hardware/cpu.h"
 
 ${group_class_items}

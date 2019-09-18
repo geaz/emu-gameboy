@@ -1,24 +1,46 @@
 # A Gameboy emulator written in C++ (WIP)
 
 I started this project to create a cycle accurate emulator which is capable to do emulation in **interpreter mode** and in **jit mode**.
-This is not a highly optimized emulator. The aim was to create a code base which is easy to follow for beginners.
-This is why each instruction group is implemented in an own class to provide a better implementation overview.
+The aim was to create a code base which is easy to follow for beginners.
 
-Each instruction group contains a group of the *struct Instruction*. The *struct* contains everything necessary to process the given instruction. This way it should be easy to tell how the **interpreter mode** and **jit mode** for each single instruction works.
+## Compatibility
+
+It is not intended to provide a full compatibility for all available cartridges. It only supports non MBC cartridges.
+This is a programming experience project and it does not aim to be a daily use emulator to play with. 
+Use other great emulators for this purpose. For example:
+- [Gambatte](https://github.com/sinamas/gambatte)
+- [Visualboy Advance](https://github.com/visualboyadvance-m/visualboyadvance-m)
+
+## Opcode Generator
+
+After I started this project I used this great [table](http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html) to create my opcode classes.
+Pretty fast I was frustrated by this tedious task. Therefore I created a python script to automate this task.
+The script *genOpcodes.py* in the *gen* folder scrapes the table and creates C++ classes by using the templates in the *gen/templates* folder.
+By using this script I got great frame classes to work in.
+
+The top *instruction_set* class contains two maps including all the different opcodes.  
+
+![instruction_set](screens/gen-instruction-set.png)
+
+Furthermore the script creates frame classes for all opcode groups.  
+
+![gen-group](screens/gen-group.png)
+
+## Instruction struct
+
+The top *instruction_set* class contains two maps. The key of the maps are the opcode of the instruction,
+and the value of the map is of type *struct Instruction*.
 
 ```cpp
+typedef short (*OpcodeFunc)(Cpu*);
 struct Instruction
 {
-    short length;
-    unsigned char opcode;
-    std::function<std::string (int)> getMnemonic;
-    std::function<short (Cpu)> executeInterpreter;
-    //TODO JIT with DynASM getAsm();
+    short length;                   // Byte Length of the Instruction
+    std::string mnemonic;           // Mnemonic of the Instruction
+    OpcodeFunc executeInterpreter;  // Function Pointer to execute interpreter mode for given opcode
+    //TODO OpcodeFunc? eecuteJit;   // Function Pointer to execute jit mode for given opcode
 };
 ```
-
-If you are just interested on how the implementation of the instructions were done, just look into the *src/instructions* subfolders.
-You will find the hardware implementation of the emulator in the *src/hardware* folder. 
 
 ## TODOs
 - Implement CPU
@@ -27,6 +49,7 @@ You will find the hardware implementation of the emulator in the *src/hardware* 
 
 ## Ressources
 
-- http://gbdev.gg8.se/wiki/articles/Pan_Docs
+- 8080 Manual (see docs folder - really great to understand how a cpu works)
+- http://gbdev.gg8.se/wiki/articles/Main_Page
 - http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
 - https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf

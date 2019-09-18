@@ -1,2 +1,1 @@
-        static short i${mnemonic_title}${opcode_noprefix}(Cpu* cpu);
-        static short j${mnemonic_title}${opcode_noprefix}(Cpu* cpu);
+        static unsigned char ${mnemonic_title}${opcode_noprefix}(Cpu* cpu);

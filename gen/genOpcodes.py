@@ -6,12 +6,17 @@ from string import Template
 
 opcode_url = "http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html"
 opcode_table_select = {'class': 'withborder', 'width': '1350'}
+proxies = { 'http': 'http://91.220.36.65:3128' } # Set a proxy, if you want to use one: 'http': 'http://ip:port'
 
+# The OpcodeScraper collects all opcodes from the opcode_url
+# The opcodes are defined in two distinct tables which get parsed by the scraper
+# 'scrape_opcodes' returns a dictionary of the parsed opcodes which are grouped by there
+# mnemonic. For example: scraped_opcodes = { ['ADD'] = [ Opcode Object ... ] }
 class OpcodeScraper():
     scraped_opcodes = {}
 
     def scrape_opcodes(self):      
-        response = requests.get(opcode_url)
+        response = requests.get(opcode_url, proxies=proxies)
         soup = BeautifulSoup(response.content, 'html.parser')
         opcode_table_list = soup.find_all('table', opcode_table_select)
 
@@ -34,37 +39,46 @@ class OpcodeScraper():
                             self.scraped_opcodes[new_opcode.mnemonic] = []
                         self.scraped_opcodes[new_opcode.mnemonic].append(new_opcode)
 
+    # Returns a Dictionary of lists
+    # For example: { ['aritmetic'] = [ list<Opcode Object> ... ] }
+    def get_grouped_by_groupname(self):
+        grouped_opcodes = {}
+        for mnemonic_name, mnemonic_group in self.scraped_opcodes.items():
+            group_name = mnemonic_group[0].get_target_group()
+            if(group_name not in grouped_opcodes):
+                grouped_opcodes[group_name] = []
+            grouped_opcodes[group_name].append(mnemonic_group)
+        return grouped_opcodes
+
 
 class Opcode:
-    table_content = ''
     length = 0
     cycles = 0
     opcode = 0x00
     mnemonic = ''
-    mnemonicComplete = ''
+    mnemonic_complete = ''
     param1 = ''
     param2 = ''
 
     def __init__(self, x, y, table_content):
-        self.table_content = table_content
         self.opcode = (x << 4) | y
 
-        mnemonic = self.table_content.contents[0].split(' ')[0].strip()
-        splitted_params = self.table_content.contents[0].replace(mnemonic, '').split(',')
+        mnemonic = table_content.contents[0].split(' ')[0].strip()
+        splitted_params = table_content.contents[0].replace(mnemonic, '').split(',')
 
-        self.mnemonicComplete = self.table_content.contents[0]
+        self.mnemonic_complete = table_content.contents[0]
         self.mnemonic = mnemonic
         self.param1 = splitted_params[0].strip()
         if(len(splitted_params) > 1): self.param2 = splitted_params[1].strip()
 
-        splitted_info = self.table_content.contents[2].string.split()
+        splitted_info = table_content.contents[2].string.split()
         self.length = splitted_info[0].strip()
         self.cycles = splitted_info[1].strip()
 
     def get_opcode_as_string(self, prefix):
-        returnValue = "{0:0{1}x}".format(self.opcode,2)
-        if(prefix): returnValue = "{0:#0{1}x}".format(self.opcode,4)
-        return returnValue
+        return_value = "{0:0{1}x}".format(self.opcode,2)
+        if(prefix): return_value = "{0:#0{1}x}".format(self.opcode,4)
+        return return_value
 
     def get_target_group(self):
         switcher = {
@@ -80,10 +94,10 @@ class Opcode:
             'RLA': 'misc', 'RRCA': 'misc', 'RRA': 'misc',
             'CALL': 'branch', 'JP': 'branch', 'JR': 'branch',
             'RET': 'branch', 'RETI': 'branch', 'RST': 'branch',
-            'RES': 'aritmetic', 'BIT': 'aritmetic', 'SET': 'aritmetic',
-            'RL': 'aritmetic', 'RLC': 'aritmetic', 'RR': 'aritmetic',
-            'RRC': 'aritmetic', 'SLA': 'aritmetic', 'SRA': 'aritmetic',
-            'SRL': 'aritmetic', 'SWAP': 'aritmetic',
+            'RES': 'prefix', 'BIT': 'prefix', 'SET': 'prefix',
+            'RL': 'prefix', 'RLC': 'prefix', 'RR': 'prefix',
+            'RRC': 'prefix', 'SLA': 'prefix', 'SRA': 'prefix',
+            'SRL': 'prefix', 'SWAP': 'prefix',
         }
         return switcher.get(self.mnemonic, 'undefined')  
 
@@ -95,51 +109,55 @@ class Opcode:
         return display_string 
 
 
-def write_template(templateFile, templateData, outputFile):
-    filein = open(templateFile)
-    template = Template(filein.read())
-    result = template.substitute(templateData)
-    filein.close()
+class LoadedTemplate:
+    template_path = ''
+    template = None
 
-    if not os.path.exists(os.path.dirname(outputFile)):
-        os.makedirs(os.path.dirname(outputFile))
+    def __init__(self, template_path):
+        self.template_path = template_path
+        filein = open(template_path)
+        self.template = Template(filein.read())
+        filein.close()
 
-    output = open(outputFile, 'w+')
-    output.write(result)
-    output.close()
+    def write_substitution(self, template_data, output_file):
+        substitution = self.get_substitution(template_data)
+
+        if not os.path.exists(os.path.dirname(output_file)):
+            os.makedirs(os.path.dirname(output_file))
+
+        output = open(output_file, 'w+')
+        output.write(substitution)
+        output.close()
+
+    def get_substitutions(self, template_datas):
+        output = ''
+        for template_data in template_datas:
+            output += self.template.substitute(template_data)
+        return output
+
+    def get_substitution(self, template_data):
+        return self.template.substitute(template_data)
 
 
-def get_rendered_template_list(items, templatePath):
-    output = ''
-    for item in items:
-        output += get_rendered_template(item, templatePath)
-    return output
-
-
-def get_rendered_template(objects, templatePath):
-    filein = open(templatePath)
-    template = Template(filein.read())
-    result = template.substitute(objects)
-    filein.close()
-    return result
+tmpl_instruction_set = LoadedTemplate('templates/instruction_set.template') 
+tmpl_instruction_set_item = LoadedTemplate('templates/instruction_set_item.template')
+tmpl_group_header = LoadedTemplate('templates/group_header.template')
+tmpl_group_header_class = LoadedTemplate('templates/group_header_class.template')
+tmpl_group_header_class_item = LoadedTemplate('templates/group_header_class_item.template')
+tmpl_group_class = LoadedTemplate('templates/group_class.template')
+tmpl_group_class_item = LoadedTemplate('templates/group_class_item.template')
 
 
 scraper = OpcodeScraper()
 scraper.scrape_opcodes()
+grouped_by_groupname = scraper.get_grouped_by_groupname()
 
 if not os.path.exists('output'):
     os.makedirs('output')
 
-# Group Opcode by group name
-grouped_opcodes = {}
-for mnemonic_name, mnemonic_group in scraper.scraped_opcodes.items():
-    group_name = mnemonic_group[0].get_target_group()
-    if(group_name not in grouped_opcodes):
-        grouped_opcodes[group_name] = []
-    grouped_opcodes[group_name].append(mnemonic_group)
-
+prefix_items = []
 instruction_items = []
-for group_name, opcode_groups in grouped_opcodes.items():
+for group_name, opcode_groups in grouped_by_groupname.items():
     if(group_name == 'undefined'):
         print('Undefined: ' + opcode_groups[0][0].display())
         continue
@@ -148,33 +166,38 @@ for group_name, opcode_groups in grouped_opcodes.items():
     for opcode_group in opcode_groups:
         group_items = []
         for opcode in opcode_group:
-            instruction_items.append(
-                {'opcode': opcode.get_opcode_as_string(True), 'length': opcode.length, 
-                'mnemonic_complete': opcode.mnemonicComplete, 
-                'opcode_noprefix': opcode.get_opcode_as_string(False).upper(),
-                'mnemonic_title': opcode.mnemonic.title() })
+            # If this is a prefix opcode, add it to another list
+            list_to_append = []
+            set_name = 'set'
+            if(group_name == 'prefix'):
+                list_to_append = prefix_items
+                set_name = 'prefixSet'
+            else:
+                list_to_append = instruction_items
+
+            list_to_append.append(
+                {'set_name': set_name, 'opcode': opcode.get_opcode_as_string(True), 
+                'length': opcode.length, 'mnemonic_complete': opcode.mnemonic_complete, 
+                'opcode_noprefix': opcode.get_opcode_as_string(False).upper(), 'mnemonic_title': opcode.mnemonic.title() })
             group_items.append({
-                'opcode_noprefix': opcode.get_opcode_as_string(False).upper(),
-                'mnemonic_title': opcode.mnemonic.title(),
-                'cycles': opcode.cycles
+                'opcode_noprefix': opcode.get_opcode_as_string(False).upper(), 'mnemonic_complete': opcode.mnemonic_complete,
+                'mnemonic_title': opcode.mnemonic.title(), 'cycles': opcode.cycles
             })
-        group_class_items += get_rendered_template_list(group_items, 'templates/group_class_items.template')
-        group_class_definitions += get_rendered_template({ 
-            'group_class_items': get_rendered_template_list(group_items, 'templates/group_header_class_item.template'),
-            'mnemonic_title': opcode.mnemonic.title() }, 'templates/group_header_class.template')
-    write_template(
-        'templates/group_class.template',
+        group_class_items += tmpl_group_class_item.get_substitutions(group_items)
+        group_class_definitions += tmpl_group_header_class.get_substitution({ 
+            'group_class_items': tmpl_group_header_class_item.get_substitutions(group_items),
+            'mnemonic_title': opcode.mnemonic.title() 
+        })
+
+    tmpl_group_class.write_substitution(
         {'group_class_items': group_class_items, 'group_name': group_name },
-        'output/groups/' + group_name + '.cpp')
-    write_template(
-        'templates/group_header.template',
+        'output/groups/' + group_name + '.cpp')      
+    tmpl_group_header.write_substitution(
         {'group_class_definitions': group_class_definitions, 'group_name_upper': group_name.upper() },
-        'output/groups/' + group_name + '.h')
-        
-    
+        'output/groups/' + group_name + '.h')  
 
-
-write_template(
-    'templates/instruction_set.template',
-    {'instruction_items': get_rendered_template_list(instruction_items, 'templates/instruction_set_item.template') },
-    'output/instruction_set.h')
+tmpl_instruction_set.write_substitution(
+    {'instruction_items': tmpl_instruction_set_item.get_substitutions(instruction_items),
+     'prefix_items': tmpl_instruction_set_item.get_substitutions(prefix_items) },
+    'output/instruction_set.h'
+)

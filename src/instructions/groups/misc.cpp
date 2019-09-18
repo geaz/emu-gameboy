@@ -7,8 +7,7 @@ unsigned char Nop::Nop00(Cpu* cpu)
 {
     // Mnemonic: NOP
     // Cycles: 4
-    throw std::runtime_error("Not implemented!");
-    return 0;
+    return 4;
 }
 
 unsigned char Rlca::Rlca07(Cpu* cpu)

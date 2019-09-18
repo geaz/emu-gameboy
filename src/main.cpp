@@ -5,11 +5,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "rom.h"
 #include "opengl/window.h"
-#include "screens/rom_screen.h"
-#include "screens/disassembler_screen.h"
+#include "hardware/gameboy.h"
+#include "hardware/cartridge.h"
 #include "screens/misc_screen.h"
+#include "screens/cpu_screen.h"
+#include "screens/cartridge_screen.h"
+#include "screens/gameboy_screen.h"
 
 int main(int argc, char** args) {
     if(argc < 2)
@@ -18,18 +20,20 @@ int main(int argc, char** args) {
         return 0;
     }
 
-    Rom rom(args[1]);
-    Disassembler disassembler;
-    disassembler.parseRom(rom);
+    Cartridge cartridge(args[1]);
+    Gameboy gameboy(cartridge);
 
-    Window window("Gameboy", 740, 588);
+    Window window("Gameboy", 680, 548);
     window.setClearColor(224, 248, 208, 255);
     
-    RomScreen romScreen(rom);
-    MiscScreen miscScreen(disassembler);
-    DisassemblerScreen disassemblerScreen(disassembler);
+    MiscScreen miscScreen;
+    CpuScreen cpuScreen(gameboy.cpu);
+    CartridgeScreen cartridgeScreen(gameboy.cartridge); 
+    GameboyScreen gameboyScreen(gameboy);   
 
     window.addScreen(&miscScreen);
-    window.addScreen(&romScreen);
+    window.addScreen(&cartridgeScreen);
+    window.addScreen(&cpuScreen);
+    window.addScreen(&gameboyScreen);
     window.startLoop();
 }

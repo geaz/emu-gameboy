@@ -14,8 +14,8 @@ Use other great emulators for this purpose. For example:
 ## Opcode Generator
 
 After I started this project I used this great [table](http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html) to create my opcode classes.
-Pretty fast I was frustrated by this tedious task. Therefore I created a python script to automate this task.
-The script *genOpcodes.py* in the *gen* folder scrapes the table and creates C++ classes by using the templates in the *gen/templates* folder.
+Pretty fast I was frustrated by this tedious task. Therefore I created a python script to automate it.
+The script *genOpcodes.py*, in the *gen* folder, scrapes the table and creates C++ classes by using the templates in the *gen/templates* folder.
 By using this script I got great frame classes to work in.
 
 The top *instruction_set* class contains two maps including all the different opcodes.  
@@ -50,6 +50,8 @@ struct Instruction
 ## Ressources
 
 - 8080 Manual (see docs folder - really great to understand how a cpu works)
+- http://bgb.bircd.org/pandocs.htm
 - http://gbdev.gg8.se/wiki/articles/Main_Page
+- http://gameboy.mongenel.com/dmg/asmmemmap.html
 - http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
 - https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf

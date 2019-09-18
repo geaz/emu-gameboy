@@ -3,6 +3,7 @@
 #define WINDOW_H
 
 #include <vector>
+#include <string>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -13,7 +14,7 @@
 class Window
 {
     public:        
-        Window(char* title, const int width, const int height);
+        Window(std::string title, const int width, const int height);
         
         void setClearColor(const GLfloat red, const GLfloat green, const GLfloat blue, const GLfloat alpha) const;
         void startLoop();
@@ -25,7 +26,6 @@ class Window
     private:
         void handleKeys(const int key, const int scancode, const int action, const int mods) const;
 
-        char* title;
         GLFWwindow* window;
         std::vector<Screen*> screenVec;
 };

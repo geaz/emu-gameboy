@@ -10,7 +10,7 @@
 // Init Window Pointer for OpenGL callbacks
 Window* Window::windowPointer = NULL;
 
-Window::Window(char* title, const int width, const int height) : title(title)
+Window::Window(std::string title, const int width, const int height)
 {
     // Store Pointer for OpenGL callbacks
     windowPointer = this;
@@ -18,12 +18,15 @@ Window::Window(char* title, const int width, const int height) : title(title)
     ResourceManager::ViewportHeight = height;
 
     glfwInit();
+    #if __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    window = glfwCreateWindow(width, height, title, NULL, NULL);
+    window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
     if(window == NULL)
     {
         glfwTerminate();

@@ -1,3 +1,4 @@
+#include <cstring>
 #include "memory.h"
 
 Memory::Memory(Cartridge& cartridge) : cartridge(cartridge) 

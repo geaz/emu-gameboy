@@ -13,7 +13,7 @@ std::string StringHelper::IntToHexString(const int data, int stringWidth, bool w
     hexStringStream << std::setw(stringWidth) << data;
 
     std::string hexString = hexStringStream.str();
-    std::transform(hexString.begin(), hexString.end(), hexString.begin(), std::toupper);
+    std::transform(hexString.begin(), hexString.end(), hexString.begin(), ::toupper);
 
     std::string returnValue = withPrefix
         ? "0x" + hexString

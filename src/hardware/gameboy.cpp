@@ -2,7 +2,8 @@
 
 Gameboy::Gameboy(Cartridge& cartridge) : 
     cartridge(cartridge),
-    cpu(cartridge)
+    memory(Memory(cartridge)),
+    cpu(Cpu(memory))
 { }
 
 void Gameboy::process()

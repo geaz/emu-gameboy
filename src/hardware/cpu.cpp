@@ -1,6 +1,6 @@
 #include "cpu.h"
 
-Cpu::Cpu(Cartridge& cartridge) : cartridge(cartridge) 
+Cpu::Cpu(Memory& memory) : memory(memory) 
 { 
     pc = 0x100;
     nextInstruction = parseNextInstruction();
@@ -18,12 +18,12 @@ void Cpu::cycle()
 
 ParsedInstruction Cpu::parseNextInstruction()
 {
-    Instruction instruction = instructionSet.set[cartridge.getDataAt(pc.get())];
+    Instruction instruction = instructionSet.set[memory.read(pc.get())];
 
     int opcode = 0;
     for(int j = instruction.length - 1; j >= 0; j--)
     {
-        uint8_t singleByte = cartridge.getDataAt(pc.get());
+        uint8_t singleByte = memory.read(pc.get());
         opcode = opcode | singleByte << (j * 8);
     }
 

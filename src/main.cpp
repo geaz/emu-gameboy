@@ -10,7 +10,7 @@
 #include "hardware/cartridge.h"
 #include "screens/misc_screen.h"
 #include "screens/cpu_screen.h"
-#include "screens/cartridge_screen.h"
+#include "screens/memory_screen.h"
 #include "screens/gameboy_screen.h"
 
 int main(int argc, char** args) {
@@ -28,11 +28,11 @@ int main(int argc, char** args) {
     
     MiscScreen miscScreen;
     CpuScreen cpuScreen(gameboy.cpu);
-    CartridgeScreen cartridgeScreen(gameboy.cartridge); 
+    MemoryScreen memoryScreen(gameboy.memory); 
     GameboyScreen gameboyScreen(gameboy);   
 
     window.addScreen(&miscScreen);
-    window.addScreen(&cartridgeScreen);
+    window.addScreen(&memoryScreen);
     window.addScreen(&cpuScreen);
     window.addScreen(&gameboyScreen);
     window.startLoop();

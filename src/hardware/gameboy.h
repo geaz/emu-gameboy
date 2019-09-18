@@ -3,6 +3,7 @@
 #define GAMEBOY_H
 
 #include "cpu.h"
+#include "memory.h"
 #include "cartridge.h"
 
 class Gameboy
@@ -11,8 +12,9 @@ class Gameboy
         Gameboy(Cartridge& cartridge);
         void process();
 
-        Cpu cpu;
         Cartridge& cartridge;
+        Memory memory;
+        Cpu cpu;
 };
 
 #endif // GAMEBOY_H

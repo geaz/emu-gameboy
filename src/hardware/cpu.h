@@ -3,7 +3,7 @@
 #define CPU_H
 
 #include "../instructions/instruction_set.h"
-#include "cartridge.h"
+#include "memory.h"
 #include "register.h"
 
 enum CpuState
@@ -17,7 +17,7 @@ enum CpuState
 class Cpu 
 {
     public:
-        Cpu(Cartridge& cartridge);
+        Cpu(Memory& memory);
 
         void cycle();
 
@@ -33,8 +33,6 @@ class Cpu
         Register<uint8_t> h = Register<uint8_t>("h", 0x01);
         Register<uint8_t> l = Register<uint8_t>("l", 0x4D);
 
-        Cartridge& cartridge;
-
         CpuState state = PAUSED;
         ParsedInstruction currentInstruction;
         ParsedInstruction nextInstruction;
@@ -42,6 +40,7 @@ class Cpu
     private:
         ParsedInstruction parseNextInstruction();
 
+        Memory& memory;
         InstructionSet instructionSet;
 };
 

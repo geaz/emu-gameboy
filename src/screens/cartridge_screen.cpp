@@ -22,7 +22,7 @@ void CartridgeScreen::update()
         {
             std::stringstream rowLabel;
             rowLabel << StringHelper::IntToHexString(i, 4);
-            rowLabel << " | " << StringHelper::IntToHexString((unsigned char) cartridge.cartridgeData[i], 2);
+            rowLabel << " | " << StringHelper::IntToHexString((uint8_t)cartridge.cartridgeData[i], 2);
 
             ImGui::Selectable(rowLabel.str().c_str(), false);
         }

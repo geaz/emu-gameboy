@@ -2,7 +2,7 @@
 
 Cpu::Cpu(Cartridge& cartridge) : cartridge(cartridge) 
 { 
-    pc = (unsigned short) 0x100;
+    pc = 0x100;
     nextInstruction = parseNextInstruction();
 }
 
@@ -22,9 +22,9 @@ ParsedInstruction Cpu::parseNextInstruction()
 
     int k = 0;
     int opcode = 0;
-    for(short j = instruction.length - 1; j >= 0; j--)
+    for(uint8_t j = instruction.length - 1; j >= 0; j--)
     {
-        unsigned char singleByte = cartridge.getDataAt(pc.get());
+        uint8_t singleByte = cartridge.getDataAt(pc.get());
         opcode = opcode | singleByte << (j * 8);
         k++;
     }

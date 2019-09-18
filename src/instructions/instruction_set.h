@@ -11,10 +11,10 @@
 #include "groups/misc.h"
 #include "groups/prefix.h"
 
-typedef unsigned char (*OpcodeFunc)(Cpu*);
+typedef uint8_t (*OpcodeFunc)(Cpu*);
 struct Instruction
 {
-    unsigned char length;           // Byte Length of the Instruction
+    uint8_t length;           // Byte Length of the Instruction
     std::string mnemonic;           // Mnemonic of the Instruction
     OpcodeFunc executeInterpreter;  // Function Pointer to execute interpreter mode for given opcode
     //TODO OpcodeFunc? eecuteJit;   // Function Pointer to execute jit mode for given opcode
@@ -23,7 +23,7 @@ struct Instruction
 struct ParsedInstruction
 {
     int bytes;
-    int bytePosition;
+    long bytePosition;
     Instruction definition;
 };
 
@@ -535,8 +535,8 @@ class InstructionSet
             prefixSet[0xff] = { 2, "SET 7,A", &Set::SetFF };
         }
 
-        std::map<unsigned char, Instruction> set; 
-        std::map<unsigned char, Instruction> prefixSet;   
+        std::map<uint8_t, Instruction> set; 
+        std::map<uint8_t, Instruction> prefixSet;   
 };
 
 #endif // INSTRUCTION_INCLUDE_H

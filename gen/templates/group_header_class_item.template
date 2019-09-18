@@ -1,1 +1,1 @@
-        static unsigned char ${mnemonic_title}${opcode_noprefix}(Cpu* cpu);
+        static uint8_t ${mnemonic_title}${opcode_noprefix}(Cpu* cpu);

@@ -6,7 +6,7 @@ from string import Template
 
 opcode_url = "http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html"
 opcode_table_select = {'class': 'withborder', 'width': '1350'}
-proxies = { 'http': 'http://91.220.36.65:3128' } # Set a proxy, if you want to use one: 'http': 'http://ip:port'
+proxies = { } # Set a proxy, if you want to use one: 'http': 'http://ip:port'
 
 # The OpcodeScraper collects all opcodes from the opcode_url
 # The opcodes are defined in two distinct tables which get parsed by the scraper

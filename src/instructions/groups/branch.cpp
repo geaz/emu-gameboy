@@ -3,7 +3,7 @@
 #include "branch.h"
 #include "../../hardware/cpu.h"
 
-unsigned char Jr::Jr18(Cpu* cpu)
+uint8_t Jr::Jr18(Cpu* cpu)
 {
     // Mnemonic: JR r8
     // Cycles: 12
@@ -11,7 +11,7 @@ unsigned char Jr::Jr18(Cpu* cpu)
     return 0;
 }
 
-unsigned char Jr::Jr20(Cpu* cpu)
+uint8_t Jr::Jr20(Cpu* cpu)
 {
     // Mnemonic: JR NZ,r8
     // Cycles: 12/8
@@ -19,7 +19,7 @@ unsigned char Jr::Jr20(Cpu* cpu)
     return 0;
 }
 
-unsigned char Jr::Jr28(Cpu* cpu)
+uint8_t Jr::Jr28(Cpu* cpu)
 {
     // Mnemonic: JR Z,r8
     // Cycles: 12/8
@@ -27,7 +27,7 @@ unsigned char Jr::Jr28(Cpu* cpu)
     return 0;
 }
 
-unsigned char Jr::Jr30(Cpu* cpu)
+uint8_t Jr::Jr30(Cpu* cpu)
 {
     // Mnemonic: JR NC,r8
     // Cycles: 12/8
@@ -35,7 +35,7 @@ unsigned char Jr::Jr30(Cpu* cpu)
     return 0;
 }
 
-unsigned char Jr::Jr38(Cpu* cpu)
+uint8_t Jr::Jr38(Cpu* cpu)
 {
     // Mnemonic: JR C,r8
     // Cycles: 12/8
@@ -43,7 +43,7 @@ unsigned char Jr::Jr38(Cpu* cpu)
     return 0;
 }
 
-unsigned char Ret::RetC0(Cpu* cpu)
+uint8_t Ret::RetC0(Cpu* cpu)
 {
     // Mnemonic: RET NZ
     // Cycles: 20/8
@@ -51,7 +51,7 @@ unsigned char Ret::RetC0(Cpu* cpu)
     return 0;
 }
 
-unsigned char Ret::RetC8(Cpu* cpu)
+uint8_t Ret::RetC8(Cpu* cpu)
 {
     // Mnemonic: RET Z
     // Cycles: 20/8
@@ -59,7 +59,7 @@ unsigned char Ret::RetC8(Cpu* cpu)
     return 0;
 }
 
-unsigned char Ret::RetC9(Cpu* cpu)
+uint8_t Ret::RetC9(Cpu* cpu)
 {
     // Mnemonic: RET
     // Cycles: 16
@@ -67,7 +67,7 @@ unsigned char Ret::RetC9(Cpu* cpu)
     return 0;
 }
 
-unsigned char Ret::RetD0(Cpu* cpu)
+uint8_t Ret::RetD0(Cpu* cpu)
 {
     // Mnemonic: RET NC
     // Cycles: 20/8
@@ -75,7 +75,7 @@ unsigned char Ret::RetD0(Cpu* cpu)
     return 0;
 }
 
-unsigned char Ret::RetD8(Cpu* cpu)
+uint8_t Ret::RetD8(Cpu* cpu)
 {
     // Mnemonic: RET C
     // Cycles: 20/8
@@ -83,7 +83,7 @@ unsigned char Ret::RetD8(Cpu* cpu)
     return 0;
 }
 
-unsigned char Jp::JpC2(Cpu* cpu)
+uint8_t Jp::JpC2(Cpu* cpu)
 {
     // Mnemonic: JP NZ,a16
     // Cycles: 16/12
@@ -91,7 +91,7 @@ unsigned char Jp::JpC2(Cpu* cpu)
     return 0;
 }
 
-unsigned char Jp::JpC3(Cpu* cpu)
+uint8_t Jp::JpC3(Cpu* cpu)
 {
     // Mnemonic: JP a16
     // Cycles: 16
@@ -99,7 +99,7 @@ unsigned char Jp::JpC3(Cpu* cpu)
     return 0;
 }
 
-unsigned char Jp::JpCA(Cpu* cpu)
+uint8_t Jp::JpCA(Cpu* cpu)
 {
     // Mnemonic: JP Z,a16
     // Cycles: 16/12
@@ -107,7 +107,7 @@ unsigned char Jp::JpCA(Cpu* cpu)
     return 0;
 }
 
-unsigned char Jp::JpD2(Cpu* cpu)
+uint8_t Jp::JpD2(Cpu* cpu)
 {
     // Mnemonic: JP NC,a16
     // Cycles: 16/12
@@ -115,7 +115,7 @@ unsigned char Jp::JpD2(Cpu* cpu)
     return 0;
 }
 
-unsigned char Jp::JpDA(Cpu* cpu)
+uint8_t Jp::JpDA(Cpu* cpu)
 {
     // Mnemonic: JP C,a16
     // Cycles: 16/12
@@ -123,7 +123,7 @@ unsigned char Jp::JpDA(Cpu* cpu)
     return 0;
 }
 
-unsigned char Jp::JpE9(Cpu* cpu)
+uint8_t Jp::JpE9(Cpu* cpu)
 {
     // Mnemonic: JP (HL)
     // Cycles: 4
@@ -131,7 +131,7 @@ unsigned char Jp::JpE9(Cpu* cpu)
     return 0;
 }
 
-unsigned char Call::CallC4(Cpu* cpu)
+uint8_t Call::CallC4(Cpu* cpu)
 {
     // Mnemonic: CALL NZ,a16
     // Cycles: 24/12
@@ -139,7 +139,7 @@ unsigned char Call::CallC4(Cpu* cpu)
     return 0;
 }
 
-unsigned char Call::CallCC(Cpu* cpu)
+uint8_t Call::CallCC(Cpu* cpu)
 {
     // Mnemonic: CALL Z,a16
     // Cycles: 24/12
@@ -147,7 +147,7 @@ unsigned char Call::CallCC(Cpu* cpu)
     return 0;
 }
 
-unsigned char Call::CallCD(Cpu* cpu)
+uint8_t Call::CallCD(Cpu* cpu)
 {
     // Mnemonic: CALL a16
     // Cycles: 24
@@ -155,7 +155,7 @@ unsigned char Call::CallCD(Cpu* cpu)
     return 0;
 }
 
-unsigned char Call::CallD4(Cpu* cpu)
+uint8_t Call::CallD4(Cpu* cpu)
 {
     // Mnemonic: CALL NC,a16
     // Cycles: 24/12
@@ -163,7 +163,7 @@ unsigned char Call::CallD4(Cpu* cpu)
     return 0;
 }
 
-unsigned char Call::CallDC(Cpu* cpu)
+uint8_t Call::CallDC(Cpu* cpu)
 {
     // Mnemonic: CALL C,a16
     // Cycles: 24/12
@@ -171,7 +171,7 @@ unsigned char Call::CallDC(Cpu* cpu)
     return 0;
 }
 
-unsigned char Rst::RstC7(Cpu* cpu)
+uint8_t Rst::RstC7(Cpu* cpu)
 {
     // Mnemonic: RST 00H
     // Cycles: 16
@@ -179,7 +179,7 @@ unsigned char Rst::RstC7(Cpu* cpu)
     return 0;
 }
 
-unsigned char Rst::RstCF(Cpu* cpu)
+uint8_t Rst::RstCF(Cpu* cpu)
 {
     // Mnemonic: RST 08H
     // Cycles: 16
@@ -187,7 +187,7 @@ unsigned char Rst::RstCF(Cpu* cpu)
     return 0;
 }
 
-unsigned char Rst::RstD7(Cpu* cpu)
+uint8_t Rst::RstD7(Cpu* cpu)
 {
     // Mnemonic: RST 10H
     // Cycles: 16
@@ -195,7 +195,7 @@ unsigned char Rst::RstD7(Cpu* cpu)
     return 0;
 }
 
-unsigned char Rst::RstDF(Cpu* cpu)
+uint8_t Rst::RstDF(Cpu* cpu)
 {
     // Mnemonic: RST 18H
     // Cycles: 16
@@ -203,7 +203,7 @@ unsigned char Rst::RstDF(Cpu* cpu)
     return 0;
 }
 
-unsigned char Rst::RstE7(Cpu* cpu)
+uint8_t Rst::RstE7(Cpu* cpu)
 {
     // Mnemonic: RST 20H
     // Cycles: 16
@@ -211,7 +211,7 @@ unsigned char Rst::RstE7(Cpu* cpu)
     return 0;
 }
 
-unsigned char Rst::RstEF(Cpu* cpu)
+uint8_t Rst::RstEF(Cpu* cpu)
 {
     // Mnemonic: RST 28H
     // Cycles: 16
@@ -219,7 +219,7 @@ unsigned char Rst::RstEF(Cpu* cpu)
     return 0;
 }
 
-unsigned char Rst::RstF7(Cpu* cpu)
+uint8_t Rst::RstF7(Cpu* cpu)
 {
     // Mnemonic: RST 30H
     // Cycles: 16
@@ -227,7 +227,7 @@ unsigned char Rst::RstF7(Cpu* cpu)
     return 0;
 }
 
-unsigned char Rst::RstFF(Cpu* cpu)
+uint8_t Rst::RstFF(Cpu* cpu)
 {
     // Mnemonic: RST 38H
     // Cycles: 16
@@ -235,7 +235,7 @@ unsigned char Rst::RstFF(Cpu* cpu)
     return 0;
 }
 
-unsigned char Reti::RetiD9(Cpu* cpu)
+uint8_t Reti::RetiD9(Cpu* cpu)
 {
     // Mnemonic: RETI
     // Cycles: 16

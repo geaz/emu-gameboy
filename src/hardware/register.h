@@ -11,7 +11,7 @@ class Register
         Register(const std::string name, const T initialValue);
         
         T get();
-        unsigned char getBit(const unsigned char bitNr);
+        uint8_t getBit(const uint8_t bitNr);
         
         void operator=(T newValue);
         void operator+=(T addValue);
@@ -26,7 +26,7 @@ class Register
 
 template<class T> Register<T>::Register(const std::string name, const T initialValue) : name(name), value(initialValue) { }
 template<class T> T Register<T>::get() { return value; }
-template<class T> unsigned char Register<T>::getBit(const unsigned char bitNr) {  return (value >> bitNr) & 0x1; }
+template<class T> uint8_t Register<T>::getBit(const uint8_t bitNr) {  return (value >> bitNr) & 0x1; }
 template<class T> void Register<T>::operator=(T newValue) { value = newValue; }
 template<class T> void Register<T>::operator+=(T addValue) { value += addValue; }
 template<class T> void Register<T>::operator++(int ignored) { value ++; }

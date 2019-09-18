@@ -6,176 +6,176 @@ class Cpu;
 class Inc
 {
     public:
-        static unsigned char Inc03(Cpu* cpu);
-        static unsigned char Inc04(Cpu* cpu);
-        static unsigned char Inc0C(Cpu* cpu);
-        static unsigned char Inc13(Cpu* cpu);
-        static unsigned char Inc14(Cpu* cpu);
-        static unsigned char Inc1C(Cpu* cpu);
-        static unsigned char Inc23(Cpu* cpu);
-        static unsigned char Inc24(Cpu* cpu);
-        static unsigned char Inc2C(Cpu* cpu);
-        static unsigned char Inc33(Cpu* cpu);
-        static unsigned char Inc34(Cpu* cpu);
-        static unsigned char Inc3C(Cpu* cpu);
+        static uint8_t Inc03(Cpu* cpu);
+        static uint8_t Inc04(Cpu* cpu);
+        static uint8_t Inc0C(Cpu* cpu);
+        static uint8_t Inc13(Cpu* cpu);
+        static uint8_t Inc14(Cpu* cpu);
+        static uint8_t Inc1C(Cpu* cpu);
+        static uint8_t Inc23(Cpu* cpu);
+        static uint8_t Inc24(Cpu* cpu);
+        static uint8_t Inc2C(Cpu* cpu);
+        static uint8_t Inc33(Cpu* cpu);
+        static uint8_t Inc34(Cpu* cpu);
+        static uint8_t Inc3C(Cpu* cpu);
 };
 
 class Dec
 {
     public:
-        static unsigned char Dec05(Cpu* cpu);
-        static unsigned char Dec0B(Cpu* cpu);
-        static unsigned char Dec0D(Cpu* cpu);
-        static unsigned char Dec15(Cpu* cpu);
-        static unsigned char Dec1B(Cpu* cpu);
-        static unsigned char Dec1D(Cpu* cpu);
-        static unsigned char Dec25(Cpu* cpu);
-        static unsigned char Dec2B(Cpu* cpu);
-        static unsigned char Dec2D(Cpu* cpu);
-        static unsigned char Dec35(Cpu* cpu);
-        static unsigned char Dec3B(Cpu* cpu);
-        static unsigned char Dec3D(Cpu* cpu);
+        static uint8_t Dec05(Cpu* cpu);
+        static uint8_t Dec0B(Cpu* cpu);
+        static uint8_t Dec0D(Cpu* cpu);
+        static uint8_t Dec15(Cpu* cpu);
+        static uint8_t Dec1B(Cpu* cpu);
+        static uint8_t Dec1D(Cpu* cpu);
+        static uint8_t Dec25(Cpu* cpu);
+        static uint8_t Dec2B(Cpu* cpu);
+        static uint8_t Dec2D(Cpu* cpu);
+        static uint8_t Dec35(Cpu* cpu);
+        static uint8_t Dec3B(Cpu* cpu);
+        static uint8_t Dec3D(Cpu* cpu);
 };
 
 class Add
 {
     public:
-        static unsigned char Add09(Cpu* cpu);
-        static unsigned char Add19(Cpu* cpu);
-        static unsigned char Add29(Cpu* cpu);
-        static unsigned char Add39(Cpu* cpu);
-        static unsigned char Add80(Cpu* cpu);
-        static unsigned char Add81(Cpu* cpu);
-        static unsigned char Add82(Cpu* cpu);
-        static unsigned char Add83(Cpu* cpu);
-        static unsigned char Add84(Cpu* cpu);
-        static unsigned char Add85(Cpu* cpu);
-        static unsigned char Add86(Cpu* cpu);
-        static unsigned char Add87(Cpu* cpu);
-        static unsigned char AddC6(Cpu* cpu);
-        static unsigned char AddE8(Cpu* cpu);
+        static uint8_t Add09(Cpu* cpu);
+        static uint8_t Add19(Cpu* cpu);
+        static uint8_t Add29(Cpu* cpu);
+        static uint8_t Add39(Cpu* cpu);
+        static uint8_t Add80(Cpu* cpu);
+        static uint8_t Add81(Cpu* cpu);
+        static uint8_t Add82(Cpu* cpu);
+        static uint8_t Add83(Cpu* cpu);
+        static uint8_t Add84(Cpu* cpu);
+        static uint8_t Add85(Cpu* cpu);
+        static uint8_t Add86(Cpu* cpu);
+        static uint8_t Add87(Cpu* cpu);
+        static uint8_t AddC6(Cpu* cpu);
+        static uint8_t AddE8(Cpu* cpu);
 };
 
 class Daa
 {
     public:
-        static unsigned char Daa27(Cpu* cpu);
+        static uint8_t Daa27(Cpu* cpu);
 };
 
 class Cpl
 {
     public:
-        static unsigned char Cpl2F(Cpu* cpu);
+        static uint8_t Cpl2F(Cpu* cpu);
 };
 
 class Scf
 {
     public:
-        static unsigned char Scf37(Cpu* cpu);
+        static uint8_t Scf37(Cpu* cpu);
 };
 
 class Ccf
 {
     public:
-        static unsigned char Ccf3F(Cpu* cpu);
+        static uint8_t Ccf3F(Cpu* cpu);
 };
 
 class Adc
 {
     public:
-        static unsigned char Adc88(Cpu* cpu);
-        static unsigned char Adc89(Cpu* cpu);
-        static unsigned char Adc8A(Cpu* cpu);
-        static unsigned char Adc8B(Cpu* cpu);
-        static unsigned char Adc8C(Cpu* cpu);
-        static unsigned char Adc8D(Cpu* cpu);
-        static unsigned char Adc8E(Cpu* cpu);
-        static unsigned char Adc8F(Cpu* cpu);
-        static unsigned char AdcCE(Cpu* cpu);
+        static uint8_t Adc88(Cpu* cpu);
+        static uint8_t Adc89(Cpu* cpu);
+        static uint8_t Adc8A(Cpu* cpu);
+        static uint8_t Adc8B(Cpu* cpu);
+        static uint8_t Adc8C(Cpu* cpu);
+        static uint8_t Adc8D(Cpu* cpu);
+        static uint8_t Adc8E(Cpu* cpu);
+        static uint8_t Adc8F(Cpu* cpu);
+        static uint8_t AdcCE(Cpu* cpu);
 };
 
 class Sub
 {
     public:
-        static unsigned char Sub90(Cpu* cpu);
-        static unsigned char Sub91(Cpu* cpu);
-        static unsigned char Sub92(Cpu* cpu);
-        static unsigned char Sub93(Cpu* cpu);
-        static unsigned char Sub94(Cpu* cpu);
-        static unsigned char Sub95(Cpu* cpu);
-        static unsigned char Sub96(Cpu* cpu);
-        static unsigned char Sub97(Cpu* cpu);
-        static unsigned char SubD6(Cpu* cpu);
+        static uint8_t Sub90(Cpu* cpu);
+        static uint8_t Sub91(Cpu* cpu);
+        static uint8_t Sub92(Cpu* cpu);
+        static uint8_t Sub93(Cpu* cpu);
+        static uint8_t Sub94(Cpu* cpu);
+        static uint8_t Sub95(Cpu* cpu);
+        static uint8_t Sub96(Cpu* cpu);
+        static uint8_t Sub97(Cpu* cpu);
+        static uint8_t SubD6(Cpu* cpu);
 };
 
 class Sbc
 {
     public:
-        static unsigned char Sbc98(Cpu* cpu);
-        static unsigned char Sbc99(Cpu* cpu);
-        static unsigned char Sbc9A(Cpu* cpu);
-        static unsigned char Sbc9B(Cpu* cpu);
-        static unsigned char Sbc9C(Cpu* cpu);
-        static unsigned char Sbc9D(Cpu* cpu);
-        static unsigned char Sbc9E(Cpu* cpu);
-        static unsigned char Sbc9F(Cpu* cpu);
-        static unsigned char SbcDE(Cpu* cpu);
+        static uint8_t Sbc98(Cpu* cpu);
+        static uint8_t Sbc99(Cpu* cpu);
+        static uint8_t Sbc9A(Cpu* cpu);
+        static uint8_t Sbc9B(Cpu* cpu);
+        static uint8_t Sbc9C(Cpu* cpu);
+        static uint8_t Sbc9D(Cpu* cpu);
+        static uint8_t Sbc9E(Cpu* cpu);
+        static uint8_t Sbc9F(Cpu* cpu);
+        static uint8_t SbcDE(Cpu* cpu);
 };
 
 class And
 {
     public:
-        static unsigned char AndA0(Cpu* cpu);
-        static unsigned char AndA1(Cpu* cpu);
-        static unsigned char AndA2(Cpu* cpu);
-        static unsigned char AndA3(Cpu* cpu);
-        static unsigned char AndA4(Cpu* cpu);
-        static unsigned char AndA5(Cpu* cpu);
-        static unsigned char AndA6(Cpu* cpu);
-        static unsigned char AndA7(Cpu* cpu);
-        static unsigned char AndE6(Cpu* cpu);
+        static uint8_t AndA0(Cpu* cpu);
+        static uint8_t AndA1(Cpu* cpu);
+        static uint8_t AndA2(Cpu* cpu);
+        static uint8_t AndA3(Cpu* cpu);
+        static uint8_t AndA4(Cpu* cpu);
+        static uint8_t AndA5(Cpu* cpu);
+        static uint8_t AndA6(Cpu* cpu);
+        static uint8_t AndA7(Cpu* cpu);
+        static uint8_t AndE6(Cpu* cpu);
 };
 
 class Xor
 {
     public:
-        static unsigned char XorA8(Cpu* cpu);
-        static unsigned char XorA9(Cpu* cpu);
-        static unsigned char XorAA(Cpu* cpu);
-        static unsigned char XorAB(Cpu* cpu);
-        static unsigned char XorAC(Cpu* cpu);
-        static unsigned char XorAD(Cpu* cpu);
-        static unsigned char XorAE(Cpu* cpu);
-        static unsigned char XorAF(Cpu* cpu);
-        static unsigned char XorEE(Cpu* cpu);
+        static uint8_t XorA8(Cpu* cpu);
+        static uint8_t XorA9(Cpu* cpu);
+        static uint8_t XorAA(Cpu* cpu);
+        static uint8_t XorAB(Cpu* cpu);
+        static uint8_t XorAC(Cpu* cpu);
+        static uint8_t XorAD(Cpu* cpu);
+        static uint8_t XorAE(Cpu* cpu);
+        static uint8_t XorAF(Cpu* cpu);
+        static uint8_t XorEE(Cpu* cpu);
 };
 
 class Or
 {
     public:
-        static unsigned char OrB0(Cpu* cpu);
-        static unsigned char OrB1(Cpu* cpu);
-        static unsigned char OrB2(Cpu* cpu);
-        static unsigned char OrB3(Cpu* cpu);
-        static unsigned char OrB4(Cpu* cpu);
-        static unsigned char OrB5(Cpu* cpu);
-        static unsigned char OrB6(Cpu* cpu);
-        static unsigned char OrB7(Cpu* cpu);
-        static unsigned char OrF6(Cpu* cpu);
+        static uint8_t OrB0(Cpu* cpu);
+        static uint8_t OrB1(Cpu* cpu);
+        static uint8_t OrB2(Cpu* cpu);
+        static uint8_t OrB3(Cpu* cpu);
+        static uint8_t OrB4(Cpu* cpu);
+        static uint8_t OrB5(Cpu* cpu);
+        static uint8_t OrB6(Cpu* cpu);
+        static uint8_t OrB7(Cpu* cpu);
+        static uint8_t OrF6(Cpu* cpu);
 };
 
 class Cp
 {
     public:
-        static unsigned char CpB8(Cpu* cpu);
-        static unsigned char CpB9(Cpu* cpu);
-        static unsigned char CpBA(Cpu* cpu);
-        static unsigned char CpBB(Cpu* cpu);
-        static unsigned char CpBC(Cpu* cpu);
-        static unsigned char CpBD(Cpu* cpu);
-        static unsigned char CpBE(Cpu* cpu);
-        static unsigned char CpBF(Cpu* cpu);
-        static unsigned char CpFE(Cpu* cpu);
+        static uint8_t CpB8(Cpu* cpu);
+        static uint8_t CpB9(Cpu* cpu);
+        static uint8_t CpBA(Cpu* cpu);
+        static uint8_t CpBB(Cpu* cpu);
+        static uint8_t CpBC(Cpu* cpu);
+        static uint8_t CpBD(Cpu* cpu);
+        static uint8_t CpBE(Cpu* cpu);
+        static uint8_t CpBF(Cpu* cpu);
+        static uint8_t CpFE(Cpu* cpu);
 };
 
 #endif // ARITMETIC_H

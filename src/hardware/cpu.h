@@ -22,16 +22,16 @@ class Cpu
         void cycle();
 
         // Start Values taken from Pandocs - Power Up Sequence
-        Register<short> pc = Register<short>("pc", 0x0100);
-        Register<short> sp = Register<short>("sp", 0xFFFE);
-        Register<unsigned char> a = Register<unsigned char>("a", 0x01);
-        Register<unsigned char> f = Register<unsigned char>("f", 0xB0);
-        Register<unsigned char> b = Register<unsigned char>("b", 0x00);
-        Register<unsigned char> c = Register<unsigned char>("c", 0x13);
-        Register<unsigned char> d = Register<unsigned char>("d", 0x00);
-        Register<unsigned char> e = Register<unsigned char>("e", 0xD8);
-        Register<unsigned char> h = Register<unsigned char>("h", 0x01);
-        Register<unsigned char> l = Register<unsigned char>("l", 0x4D);
+        Register<uint16_t> pc = Register<uint16_t>("pc", 0x0100);
+        Register<uint16_t> sp = Register<uint16_t>("sp", 0xFFFE);
+        Register<uint8_t> a = Register<uint8_t>("a", 0x01);
+        Register<uint8_t> f = Register<uint8_t>("f", 0xB0);
+        Register<uint8_t> b = Register<uint8_t>("b", 0x00);
+        Register<uint8_t> c = Register<uint8_t>("c", 0x13);
+        Register<uint8_t> d = Register<uint8_t>("d", 0x00);
+        Register<uint8_t> e = Register<uint8_t>("e", 0xD8);
+        Register<uint8_t> h = Register<uint8_t>("h", 0x01);
+        Register<uint8_t> l = Register<uint8_t>("l", 0x4D);
 
         Cartridge& cartridge;
 

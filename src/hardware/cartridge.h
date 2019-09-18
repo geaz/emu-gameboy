@@ -10,10 +10,10 @@ class Cartridge
         Cartridge() { };
         Cartridge(std::string path);
 
-        char getDataAt(int address);
+        uint8_t getDataAt(uint16_t address);
 
         std::string cartridgePath;
-        unsigned long cartridgeSize;
+        long cartridgeSize;
         char* cartridgeData;
 };
 

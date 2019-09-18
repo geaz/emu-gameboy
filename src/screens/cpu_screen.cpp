@@ -14,8 +14,8 @@ CpuScreen::CpuScreen(Cpu& cpu) : cpu(cpu)
 void CpuScreen::update()
 { 
     ImGui::Begin("Cpu", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
-    ImGui::SetWindowPos(ImVec2(460, 0), ImGuiCond_Always);
-    ImGui::SetWindowSize(ImVec2(221, 551), ImGuiCond_Always);
+    ImGui::SetWindowPos(ImVec2(320, 0), ImGuiCond_Always);
+    ImGui::SetWindowSize(ImVec2(161, 551), ImGuiCond_Always);
 
     ImGui::Text("General");
     ImGui::Separator();
@@ -73,23 +73,23 @@ void CpuScreen::update()
     ImGui::InputText("PC", &pc[0], 6, ImGuiInputTextFlags_ReadOnly);
     
     ImGui::Columns(2, "registers0", false);
-    static std::string a = StringHelper::IntToHexString(cpu.a.get());
-    static std::string f = StringHelper::IntToHexString(cpu.f.get());
+    static std::string a = StringHelper::IntToHexString(cpu.a.get(), 2);
+    static std::string f = StringHelper::IntToHexString(cpu.f.get(), 2);
     ImGui::InputText("A", &a[0], 4, ImGuiInputTextFlags_ReadOnly); ImGui::NextColumn();
     ImGui::InputText("F", &f[0], 4, ImGuiInputTextFlags_ReadOnly); ImGui::NextColumn();
 
-    static std::string b = StringHelper::IntToHexString(cpu.b.get());
-    static std::string c = StringHelper::IntToHexString(cpu.c.get());
+    static std::string b = StringHelper::IntToHexString(cpu.b.get(), 2);
+    static std::string c = StringHelper::IntToHexString(cpu.c.get(), 2);
     ImGui::InputText("B", &b[0], 4, ImGuiInputTextFlags_ReadOnly); ImGui::NextColumn();
     ImGui::InputText("C", &c[0], 4, ImGuiInputTextFlags_ReadOnly); ImGui::NextColumn();
 
-    static std::string d = StringHelper::IntToHexString(cpu.d.get());
-    static std::string e = StringHelper::IntToHexString(cpu.e.get());
+    static std::string d = StringHelper::IntToHexString(cpu.d.get(), 2);
+    static std::string e = StringHelper::IntToHexString(cpu.e.get(), 2);
     ImGui::InputText("D", &d[0], 4, ImGuiInputTextFlags_ReadOnly); ImGui::NextColumn();
     ImGui::InputText("E", &e[0], 4, ImGuiInputTextFlags_ReadOnly); ImGui::NextColumn();
 
-    static std::string h = StringHelper::IntToHexString(cpu.h.get());
-    static std::string l = StringHelper::IntToHexString(cpu.l.get());
+    static std::string h = StringHelper::IntToHexString(cpu.h.get(), 2);
+    static std::string l = StringHelper::IntToHexString(cpu.l.get(), 2);
     ImGui::InputText("H", &h[0], 4, ImGuiInputTextFlags_ReadOnly); ImGui::NextColumn();
     ImGui::InputText("L", &l[0], 4, ImGuiInputTextFlags_ReadOnly); ImGui::NextColumn();
     ImGui::Columns(1);

@@ -8,9 +8,8 @@
 #include "opengl/window.h"
 #include "hardware/gameboy.h"
 #include "hardware/cartridge.h"
-#include "screens/misc_screen.h"
 #include "screens/cpu_screen.h"
-#include "screens/memory_screen.h"
+#include "screens/components_screen.h"
 #include "screens/gameboy_screen.h"
 
 int main(int argc, char** args) {
@@ -23,16 +22,14 @@ int main(int argc, char** args) {
     Cartridge cartridge(args[1]);
     Gameboy gameboy(cartridge);
 
-    Window window("Gameboy", 680, 548);
+    Window window("Gameboy", 480, 548);
     window.setClearColor(224, 248, 208, 255);
     
-    MiscScreen miscScreen;
     CpuScreen cpuScreen(gameboy.cpu);
-    MemoryScreen memoryScreen(gameboy.memory); 
+    ComponentsScreen componentsScreen(gameboy.memory); 
     GameboyScreen gameboyScreen(gameboy);   
 
-    window.addScreen(&miscScreen);
-    window.addScreen(&memoryScreen);
+    window.addScreen(&componentsScreen);
     window.addScreen(&cpuScreen);
     window.addScreen(&gameboyScreen);
     window.startLoop();

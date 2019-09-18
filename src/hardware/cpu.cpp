@@ -20,13 +20,11 @@ ParsedInstruction Cpu::parseNextInstruction()
 {
     Instruction instruction = instructionSet.set[cartridge.getDataAt(pc.get())];
 
-    int k = 0;
     int opcode = 0;
-    for(uint8_t j = instruction.length - 1; j >= 0; j--)
+    for(int j = instruction.length - 1; j >= 0; j--)
     {
         uint8_t singleByte = cartridge.getDataAt(pc.get());
         opcode = opcode | singleByte << (j * 8);
-        k++;
     }
 
     return { opcode, pc.get(), instruction };

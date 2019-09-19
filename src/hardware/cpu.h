@@ -2,16 +2,28 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include "../instructions/instruction_set.h"
+#include <deque>
+
+#include "helper/clock.h"
 #include "memory.h"
 #include "register.h"
+#include "../instructions/instruction_set.h"
 
 enum CpuState
 {
+    STEP,
     PAUSED,
     RUNNING,
     INTERRUPT,
     ERROR
+};
+
+enum Flag
+{
+    Z_ZERO = 7,
+    N_SUBSTRACT = 6,
+    H_HALFCARRY = 5,
+    C_CARRY =4
 };
 
 class Cpu 
@@ -20,6 +32,12 @@ class Cpu
         Cpu(Memory& memory);
 
         void cycle();
+
+        bool getFlag(Flag flag);
+        void setFlag(Flag flag, bool value);
+
+        void pushStack(uint16_t value);
+        uint16_t popStack();
 
         // Start Values taken from Pandocs - Power Up Sequence
         Register<uint16_t> pc = Register<uint16_t>("pc", 0x0100);
@@ -33,14 +51,25 @@ class Cpu
         Register<uint8_t> h = Register<uint8_t>("h", 0x01);
         Register<uint8_t> l = Register<uint8_t>("l", 0x4D);
 
+        RegisterPair af = RegisterPair(a, f);
+        RegisterPair bc = RegisterPair(b, c);
+        RegisterPair de = RegisterPair(d, e);
+        RegisterPair hl = RegisterPair(h, l);
+
         CpuState state = PAUSED;
-        ParsedInstruction currentInstruction;
         ParsedInstruction nextInstruction;
+        ParsedInstruction currentInstruction;
+        // Last 100
+        std::deque<ParsedInstruction> parsedInstructions;
+
+        Memory& memory;
+        Clock clock = Clock(4194304); // Hz
+        bool interruptsEnabled = true;
 
     private:
         ParsedInstruction parseNextInstruction();
+        void addToParsedInstruction(ParsedInstruction parsedInstruction);
 
-        Memory& memory;
         InstructionSet instructionSet;
 };
 

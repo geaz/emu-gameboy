@@ -8,8 +8,5 @@ Gameboy::Gameboy(Cartridge& cartridge) :
 
 void Gameboy::process()
 {
-    if(cpu.state == RUNNING)
-    {
-        cpu.cycle();
-    }
+    cpu.cycle();
 }

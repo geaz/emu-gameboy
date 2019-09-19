@@ -1,11 +1,15 @@
 #pragma once
 #ifndef ARITMETIC_H
 #define ARITMETIC_H
+
+#include "../../hardware/register.h"
 class Cpu;
 
 class Inc
 {
     public:
+        static void IncRegister(Cpu* cpu, Register<uint8_t>& reg);
+
         static uint8_t Inc03(Cpu* cpu);
         static uint8_t Inc04(Cpu* cpu);
         static uint8_t Inc0C(Cpu* cpu);
@@ -23,6 +27,8 @@ class Inc
 class Dec
 {
     public:
+        static void DecRegister(Cpu* cpu, Register<uint8_t>& reg);
+
         static uint8_t Dec05(Cpu* cpu);
         static uint8_t Dec0B(Cpu* cpu);
         static uint8_t Dec0D(Cpu* cpu);
@@ -40,6 +46,9 @@ class Dec
 class Add
 {
     public:
+        static void AddToRegisterPair(Cpu* cpu, RegisterPair& storeIn, uint16_t value);
+        static void AddToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value);
+
         static uint8_t Add09(Cpu* cpu);
         static uint8_t Add19(Cpu* cpu);
         static uint8_t Add29(Cpu* cpu);
@@ -139,6 +148,8 @@ class And
 class Xor
 {
     public:
+        static void XorAcc(Cpu* cpu, uint8_t value);
+
         static uint8_t XorA8(Cpu* cpu);
         static uint8_t XorA9(Cpu* cpu);
         static uint8_t XorAA(Cpu* cpu);

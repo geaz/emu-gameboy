@@ -40,20 +40,20 @@ void ComponentsScreen::update()
             ImGui::EndPopup();
         }
 
-        ImGuiListClipper clipper(memory.getSize());
+        ImGui::BeginChild("memory_child");
+        ImGuiListClipper clipper(memory.getSize() / 10);
         while (clipper.Step())
         {
             for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
-            {
-                std::stringstream rowLabel;
-                rowLabel << StringHelper::IntToHexString(i, 4);
-                rowLabel << " | " << StringHelper::IntToHexString(memory.read(i), 2);
-
-                ImGui::Selectable(rowLabel.str().c_str(), false);
-                ImGui::OpenPopupOnItemClick("item context menu", 1);
+            {             
+                ImGui::Text((StringHelper::IntToHexString((i * 10), 4, false) + " |").c_str());                 
+                for(int j = 0; j < 10; j++)
+                {
+                    ImGui::SameLine(); ImGui::Selectable(StringHelper::IntToHexString(memory.read((i * 10) + j), 2, false).c_str());
+                }
             }
         }
-
+        ImGui::EndChild();
         ImGui::EndTabItem();
     }
     if(ImGui::BeginTabItem("Cartridge"))

@@ -20,7 +20,7 @@ class Memory
         // The cartridge gets mapped into 0x0100 - 0x3FFF (larger cartridges use bank switching)
         // Remaining mapping here: http://gameboy.mongenel.com/dmg/asmmemmap.html
         uint32_t memorySize = 0x10000;
-        unsigned char memory[0x10000]; 
+        uint8_t memory[0x10000]; 
 };
 
 #endif // MEMORY_H

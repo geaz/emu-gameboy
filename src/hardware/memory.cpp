@@ -9,3 +9,4 @@ Memory::Memory(Cartridge& cartridge) : cartridge(cartridge)
 
 uint32_t Memory::getSize() { return memorySize; }
 uint8_t Memory::read(uint16_t address) { return memory[address]; }
+void Memory::write(uint16_t address, uint8_t value) { memory[address] = value; }

@@ -9,6 +9,7 @@
 #include "hardware/gameboy.h"
 #include "hardware/cartridge.h"
 #include "screens/cpu_screen.h"
+#include "screens/instruction_screen.h"
 #include "screens/components_screen.h"
 #include "screens/gameboy_screen.h"
 
@@ -22,15 +23,17 @@ int main(int argc, char** args) {
     Cartridge cartridge(args[1]);
     Gameboy gameboy(cartridge);
 
-    Window window("Gameboy", 480, 548);
+    Window window("Gameboy", 480, 488); // Gameboy Display: 160x144
     window.setClearColor(224, 248, 208, 255);
     
     CpuScreen cpuScreen(gameboy.cpu);
-    ComponentsScreen componentsScreen(gameboy.memory); 
     GameboyScreen gameboyScreen(gameboy);   
+    //ComponentsScreen componentsScreen(gameboy.memory); 
+    InstructionScreen instructionScreen(gameboy.cpu);
 
-    window.addScreen(&componentsScreen);
+    //window.addScreen(&componentsScreen);
     window.addScreen(&cpuScreen);
     window.addScreen(&gameboyScreen);
+    window.addScreen(&instructionScreen);
     window.startLoop();
 }

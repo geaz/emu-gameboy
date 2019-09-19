@@ -56,3 +56,4 @@ struct Instruction
 - http://gbdev.gg8.se/wiki/articles/Main_Page
 - http://gameboy.mongenel.com/dmg/asmmemmap.html
 - http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
+- https://robdor.com/2016/08/10/gameboy-emulator-half-carry-flag/

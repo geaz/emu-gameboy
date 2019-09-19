@@ -14,17 +14,25 @@
 typedef uint8_t (*OpcodeFunc)(Cpu*);
 struct Instruction
 {
-    uint8_t length;           // Byte Length of the Instruction
+    uint8_t length;                 // Byte Length of the Instruction
     std::string mnemonic;           // Mnemonic of the Instruction
     OpcodeFunc executeInterpreter;  // Function Pointer to execute interpreter mode for given opcode
     //TODO OpcodeFunc? eecuteJit;   // Function Pointer to execute jit mode for given opcode
 };
 
+struct ParsedBytes
+{
+    uint8_t opcode = 0;
+    uint8_t low = 0;
+    uint8_t high = 0;
+    uint16_t b16 = 0;
+};
+
 struct ParsedInstruction
 {
-    int bytes;
     long bytePosition;
     Instruction definition;
+    ParsedBytes parsedBytes;
 };
 
 class InstructionSet

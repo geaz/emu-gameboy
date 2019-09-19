@@ -43,15 +43,16 @@ struct Instruction
 ```
 
 ## TODOs
-- Implement CPU
-- Implement Interpreter
+- Implement CPU         (WIP)
+- Implement Graphics    
+- Implement Interpreter (WIP)
 - Implement JIT
 
 ## Ressources
 
 - 8080 Manual (see docs folder - really great to understand how a cpu works)
 - http://bgb.bircd.org/pandocs.htm
+- http://www.devrs.com/gb/files/opcodes.html
 - http://gbdev.gg8.se/wiki/articles/Main_Page
 - http://gameboy.mongenel.com/dmg/asmmemmap.html
 - http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
-- https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf

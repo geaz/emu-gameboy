@@ -54,6 +54,7 @@ class OpcodeScraper():
 class Opcode:
     length = 0
     cycles = 0
+    flags = ''
     opcode = 0x00
     mnemonic = ''
     mnemonic_complete = ''
@@ -74,6 +75,7 @@ class Opcode:
         splitted_info = table_content.contents[2].string.split()
         self.length = splitted_info[0].strip()
         self.cycles = splitted_info[1].strip()
+        self.flags = table_content.contents[4].string
 
     def get_opcode_as_string(self, prefix):
         return_value = "{0:0{1}x}".format(self.opcode,2)
@@ -181,7 +183,7 @@ for group_name, opcode_groups in grouped_by_groupname.items():
                 'opcode_noprefix': opcode.get_opcode_as_string(False).upper(), 'mnemonic_title': opcode.mnemonic.title() })
             group_items.append({
                 'opcode_noprefix': opcode.get_opcode_as_string(False).upper(), 'mnemonic_complete': opcode.mnemonic_complete,
-                'mnemonic_title': opcode.mnemonic.title(), 'cycles': opcode.cycles
+                'mnemonic_title': opcode.mnemonic.title(), 'cycles': opcode.cycles, 'length': opcode.length, 'flags': opcode.flags
             })
         group_class_items += tmpl_group_class_item.get_substitutions(group_items)
         group_class_definitions += tmpl_group_header_class.get_substitution({ 

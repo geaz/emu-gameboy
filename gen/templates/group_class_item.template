@@ -1,7 +1,7 @@
 uint8_t ${mnemonic_title}::${mnemonic_title}${opcode_noprefix}(Cpu* cpu)
 {
-    // Mnemonic: ${mnemonic_complete}
-    // Cycles: ${cycles}
+    // Mnemonic: ${mnemonic_complete}, Length: ${length}
+    // Cycles: ${cycles}, (Z N H C): ${flags}
     throw std::runtime_error("Not implemented! (${mnemonic_title}${opcode_noprefix})");
     return 0;
 }

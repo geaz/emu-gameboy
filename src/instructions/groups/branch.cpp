@@ -279,7 +279,7 @@ uint8_t Reti::RetiD9(Cpu* cpu)
     // Mnemonic: RETI, Length: 1
     // Cycles: 16, (Z N H C): - - - -
     cpu->pc = cpu->popStack();
-    cpu->interruptsEnabled = true;
+    cpu->memory.write(INTERRUPT_ENABLED, true);
     return 16;
 }
 

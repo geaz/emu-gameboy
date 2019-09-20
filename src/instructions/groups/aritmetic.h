@@ -134,6 +134,8 @@ class Sbc
 class And
 {
     public:
+        static void AndAcc(Cpu* cpu, uint8_t value);
+
         static uint8_t AndA0(Cpu* cpu);
         static uint8_t AndA1(Cpu* cpu);
         static uint8_t AndA2(Cpu* cpu);
@@ -164,6 +166,8 @@ class Xor
 class Or
 {
     public:
+        static void OrAcc(Cpu* cpu, uint8_t value);
+
         static uint8_t OrB0(Cpu* cpu);
         static uint8_t OrB1(Cpu* cpu);
         static uint8_t OrB2(Cpu* cpu);
@@ -178,6 +182,8 @@ class Or
 class Cp
 {
     public:
+        static void CpAcc(Cpu* cpu, uint8_t value);
+
         static uint8_t CpB8(Cpu* cpu);
         static uint8_t CpB9(Cpu* cpu);
         static uint8_t CpBA(Cpu* cpu);

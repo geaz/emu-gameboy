@@ -200,7 +200,7 @@ uint8_t Dec::Dec35(Cpu* cpu)
 {
     // Mnemonic: DEC (HL), Length: 1
     // Cycles: 12, (Z N H C): Z 1 H -
-    uint8_t address = cpu->hl.read();
+    uint16_t address = cpu->hl.read();
     cpu->memory.write(address, cpu->memory.read(address) - 1);
     cpu->setFlag(Z_ZERO, false);
     cpu->setFlag(N_SUBSTRACT, true);
@@ -613,76 +613,87 @@ uint8_t Sbc::SbcDE(Cpu* cpu)
     return 0;
 }
 
+/************** And *******************/
+void And::AndAcc(Cpu* cpu, uint8_t value)
+{
+    cpu->a = cpu->a.read() & value;
+
+    cpu->setFlag(Z_ZERO, cpu->a.read() == 0);
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, true);
+    cpu->setFlag(C_CARRY, false);
+}
+
 uint8_t And::AndA0(Cpu* cpu)
 {
     // Mnemonic: AND B, Length: 1
     // Cycles: 4, (Z N H C): Z 0 1 0
-    throw std::runtime_error("Not implemented! (AndA0)");
-    return 0;
+    And::AndAcc(cpu, cpu->b.read());
+    return 4;
 }
 
 uint8_t And::AndA1(Cpu* cpu)
 {
     // Mnemonic: AND C, Length: 1
     // Cycles: 4, (Z N H C): Z 0 1 0
-    throw std::runtime_error("Not implemented! (AndA1)");
-    return 0;
+    And::AndAcc(cpu, cpu->c.read());
+    return 4;
 }
 
 uint8_t And::AndA2(Cpu* cpu)
 {
     // Mnemonic: AND D, Length: 1
     // Cycles: 4, (Z N H C): Z 0 1 0
-    throw std::runtime_error("Not implemented! (AndA2)");
-    return 0;
+    And::AndAcc(cpu, cpu->d.read());
+    return 4;
 }
 
 uint8_t And::AndA3(Cpu* cpu)
 {
     // Mnemonic: AND E, Length: 1
     // Cycles: 4, (Z N H C): Z 0 1 0
-    throw std::runtime_error("Not implemented! (AndA3)");
-    return 0;
+    And::AndAcc(cpu, cpu->e.read());
+    return 4;
 }
 
 uint8_t And::AndA4(Cpu* cpu)
 {
     // Mnemonic: AND H, Length: 1
     // Cycles: 4, (Z N H C): Z 0 1 0
-    throw std::runtime_error("Not implemented! (AndA4)");
-    return 0;
+    And::AndAcc(cpu, cpu->h.read());
+    return 4;
 }
 
 uint8_t And::AndA5(Cpu* cpu)
 {
     // Mnemonic: AND L, Length: 1
     // Cycles: 4, (Z N H C): Z 0 1 0
-    throw std::runtime_error("Not implemented! (AndA5)");
-    return 0;
+    And::AndAcc(cpu, cpu->l.read());
+    return 4;
 }
 
 uint8_t And::AndA6(Cpu* cpu)
 {
     // Mnemonic: AND (HL), Length: 1
     // Cycles: 8, (Z N H C): Z 0 1 0
-    throw std::runtime_error("Not implemented! (AndA6)");
-    return 0;
+    And::AndAcc(cpu, cpu->memory.read(cpu->hl.read()));
+    return 8;
 }
 
 uint8_t And::AndA7(Cpu* cpu)
 {
     // Mnemonic: AND A, Length: 1
     // Cycles: 4, (Z N H C): Z 0 1 0
-    throw std::runtime_error("Not implemented! (AndA7)");
-    return 0;
+    And::AndAcc(cpu, cpu->a.read());
+    return 4;
 }
 
 uint8_t And::AndE6(Cpu* cpu)
 {
     // Mnemonic: AND d8, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 0
-    throw std::runtime_error("Not implemented! (AndE6)");
-    return 0;
+    And::AndAcc(cpu, cpu->currentInstruction.parsedBytes.low);
+    return 8;
 }
 
 /************** Xor *******************/
@@ -691,9 +702,9 @@ void Xor::XorAcc(Cpu* cpu, uint8_t value)
     cpu->a = cpu->a.read() ^ value;
 
     cpu->setFlag(Z_ZERO, cpu->a.read() == 0);
-    cpu->setFlag(N_SUBSTRACT, 0);
-    cpu->setFlag(H_HALFCARRY, 0);
-    cpu->setFlag(C_CARRY, 0);
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, false);
+    cpu->setFlag(C_CARRY, false);
 }
 
 uint8_t Xor::XorA8(Cpu* cpu)
@@ -768,147 +779,169 @@ uint8_t Xor::XorEE(Cpu* cpu)
     return 8;
 }
 
+/************** Or *******************/
+void Or::OrAcc(Cpu* cpu, uint8_t value)
+{
+    cpu->a = cpu->a.read() | value;
+
+    cpu->setFlag(Z_ZERO, cpu->a.read() == 0);
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, false);
+    cpu->setFlag(C_CARRY, false);
+}
+
 uint8_t Or::OrB0(Cpu* cpu)
 {
     // Mnemonic: OR B, Length: 1
     // Cycles: 4, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (OrB0)");
-    return 0;
+    Or::OrAcc(cpu, cpu->b.read());
+    return 4;
 }
 
 uint8_t Or::OrB1(Cpu* cpu)
 {
     // Mnemonic: OR C, Length: 1
     // Cycles: 4, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (OrB1)");
-    return 0;
+    Or::OrAcc(cpu, cpu->c.read());
+    return 4;
 }
 
 uint8_t Or::OrB2(Cpu* cpu)
 {
     // Mnemonic: OR D, Length: 1
     // Cycles: 4, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (OrB2)");
-    return 0;
+    Or::OrAcc(cpu, cpu->d.read());
+    return 4;
 }
 
 uint8_t Or::OrB3(Cpu* cpu)
 {
     // Mnemonic: OR E, Length: 1
     // Cycles: 4, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (OrB3)");
-    return 0;
+    Or::OrAcc(cpu, cpu->e.read());
+    return 4;
 }
 
 uint8_t Or::OrB4(Cpu* cpu)
 {
     // Mnemonic: OR H, Length: 1
     // Cycles: 4, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (OrB4)");
-    return 0;
+    Or::OrAcc(cpu, cpu->h.read());
+    return 4;
 }
 
 uint8_t Or::OrB5(Cpu* cpu)
 {
     // Mnemonic: OR L, Length: 1
     // Cycles: 4, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (OrB5)");
-    return 0;
+    Or::OrAcc(cpu, cpu->l.read());
+    return 4;
 }
 
 uint8_t Or::OrB6(Cpu* cpu)
 {
     // Mnemonic: OR (HL), Length: 1
     // Cycles: 8, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (OrB6)");
-    return 0;
+    Or::OrAcc(cpu, cpu->memory.read(cpu->hl.read()));
+    return 8;
 }
 
 uint8_t Or::OrB7(Cpu* cpu)
 {
     // Mnemonic: OR A, Length: 1
     // Cycles: 4, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (OrB7)");
-    return 0;
+    Or::OrAcc(cpu, cpu->a.read());
+    return 4;
 }
 
 uint8_t Or::OrF6(Cpu* cpu)
 {
     // Mnemonic: OR d8, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (OrF6)");
-    return 0;
+    Or::OrAcc(cpu, cpu->currentInstruction.parsedBytes.low);
+    return 8;
+}
+
+/************** CP *******************/
+void Cp::CpAcc(Cpu* cpu, uint8_t value)
+{
+    uint8_t result = cpu->a.read() - value;
+
+    cpu->setFlag(Z_ZERO, result == 0);
+    cpu->setFlag(N_SUBSTRACT, true);
+    cpu->setFlag(H_HALFCARRY, (cpu->a.read() & 0xF) - (value & 0xF) < 0);
+    cpu->setFlag(C_CARRY, cpu->a.read() - value < 0);
 }
 
 uint8_t Cp::CpB8(Cpu* cpu)
 {
     // Mnemonic: CP B, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (CpB8)");
-    return 0;
+    Cp::CpAcc(cpu, cpu->b.read());
+    return 4;
 }
 
 uint8_t Cp::CpB9(Cpu* cpu)
 {
     // Mnemonic: CP C, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (CpB9)");
-    return 0;
+    Cp::CpAcc(cpu, cpu->c.read());
+    return 4;
 }
 
 uint8_t Cp::CpBA(Cpu* cpu)
 {
     // Mnemonic: CP D, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (CpBA)");
-    return 0;
+    Cp::CpAcc(cpu, cpu->d.read());
+    return 4;
 }
 
 uint8_t Cp::CpBB(Cpu* cpu)
 {
     // Mnemonic: CP E, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (CpBB)");
-    return 0;
+    Cp::CpAcc(cpu, cpu->e.read());
+    return 4;
 }
 
 uint8_t Cp::CpBC(Cpu* cpu)
 {
     // Mnemonic: CP H, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (CpBC)");
-    return 0;
+    Cp::CpAcc(cpu, cpu->h.read());
+    return 4;
 }
 
 uint8_t Cp::CpBD(Cpu* cpu)
 {
     // Mnemonic: CP L, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (CpBD)");
-    return 0;
+    Cp::CpAcc(cpu, cpu->l.read());
+    return 4;
 }
 
 uint8_t Cp::CpBE(Cpu* cpu)
 {
     // Mnemonic: CP (HL), Length: 1
     // Cycles: 8, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (CpBE)");
-    return 0;
+    Cp::CpAcc(cpu, cpu->memory.read(cpu->hl.read()));
+    return 8;
 }
 
 uint8_t Cp::CpBF(Cpu* cpu)
 {
     // Mnemonic: CP A, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (CpBF)");
-    return 0;
+    Cp::CpAcc(cpu, cpu->a.read());
+    return 4;
 }
 
 uint8_t Cp::CpFE(Cpu* cpu)
 {
     // Mnemonic: CP d8, Length: 2
     // Cycles: 8, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (CpFE)");
-    return 0;
+    Cp::CpAcc(cpu, cpu->currentInstruction.parsedBytes.low);
+    return 8;
 }
 

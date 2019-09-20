@@ -62,7 +62,7 @@ uint8_t Di::DiF3(Cpu* cpu)
 {
     // Mnemonic: DI, Length: 1
     // Cycles: 4, (Z N H C): - - - -
-    cpu->interruptsEnabled = false;
+    cpu->memory.write(INTERRUPT_ENABLED, false);
     return 4;
 }
 
@@ -70,7 +70,7 @@ uint8_t Ei::EiFB(Cpu* cpu)
 {
     // Mnemonic: EI, Length: 1
     // Cycles: 4, (Z N H C): - - - -
-    cpu->interruptsEnabled = true;
+    cpu->memory.write(INTERRUPT_ENABLED, true);
     return 4;
 }
 

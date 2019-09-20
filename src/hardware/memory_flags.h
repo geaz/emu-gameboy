@@ -13,7 +13,7 @@ enum IORegister
     SCROLL_Y = 0xFF42,
     SCROLL_X = 0xFF42,
     LCD_Y = 0xFF44,
-    LCD_COMPARE = 0xFF45,
+    LCD_Y_COMPARE = 0xFF45,
     DMA = 0xFF46,
     BG_PALETTE = 0xFF47,    // Bit 7-6 - Data for Dot Data 11 (Normally darkest color
                             // Bit 5-4 - Data for Dot Data 10
@@ -58,11 +58,11 @@ enum TimerBit
 
 enum InterruptBit
 {
-    INPUT_INTERRUPT = 4,    // (Prio 5) Bit 4: Transition from High to Low of Pin number P10-P13
-    SERIAL_INTERRUPT = 3,   // (Prio 4) Bit 3: Serial I/O transfer complete
-    TIMER_INTERRUPT = 2,    // (Prio 3) Bit 2: Timer Overflow              
-    LCDC_INTERRUPT = 1,     // (Prio 2) Bit 1: LCDC 
-    V_BLANK_INTERRUPT = 0   // (Prio 1) Bit 0: V-Blank
+    INTERRUPT_INPUT = 4,    // (Prio 5) Bit 4: Transition from High to Low of Pin number P10-P13
+    INTERRUPT_SERIAL = 3,   // (Prio 4) Bit 3: Serial I/O transfer complete
+    INTERRUPT_TIMER = 2,    // (Prio 3) Bit 2: Timer Overflow              
+    INTERRUPT_LCD = 1,     // (Prio 2) Bit 1: LCDC 
+    INTERRUPT_V_BLANK = 0   // (Prio 1) Bit 0: V-Blank
 };
 
 enum LCDRegisterBit
@@ -79,14 +79,21 @@ enum LCDRegisterBit
 
 enum LCDStatusBit
 {
-    LCD_COINCIDENCE_INTERRUPT = 6,  // Bit 6 - LYC=LY Coincidence Interrupt (1=Enable) (Read/Write)
-    LCD_OAM_INTERRUPT = 5,          // Bit 5 - Mode 2 OAM Interrupt         (1=Enable) (Read/Write)
-    LCD_V_BLANK_INTERRUPT = 4,      // Bit 4 - Mode 1 V-Blank Interrupt     (1=Enable) (Read/Write)
-    LCD_H_BLANK_INTERRUPT = 3,      // Bit 3 - Mode 0 H-Blank Interrupt     (1=Enable) (Read/Write)
-    LCD_COINCIDENCE = 2,            // Bit 2 - Coincidence Flag  (0:LYC<>LY, 1:LYC=LY) (Read Only)
-    LCD_MODE_HIGH = 1,              //Bit 1-0 - Mode Flag       (Mode 0-3, see below) (Read Only)
-    LCD_MODE_LOW = 0,               //        00: During H-Blank
-                                    //        01: During V-Blank
-                                    //        10: During Searching OAM-RAM
-                                    //        11: During Transfering Data to LCD Driver
+    LCD_C_INTERRUPT_ENABLED = 6,        // Bit 6 - LYC=LY Coincidence Interrupt (1=Enable) (Read/Write)
+    LCD_OAM_INTERRUPT_ENABLED = 5,      // Bit 5 - Mode 2 OAM Interrupt         (1=Enable) (Read/Write)
+    LCD_V_BLANK_INTERRUPT_ENABLED = 4,  // Bit 4 - Mode 1 V-Blank Interrupt     (1=Enable) (Read/Write)
+    LCD_H_BLANK_INTERRUPT_ENABLE = 3,   // Bit 3 - Mode 0 H-Blank Interrupt     (1=Enable) (Read/Write)
+    LCD_COINCIDENCE_MODE = 2,           // Bit 2 - Coincidence Flag  (0:LYC<>LY, 1:LYC=LY) (Read Only)
+    LCD_MODE_HIGH = 1,                  //Bit 1-0 - Mode Flag       (Mode 0-3, see below) (Read Only)
+    LCD_MODE_LOW = 0,                   //        00: During H-Blank
+                                        //        01: During V-Blank
+                                        //        10: During Searching OAM-RAM
+                                        //        11: During Transfering Data to LCD Driver
+};
+
+enum LCDMode {
+    MODE_HBLANK = 0,
+    MODE_VBLANK = 1,
+    MODE_OAM = 2,
+    MODE_TRANSFER = 3,
 };

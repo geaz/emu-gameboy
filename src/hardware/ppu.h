@@ -4,13 +4,6 @@
 
 #include "memory.h"
 
-enum Mode {
-    MODE_HBLANK = 0,
-    MODE_VBLANK = 1,
-    MODE_OAM = 2,
-    MODE_TRANSFER = 3,
-};
-
 class Ppu
 {
     public:

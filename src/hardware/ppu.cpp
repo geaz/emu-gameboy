@@ -17,7 +17,24 @@ void Ppu::cycle(long cycles)
         case MODE_OAM:
             if(cycleCount < CYCLES_PER_OAMSEARCH) return;
 
-            // LYC Check
+            // Check for OAM Interrupt
+            if((bool) memory.readIORegisterBit(LCD_STATUS, LCD_OAM_INTERRUPT_ENABLED))
+            {
+                memory.writeIORegisterBit(INTERRUPT_FLAG, INTERRUPT_LCD, true);
+            }
+
+            // Check for LCD Y Compare Interrupt, if it is enabled
+            if((bool) memory.readIORegisterBit(LCD_STATUS, LCD_C_INTERRUPT_ENABLED))
+            {
+                uint8_t lcdy = memory.readIORegister(LCD_Y);
+                uint8_t lcdyc = memory.readIORegister(LCD_Y_COMPARE);
+                bool isLycEqualMode = (bool) memory.readIORegisterBit(LCD_STATUS, LCD_COINCIDENCE_MODE);
+                if(    (isLycEqualMode && lcdy == lcdyc)
+                    || (!isLycEqualMode && lcdy != lcdyc))
+                {
+                    memory.writeIORegisterBit(INTERRUPT_FLAG, INTERRUPT_LCD, true);
+                }                
+            }
 
             memory.writeIORegisterBit(LCD_STATUS, LCD_MODE_HIGH, 1);
             memory.writeIORegisterBit(LCD_STATUS, LCD_MODE_LOW, 1);
@@ -36,8 +53,14 @@ void Ppu::cycle(long cycles)
         case MODE_HBLANK:
             if(cycleCount < CYCLES_PER_HBLANK) return;
 
-            // HBLANK INTERRUPT
+            // Check for H-BLANK Interrupt
+            if((bool) memory.readIORegisterBit(LCD_STATUS, LCD_H_BLANK_INTERRUPT_ENABLE))
+            {
+                memory.writeIORegisterBit(INTERRUPT_FLAG, INTERRUPT_LCD, true);
+            }
+
             // DRAW Line on Screen
+            // TODO
 
             // Enter V-BLANK on last line 143
             if(memory.read(LCD_Y) == 143)
@@ -51,25 +74,32 @@ void Ppu::cycle(long cycles)
                 memory.writeIORegisterBit(LCD_STATUS, LCD_MODE_HIGH, 1);
                 memory.writeIORegisterBit(LCD_STATUS, LCD_MODE_LOW, 0);
             }     
-            // Increment Line count
-            memory.write(LCD_Y, memory.read(LCD_Y) + 1); 
+
+            // Increment Line count and update cycles
+            memory.write(LCD_Y, memory.read(LCD_Y) + 1, true); 
             cycleCount = cycleCount % CYCLES_PER_HBLANK;     
             modeProcessed = true; 
             break; 
         case MODE_VBLANK:
             if(cycleCount < CYCLES_PER_VBLANK) return;
-            // SET V INTERRUPT
+
+            // Set V_BLANK interrupt on V-Blank mode begin (Line 144)
+            if(memory.read(LCD_Y) == 144)
+            {
+                memory.writeIORegisterBit(INTERRUPT_FLAG, INTERRUPT_V_BLANK, true);
+            }
             
-            // Reset on last line 153
+            // Reset on last line 153 and Enter OAM
             if(memory.read(LCD_Y) == 153)
             {
-                memory.write(LCD_Y, 0);
+                memory.write(LCD_Y, 0, true);
                 memory.writeIORegisterBit(LCD_STATUS, LCD_MODE_HIGH, 1);
                 memory.writeIORegisterBit(LCD_STATUS, LCD_MODE_LOW, 0);
             }
+            // Else increment Y and stay in V-Blank Mode
             else
             {                
-                memory.write(LCD_Y, memory.read(LCD_Y) + 1);
+                memory.write(LCD_Y, memory.read(LCD_Y) + 1, true);
             }
 
             cycleCount = cycleCount % CYCLES_PER_VBLANK; 

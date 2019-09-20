@@ -10,7 +10,7 @@ class Memory
     public:
         Memory(Cartridge& cartridge);
 
-        void write(const uint16_t address, const uint8_t value);
+        void write(const uint16_t address, const uint8_t value, const bool ppuWrite = false);
         uint8_t read(const uint16_t address, const bool debugAccess = false) const;
 
         uint8_t readIORegister(const IORegister reg) const;

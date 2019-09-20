@@ -58,6 +58,8 @@
         "locale": "cpp",
         "optional": "cpp",
         "xlocbuf": "cpp",
-        "xlocmes": "cpp"
+        "xlocmes": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp"
     }
 }

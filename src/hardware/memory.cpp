@@ -10,7 +10,7 @@ void Memory::write(const uint16_t address, const uint8_t value) { memory[address
 uint8_t Memory::read(const uint16_t address, const bool debugAccess) const 
 { 
     // Cartridge Mapping
-    if(address >= 0x100 && address <= 0x3F00)
+    if(address >= 0x000 && address <= 0x3F00)
         return cartridge.read(address);
     // VRAM Access through the PPU
     // CPU is not allowed to access it directly

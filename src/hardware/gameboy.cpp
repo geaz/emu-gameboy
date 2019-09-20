@@ -3,10 +3,12 @@
 Gameboy::Gameboy(Cartridge& cartridge) : 
     cartridge(cartridge),
     memory(Memory(cartridge)),
-    cpu(Cpu(memory))
+    cpu(Cpu(memory)),
+    ppu(memory)
 { }
 
 void Gameboy::process()
 {
-    cpu.cycle();
+    long cycles = cpu.cycle();
+    ppu.cycle(cycles);
 }

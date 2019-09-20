@@ -26,7 +26,7 @@ class ComponentsScreen : public Screen
             std::function<uint8_t (uint32_t)> memoryReadFunc);
 
         std::map<uint16_t, std::string> memoryToolTips = {
-            { 0x0100, "Cartridge Bank 0 Start" },
+            { 0x0000, "Cartridge Bank 0 Start" },
             { 0x4000, "Cartridge Bank Switchable" },
             { 0x8000, "Video RAM Start" },
             { 0xA000, "External RAM Start" },

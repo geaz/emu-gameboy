@@ -31,7 +31,7 @@ class Cpu
     public:
         Cpu(Memory& memory);
 
-        void cycle();
+        long cycle();
 
         bool getFlag(Flag flag);
         void setFlag(Flag flag, bool value);
@@ -64,7 +64,6 @@ class Cpu
 
         Memory& memory;
         Clock clock = Clock(4194304); // Hz
-        bool interruptsEnabled = true;
 
     private:
         ParsedInstruction parseNextInstruction();

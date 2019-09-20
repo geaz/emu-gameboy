@@ -7,8 +7,9 @@ void Clock::Reset() { lastCycle = getNowMs(); }
 
 long Clock::getCatchUpCycles() 
 {
+    if(lastCycle == -1) Reset();
     long long nowMs = getNowMs();
-    long cycles = (int) (nowMs - lastCycle) * frequency / 1000;
+    long cycles = (long) (nowMs - lastCycle) * frequency / 1000;
     return cycles;
 }
 

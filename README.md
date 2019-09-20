@@ -1,4 +1,4 @@
-# A Gameboy emulator written in C++ (WIP)
+# A Game Boy emulator written in C++ (WIP)
 
 I started this project to create a cycle accurate emulator which is capable to do emulation in **interpreter mode** and in **jit mode**.
 The aim was to create a code base which is easy to follow for beginners.
@@ -56,3 +56,4 @@ struct Instruction
 - [Opcodes Table](http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html)
 - [Memory Map](http://gameboy.mongenel.com/dmg/asmmemmap.html)
 - [Game Boy - CPU Manual](https://realboyemulator.files.wordpress.com/2013/01/gbcpuman.pdf) (Backup of the Site in the *docs folder*)
+- [Ultimate Game Boy Talk](https://www.youtube.com/watch?v=HyzD8pNlpwI)

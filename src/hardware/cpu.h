@@ -68,7 +68,7 @@ class Cpu
 
     private:
         ParsedInstruction parseNextInstruction();
-        void addToParsedInstruction(ParsedInstruction parsedInstruction);
+        void addToParsedInstructions(ParsedInstruction parsedInstruction);
 
         InstructionSet instructionSet;
 };

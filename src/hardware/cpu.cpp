@@ -2,7 +2,6 @@
 
 Cpu::Cpu(Memory& memory) : memory(memory) 
 { 
-    pc = 0x100;
     nextInstruction = parseNextInstruction();
 }
 
@@ -72,12 +71,12 @@ ParsedInstruction Cpu::parseNextInstruction()
         nextInstruction.parsedBytes.low = memory.read(pc.read() + 1);
     }
 
-    addToParsedInstruction(nextInstruction);
+    addToParsedInstructions(nextInstruction);
     return nextInstruction;
 }
 
-void Cpu::addToParsedInstruction(ParsedInstruction parsedInstruction)
+void Cpu::addToParsedInstructions(ParsedInstruction parsedInstruction)
 {
-    if(parsedInstructions.size() == 100) parsedInstructions.pop_back();
+    if(parsedInstructions.size() == 500) parsedInstructions.pop_back();
     parsedInstructions.push_front(parsedInstruction);
 }

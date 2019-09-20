@@ -15,3 +15,8 @@ Cartridge::Cartridge(std::string path) : cartridgePath(path)
     cartridgeFile.read(cartridgeData, cartridgeSize);
     cartridgeFile.close();
 }
+
+uint8_t Cartridge::read(uint16_t address)
+{
+    return (uint8_t)cartridgeData[address];
+}

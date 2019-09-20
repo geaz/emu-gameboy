@@ -13,7 +13,7 @@ InstructionScreen::InstructionScreen(Cpu& cpu) : cpu(cpu)
 
 void InstructionScreen::update()
 {     
-    ImGui::Begin("Instructions (Last 100)", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
+    ImGui::Begin("Instructions (Last 500)", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
     ImGui::SetWindowPos(ImVec2(-1, 288), ImGuiCond_Always);
     ImGui::SetWindowSize(ImVec2(322, 201), ImGuiCond_Always);
 

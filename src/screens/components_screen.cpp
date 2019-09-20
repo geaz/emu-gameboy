@@ -12,8 +12,8 @@ ComponentsScreen::ComponentsScreen(Memory& memory) : memory(memory)
 void ComponentsScreen::update()
 { 
     ImGui::Begin("Components", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
-    ImGui::SetWindowPos(ImVec2(0, 288), ImGuiCond_Always);
-    ImGui::SetWindowSize(ImVec2(321, 261), ImGuiCond_Always);
+    ImGui::SetWindowPos(ImVec2(480, -1), ImGuiCond_Always);
+    ImGui::SetWindowSize(ImVec2(301, 490), ImGuiCond_Always);
     
     ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None);
     if(ImGui::BeginTabItem("Memory"))
@@ -49,7 +49,14 @@ void ComponentsScreen::update()
                 ImGui::Text((StringHelper::IntToHexString((i * 10), 4, false) + " |").c_str());                 
                 for(int j = 0; j < 10; j++)
                 {
-                    ImGui::SameLine(); ImGui::Selectable(StringHelper::IntToHexString(memory.read((i * 10) + j), 2, false).c_str());
+                    ImGui::SameLine(); 
+                    ImGui::Text(StringHelper::IntToHexString(memory.read((i * 10) + j), 2, false).c_str());
+                    if(ImGui::IsItemHovered())
+                    {                        
+                        auto pos = ImGui::GetItemRectMin();
+                        pos.x -= 4; pos.y -= 4;
+                        ImGui::GetWindowDrawList()->AddRectFilled(pos, ImVec2(pos.x + 24, pos.y + 24), IM_COL32(150, 150, 150, 100));
+                    }
                 }
             }
         }

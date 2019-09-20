@@ -23,15 +23,15 @@ int main(int argc, char** args) {
     Cartridge cartridge(args[1]);
     Gameboy gameboy(cartridge);
 
-    Window window("Gameboy", 480, 488); // Gameboy Display: 160x144
+    Window window("Gameboy", 780, 488); // Gameboy Display: 160x144
     window.setClearColor(224, 248, 208, 255);
     
     CpuScreen cpuScreen(gameboy.cpu);
     GameboyScreen gameboyScreen(gameboy);   
-    //ComponentsScreen componentsScreen(gameboy.memory); 
+    ComponentsScreen componentsScreen(gameboy.memory); 
     InstructionScreen instructionScreen(gameboy.cpu);
 
-    //window.addScreen(&componentsScreen);
+    window.addScreen(&componentsScreen);
     window.addScreen(&cpuScreen);
     window.addScreen(&gameboyScreen);
     window.addScreen(&instructionScreen);

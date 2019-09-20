@@ -14,7 +14,7 @@ class Memory
         uint8_t read(const uint16_t address, const bool debugAccess = false) const;
 
         uint8_t readIORegister(const IORegister reg) const;
-        bool readIORegisterBit(const IORegister reg, const uint8_t bitNr) const;
+        uint8_t readIORegisterBit(const IORegister reg, const uint8_t bitNr) const;
         void writeIORegisterBit(const IORegister reg, const uint8_t bitNr, const bool value);
 
         uint32_t getSize() const;

@@ -28,7 +28,7 @@ void Memory::writeIORegisterBit(const IORegister reg, const uint8_t bitNr, const
     else memory[reg] &= ~(0x1 << bitNr); 
 }
 
-bool Memory::readIORegisterBit(const IORegister reg, const uint8_t bitNr) const { return (memory[reg] >> bitNr) & 0x1; }
+uint8_t Memory::readIORegisterBit(const IORegister reg, const uint8_t bitNr) const { return (memory[reg] >> bitNr) & 0x1; }
 uint8_t Memory::readIORegister(const IORegister reg) const { return memory[reg]; }
 
 uint32_t Memory::getSize() const { return memorySize; }

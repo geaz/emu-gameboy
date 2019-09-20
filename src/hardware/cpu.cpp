@@ -7,6 +7,7 @@ Cpu::Cpu(Memory& memory) : memory(memory)
 
 long Cpu::cycle() 
 {   
+    int processedCycles = 0;
     int cycles = clock.getCatchUpCycles();
     while(cycles > 0 && (state == RUNNING || state == STEP))
     {
@@ -15,11 +16,12 @@ long Cpu::cycle()
         pc += currentInstruction.definition.length;
         cycles -= currentInstruction.definition.executeInterpreter(this);
 
+        processedCycles++;
         nextInstruction = parseNextInstruction();
         if(state == STEP) state = PAUSED;
     }   
     clock.Reset(); 
-    return cycles;
+    return processedCycles;
 }
 
 bool Cpu::getFlag(Flag flag)

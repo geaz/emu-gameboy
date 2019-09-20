@@ -50,10 +50,9 @@ struct Instruction
 
 ## Ressources
 
-- 8080 Manual (see docs folder - really great to understand how a cpu works)
-- http://bgb.bircd.org/pandocs.htm
-- http://www.devrs.com/gb/files/opcodes.html
-- http://gbdev.gg8.se/wiki/articles/Main_Page
-- http://gameboy.mongenel.com/dmg/asmmemmap.html
-- http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
-- https://robdor.com/2016/08/10/gameboy-emulator-half-carry-flag/
+- 8080 Manual (see *docs folder* - really great to understand how a cpu works)
+- [Pandocs](http://bgb.bircd.org/pandocs.htm) (Backup of the Site in the *docs folder*)
+- [Opcodes](http://www.devrs.com/gb/files/opcodes.html)
+- [Opcodes Table](http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html)
+- [Memory Map](http://gameboy.mongenel.com/dmg/asmmemmap.html)
+- [Game Boy - CPU Manual](https://realboyemulator.files.wordpress.com/2013/01/gbcpuman.pdf) (Backup of the Site in the *docs folder*)

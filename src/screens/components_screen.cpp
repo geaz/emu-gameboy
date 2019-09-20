@@ -6,8 +6,8 @@
 #include "components_screen.h"
 #include "../helper/string_helper.h"
 
-ComponentsScreen::ComponentsScreen(Memory& memory) : memory(memory)
-{ }
+ComponentsScreen::ComponentsScreen(Memory& memory, Cartridge& cartridge) 
+    : memory(memory), cartridge(cartridge) { }
 
 void ComponentsScreen::update()
 { 
@@ -18,81 +18,81 @@ void ComponentsScreen::update()
     ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None);
     if(ImGui::BeginTabItem("Memory"))
     {
-        ImGui::Button("Jump To");
-        if (ImGui::BeginPopupContextItem("jump_context_menu", 0))
-        {
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::Selectable("Set to zero");
-            ImGui::EndPopup();
-        }
-
-        ImGui::BeginChild("memory_child");
-        ImGuiListClipper clipper(memory.getSize() / 10);
-        while (clipper.Step())
-        {
-            for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
-            {             
-                ImGui::Text((StringHelper::IntToHexString((i * 10), 4, false) + " |").c_str());                 
-                for(int j = 0; j < 10; j++)
-                {
-                    ImGui::SameLine(); 
-                    ImGui::Text(StringHelper::IntToHexString(memory.read((i * 10) + j), 2, false).c_str());
-                    if(ImGui::IsItemHovered())
-                    {                        
-                        auto pos = ImGui::GetItemRectMin();
-                        pos.x -= 4; pos.y -= 4;
-                        ImGui::GetWindowDrawList()->AddRectFilled(pos, ImVec2(pos.x + 24, pos.y + 24), IM_COL32(150, 150, 150, 100));
-                    }
-                }
-            }
-        }
-        ImGui::EndChild();
+        drawMemoryMap("Memory", memoryToolTips, memory.getSize(), 
+            [this] (uint32_t address) -> uint8_t { return memory.read(address, true); });
         ImGui::EndTabItem();
     }
     if(ImGui::BeginTabItem("Cartridge"))
     {
+        drawMemoryMap("Cartridge", cartridgeToolTips, cartridge.cartridgeSize, 
+            [this] (uint32_t address) -> uint8_t { return cartridge.read(address); });
         ImGui::EndTabItem();
     }
     ImGui::EndTabBar();
-    
-
-    /*ImGui::BeginMenuBar();
-    if(ImGui::BeginMenu("Jump"))
-    {
-        ImGui::MenuItem("Restart and Interrupt Vectors");
-        ImGui::MenuItem("Cartridge Header Area");
-        ImGui::MenuItem("Cartridge ROM - Bank 0");
-        ImGui::MenuItem("Cartridge ROM - Switchable Bank");
-        ImGui::MenuItem("Character RAM");
-        ImGui::MenuItem("BG Map Data 1");
-        ImGui::MenuItem("BG Map Data 2");
-        ImGui::MenuItem("Cartridge RAM");
-        ImGui::MenuItem("Internal RAM");
-        ImGui::MenuItem("Echo RAM");
-        ImGui::MenuItem("Object Attribute Memory");
-        ImGui::MenuItem("Unusable Memory");
-        ImGui::MenuItem("Hardware I/O Registers");
-        ImGui::MenuItem("Zero Page - 127 bytes");
-        ImGui::MenuItem("Interrupt Enable Flag");
-        ImGui::EndMenu();
-    }
-    ImGui::EndMenuBar();*/
-
-    
-
     ImGui::End();
+}
+
+void ComponentsScreen::drawMemoryMap(
+            const std::string title, 
+            const std::map<uint16_t, std::string> toolTipMap,
+            uint32_t memorySize,
+            std::function<uint8_t (uint32_t)> memoryReadFunc)
+{
+    int scroll_to_value = -1;
+
+    if(toolTipMap.size() > 0)
+    {
+        ImGui::Button((title + " Map").c_str());
+        if (ImGui::BeginPopupContextItem((title + "jump_context_menu").c_str(), 0))
+        {
+            for(auto const& [key, val] : toolTipMap)
+            {
+                std::string label = val + " (" + StringHelper::IntToHexString(key) + ")";
+                if(ImGui::MenuItem(label.c_str())) scroll_to_value = key;
+            }
+            ImGui::EndPopup();
+        }
+    }    
+
+    if(ImGui::BeginChild((title + "memory_child").c_str()))
+    {
+        int remaining = memorySize % 10;
+        ImGuiListClipper clipper(memorySize / 10 + (remaining > 0 ? 1 : 0));
+        while (clipper.Step())
+        {
+            for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+            {             
+                ImGui::Text((StringHelper::IntToHexString((i * 10), 4, false) + " |").c_str()); 
+                
+                int bound = remaining > 0 && i == clipper.ItemsCount ? remaining : 10;                
+                for(int j = 0; j < bound; j++)
+                {
+                    ImGui::SameLine(); 
+                    auto test = memoryReadFunc((i * 10) + j);
+                    ImGui::Text(StringHelper::IntToHexString(memoryReadFunc((i * 10) + j), 2, false).c_str());
+                    if(ImGui::IsItemHovered())
+                    {                        
+                        ImVec2 pos = ImGui::GetItemRectMin();
+                        pos.x -= 4; pos.y -= 4;
+                        ImGui::GetWindowDrawList()->AddRectFilled(pos, ImVec2(pos.x + 24, pos.y + 24), IM_COL32(150, 150, 150, 100));
+
+                        std::string tooltip = StringHelper::IntToHexString((i * 10) + j);
+                        if(toolTipMap.find((i * 10) + j) != toolTipMap.end())
+                        {
+                            tooltip += '\n' + toolTipMap.at((i * 10) + j);
+                        }
+                        ImGui::SetTooltip(tooltip.c_str());                                                       
+                    }
+                }
+            }
+            if(scroll_to_value != -1)
+            {
+                // Line Height = 20 px
+                int scroll_px = 20 * (scroll_to_value / 10 + (scroll_to_value % 10 > 0 ? 1 : 0));
+                ImGui::SetScrollFromPosY(ImGui::GetCursorStartPos().y + scroll_px);
+                scroll_to_value = -1;
+            }
+        }
+        ImGui::EndChild();        
+    }   
 }

@@ -12,6 +12,11 @@ class Ppu
         void cycle(long cycles);
 
     private:
+        bool processOam();
+        bool processTransfer();
+        bool processHBlank();
+        bool processVBlank();
+
         Memory& memory;
         long cycleCount = 0;
 

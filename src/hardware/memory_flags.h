@@ -1,29 +1,29 @@
 enum IORegister
 {    
-    PAD_REGISTER = 0xFF00,
-    SERIAL_TRANSFER = 0xFF01,
-    SERIAL_CONTROL = 0xFF02,
-    DIVIDER = 0xFF04,
-    TIMA = 0xFF05,
-    TMA = 0xFF06,
-    TAC = 0xFF07,
-    INTERRUPT_FLAG = 0xFF0F,
-    LCD_CONTROL = 0xFF40,
-    LCD_STATUS = 0xFF41,    
-    SCROLL_Y = 0xFF42,
-    SCROLL_X = 0xFF42,
-    LCD_Y = 0xFF44,
-    LCD_Y_COMPARE = 0xFF45,
-    DMA = 0xFF46,
-    BG_PALETTE = 0xFF47,    // Bit 7-6 - Data for Dot Data 11 (Normally darkest color
-                            // Bit 5-4 - Data for Dot Data 10
-                            // Bit 3-2 - Data for Dot Data 01
-                            // Bit 1-0 - Data for Dot Data 00 (Normally lightest color)
-    OB_PALETTE_0 = 0xFF48,
-    OB_PALETTE_1 = 0xFF49,
-    WINDOW_Y = 0xFF4A,
-    WINDOW_X = 0xFF4B,
-    INTERRUPT_ENABLED = 0xFFFF
+    REG_PAD = 0xFF00,
+    REG_SERIAL_TRANSFER = 0xFF01,
+    REG_SERIAL_CONTROL = 0xFF02,
+    REG_DIVIDER = 0xFF04,
+    REG_TIMA = 0xFF05,
+    REG_TMA = 0xFF06,
+    REG_TAC = 0xFF07,
+    REG_INTERRUPT_FLAG = 0xFF0F,
+    REG_LCD_CONTROL = 0xFF40,
+    REG_LCD_STATUS = 0xFF41,    
+    REG_SCROLL_Y = 0xFF42,
+    REG_SCROLL_X = 0xFF42,
+    REG_LCD_Y = 0xFF44,
+    REG_LCD_Y_COMPARE = 0xFF45,
+    REG_DMA = 0xFF46,
+    REG_BG_PALETTE = 0xFF47,    // Bit 7-6 - Data for Dot Data 11 (Normally darkest color
+                                // Bit 5-4 - Data for Dot Data 10
+                                // Bit 3-2 - Data for Dot Data 01
+                                // Bit 1-0 - Data for Dot Data 00 (Normally lightest color)
+    REG_OB_PALETTE_0 = 0xFF48,
+    REG_OB_PALETTE_1 = 0xFF49,
+    REG_WINDOW_Y = 0xFF4A,
+    REG_WINDOW_X = 0xFF4B,
+    REG_INTERRUPT_ENABLE = 0xFFFF
 };
 
 enum PadRegisterBit
@@ -61,7 +61,7 @@ enum InterruptBit
     INTERRUPT_INPUT = 4,    // (Prio 5) Bit 4: Transition from High to Low of Pin number P10-P13
     INTERRUPT_SERIAL = 3,   // (Prio 4) Bit 3: Serial I/O transfer complete
     INTERRUPT_TIMER = 2,    // (Prio 3) Bit 2: Timer Overflow              
-    INTERRUPT_LCD = 1,     // (Prio 2) Bit 1: LCDC 
+    INTERRUPT_LCD = 1,      // (Prio 2) Bit 1: LCDC 
     INTERRUPT_V_BLANK = 0   // (Prio 1) Bit 0: V-Blank
 };
 
@@ -85,15 +85,25 @@ enum LCDStatusBit
     LCD_H_BLANK_INTERRUPT_ENABLE = 3,   // Bit 3 - Mode 0 H-Blank Interrupt     (1=Enable) (Read/Write)
     LCD_COINCIDENCE_MODE = 2,           // Bit 2 - Coincidence Flag  (0:LYC<>LY, 1:LYC=LY) (Read Only)
     LCD_MODE_HIGH = 1,                  //Bit 1-0 - Mode Flag       (Mode 0-3, see below) (Read Only)
-    LCD_MODE_LOW = 0,                   //        00: During H-Blank
+    LCD_MODE_LOW = 0                    //        00: During H-Blank
                                         //        01: During V-Blank
                                         //        10: During Searching OAM-RAM
                                         //        11: During Transfering Data to LCD Driver
 };
 
-enum LCDMode {
+enum LCDMode 
+{
     MODE_HBLANK = 0,
     MODE_VBLANK = 1,
     MODE_OAM = 2,
-    MODE_TRANSFER = 3,
+    MODE_TRANSFER = 3
+};
+
+enum InterruptVector
+{
+    VECTOR_V_BLANK = 0x40,
+    VECTOR_LCD = 0x48,
+    VECTOR_TIMER = 0x50,
+    VECTOR_SERIAL = 0x58,
+    VECTOR_INPUT = 0x60
 };

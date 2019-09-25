@@ -1,7 +1,6 @@
 # A Game Boy emulator written in C++ (WIP)
 
-I started this project to create a cycle accurate emulator which is capable to do emulation in **interpreter mode** and in **jit mode**.
-The aim was to create a code base which is easy to follow for beginners.
+The aim is to create a cycle accurate emulator which is capable to do emulation in **interpreter mode** and in **jit mode**.
 
 ## Compatibility
 
@@ -44,6 +43,7 @@ struct Instruction
 
 ## TODOs
 - Implement CPU         (WIP)
+    - Interrupts        (WIP)
 - Implement Graphics    
 - Implement Interpreter (WIP)
 - Implement JIT

@@ -8,7 +8,7 @@ template <class T>
 class Register
 {
     public:
-        Register(const std::string name, const T initialValue);
+        Register(const T initialValue);
         
         T read();
         uint8_t readBit(const uint8_t bitNr);
@@ -19,14 +19,12 @@ class Register
         void operator-=(T subValue);
         void operator++(int ignored);
         void operator--(int ignored);
-
-        std::string name;
     
     private:
         T value = 0;
 };
 
-template<class T> Register<T>::Register(const std::string name, const T initialValue) : name(name), value(initialValue) { }
+template<class T> Register<T>::Register(const T initialValue) : value(initialValue) { }
 template<class T> T Register<T>::read() { return value; }
 template<class T> uint8_t Register<T>::readBit(const uint8_t bitNr) {  return (value >> bitNr) & 0x1; }
 template<class T> void Register<T>::writeBit(const uint8_t bitNr, const bool bitValue) { if(bitValue) value |= (0x1 << bitNr); else value &= ~(0x1 << bitNr); }

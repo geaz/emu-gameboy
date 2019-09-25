@@ -17,6 +17,8 @@ void InstructionScreen::update()
     ImGui::SetWindowPos(ImVec2(-1, 288), ImGuiCond_Always);
     ImGui::SetWindowSize(ImVec2(322, 201), ImGuiCond_Always);
 
+    ImGui::InputText("Breakpoint", cpu.breakPoint, 5);
+
     ImGuiListClipper clipper(cpu.parsedInstructions.size());
     while (clipper.Step())
     {

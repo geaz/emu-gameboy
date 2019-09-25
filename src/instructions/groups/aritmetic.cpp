@@ -385,8 +385,10 @@ uint8_t Scf::Scf37(Cpu* cpu)
 {
     // Mnemonic: SCF, Length: 1
     // Cycles: 4, (Z N H C): - 0 0 1
-    throw std::runtime_error("Not implemented! (Scf37)");
-    return 0;
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, false);
+    cpu->setFlag(C_CARRY, true);
+    return 4;
 }
 
 uint8_t Ccf::Ccf3F(Cpu* cpu)

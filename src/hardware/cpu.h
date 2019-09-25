@@ -40,16 +40,16 @@ class Cpu
         uint16_t popStack();
 
         // Start Values taken from Pandocs - Power Up Sequence
-        Register<uint16_t> pc = Register<uint16_t>("pc", 0x0100);
-        Register<uint16_t> sp = Register<uint16_t>("sp", 0xFFFE);
-        Register<uint8_t> a = Register<uint8_t>("a", 0x01);
-        Register<uint8_t> f = Register<uint8_t>("f", 0xB0);
-        Register<uint8_t> b = Register<uint8_t>("b", 0x00);
-        Register<uint8_t> c = Register<uint8_t>("c", 0x13);
-        Register<uint8_t> d = Register<uint8_t>("d", 0x00);
-        Register<uint8_t> e = Register<uint8_t>("e", 0xD8);
-        Register<uint8_t> h = Register<uint8_t>("h", 0x01);
-        Register<uint8_t> l = Register<uint8_t>("l", 0x4D);
+        Register<uint16_t> pc = Register<uint16_t>(0x0100);
+        Register<uint16_t> sp = Register<uint16_t>(0xFFFE);
+        Register<uint8_t> a = Register<uint8_t>(0x01);
+        Register<uint8_t> f = Register<uint8_t>(0xB0);
+        Register<uint8_t> b = Register<uint8_t>(0x00);
+        Register<uint8_t> c = Register<uint8_t>(0x13);
+        Register<uint8_t> d = Register<uint8_t>(0x00);
+        Register<uint8_t> e = Register<uint8_t>(0xD8);
+        Register<uint8_t> h = Register<uint8_t>(0x01);
+        Register<uint8_t> l = Register<uint8_t>(0x4D);
 
         RegisterPair af = RegisterPair(a, f);
         RegisterPair bc = RegisterPair(b, c);
@@ -59,13 +59,16 @@ class Cpu
         CpuState state = PAUSED;
         ParsedInstruction nextInstruction;
         ParsedInstruction currentInstruction;
-        // Last 100
         std::deque<ParsedInstruction> parsedInstructions;
 
         Memory& memory;
+        char breakPoint[5] = "";
         Clock clock = Clock(4194304); // Hz
+        bool interruptMasterFlag = false;
 
     private:
+        void handleInterrupts();
+        void setPowerUpSequence();
         ParsedInstruction parseNextInstruction();
         void addToParsedInstructions(ParsedInstruction parsedInstruction);
 

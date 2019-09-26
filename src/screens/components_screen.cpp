@@ -6,8 +6,8 @@
 #include "components_screen.h"
 #include "../helper/string_helper.h"
 
-ComponentsScreen::ComponentsScreen(Memory& memory, Cartridge& cartridge) 
-    : memory(memory), cartridge(cartridge) { }
+ComponentsScreen::ComponentsScreen(Mmu& mmu, Cartridge& cartridge) 
+    : mmu(mmu), cartridge(cartridge) { }
 
 void ComponentsScreen::update()
 { 
@@ -18,8 +18,8 @@ void ComponentsScreen::update()
     ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None);
     if(ImGui::BeginTabItem("Memory"))
     {
-        drawMemoryMap("Memory", memoryToolTips, memory.getSize(), 
-            [this] (uint32_t address) -> uint8_t { return memory.read(address, true); });
+        drawMemoryMap("Memory", memoryToolTips, mmu.getSize(), 
+            [this] (uint32_t address) -> uint8_t { return mmu.read(address, true); });
         ImGui::EndTabItem();
     }
     if(ImGui::BeginTabItem("Cartridge"))

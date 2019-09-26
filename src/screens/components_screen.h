@@ -6,16 +6,16 @@
 #include <functional>
 
 #include "../opengl/screen.h"
-#include "../hardware/memory.h"
+#include "../hardware/memory/mmu.h"
 
 class ComponentsScreen : public Screen
 {   
     public:
-        ComponentsScreen(Memory& memory, Cartridge& cartridge);
+        ComponentsScreen(Mmu& mmu, Cartridge& cartridge);
 
         void update() override;
 
-        Memory& memory;
+        Mmu& mmu;
         Cartridge& cartridge;
 
     private:

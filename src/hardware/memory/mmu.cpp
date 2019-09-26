@@ -1,17 +1,16 @@
 #include <stdexcept>
 #include <cstring>
-#include "memory.h"
+#include "mmu.h"
 
-Memory::Memory(Cartridge& cartridge) : cartridge(cartridge)
-{ }
+Mmu::Mmu(Cartridge& cartridge) : cartridge(cartridge) { }
 
-uint8_t Memory::read(const uint16_t address, const bool debugAccess) const 
+uint8_t Mmu::read(const uint16_t address, const bool ppuAccess) const 
 {     
     // VRAM Access through the PPU. CPU is not allowed to access it directly.
     // PPU Mode has to be checked, wether the CPU is currently allowed to access it
-    // debugAccess is able to overwrite this behaviour. This way it is possible 
-    // for the debugging tools to read memory during each state
-    if(!debugAccess)
+    // ppuAccess is able to overwrite this behaviour. This way it is possible 
+    // for the debugging tools and the PPU to read memory during each state
+    if(!ppuAccess)
     {
         LCDMode currentPpuMode = readLcdMode();
         if(currentPpuMode == MODE_TRANSFER && address >= 0x8000 && address <= 0x9FFF)
@@ -31,42 +30,42 @@ uint8_t Memory::read(const uint16_t address, const bool debugAccess) const
         return memory[address];     
 }
 
-void Memory::write(const uint16_t address, const uint8_t value, const bool ppuWrite) 
+void Mmu::write(const uint16_t address, const uint8_t value, const bool ppuAccess) 
 {
     // If it is not the PPU writing to the LDCY I/O register, it gets a reset.
-    if(address == REG_LCD_Y && !ppuWrite) memory[address] = 0;
+    if(address == REG_LCD_Y && !ppuAccess) memory[address] = 0;
     else if(address == REG_DMA) throw std::runtime_error("NOT IMPLEMENTED");        
     else memory[address] = value; 
 }
 
-uint8_t Memory::readIORegisterBit(const IORegister reg, const uint8_t bitNr) const 
+uint8_t Mmu::readIORegisterBit(const IORegister reg, const uint8_t bitNr) const 
 { 
     return (memory[reg] >> bitNr) & 0x1; 
 }
 
-uint8_t Memory::readIORegister(const IORegister reg) const 
+uint8_t Mmu::readIORegister(const IORegister reg) const 
 {
     return memory[reg]; 
 }
 
-void Memory::writeIORegisterBit(const IORegister reg, const uint8_t bitNr, const bool value) 
+void Mmu::writeIORegisterBit(const IORegister reg, const uint8_t bitNr, const bool value) 
 { 
     if(value) memory[reg] |= (0x1 << bitNr); 
     else memory[reg] &= ~(0x1 << bitNr); 
 }
 
-LCDMode Memory::readLcdMode() const
+LCDMode Mmu::readLcdMode() const
 {
     return (LCDMode)(readIORegisterBit(REG_LCD_STATUS, LCD_MODE_HIGH) << 1 | readIORegisterBit(REG_LCD_STATUS, LCD_MODE_LOW));
 }
 
-void Memory::writeLcdMode(const LCDMode lcdMode)
+void Mmu::writeLcdMode(const LCDMode lcdMode)
 {
     writeIORegisterBit(REG_LCD_STATUS, LCD_MODE_HIGH, (lcdMode >> 1) & 0x1);
     writeIORegisterBit(REG_LCD_STATUS, LCD_MODE_LOW, lcdMode & 0x1);
 }
 
-uint32_t Memory::getSize() const 
+uint32_t Mmu::getSize() const 
 { 
     return memorySize; 
 }

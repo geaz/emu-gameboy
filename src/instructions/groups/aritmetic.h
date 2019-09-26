@@ -2,7 +2,7 @@
 #ifndef ARITMETIC_H
 #define ARITMETIC_H
 
-#include "../../hardware/register.h"
+#include "../../hardware/memory/register.h"
 class Cpu;
 
 class Inc

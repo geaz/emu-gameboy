@@ -15,7 +15,7 @@ uint8_t Ld::Ld02(Cpu* cpu)
 {
     // Mnemonic: LD (BC),A, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(cpu->bc.read(), cpu->a.read());
+    cpu->mmu.write(cpu->bc.read(), cpu->a.read());
     return 8;
 }
 
@@ -31,8 +31,8 @@ uint8_t Ld::Ld08(Cpu* cpu)
 {
     // Mnemonic: LD (a16),SP, Length: 3
     // Cycles: 20, (Z N H C): - - - -
-    cpu->memory.write(cpu->currentInstruction.parsedBytes.b16, cpu->sp.read() & 0x00FF);
-    cpu->memory.write(cpu->currentInstruction.parsedBytes.b16 + 1, (cpu->sp.read() & 0xFF00) >> 8);
+    cpu->mmu.write(cpu->currentInstruction.parsedBytes.b16, cpu->sp.read() & 0x00FF);
+    cpu->mmu.write(cpu->currentInstruction.parsedBytes.b16 + 1, (cpu->sp.read() & 0xFF00) >> 8);
     return 20;
 }
 
@@ -40,7 +40,7 @@ uint8_t Ld::Ld0A(Cpu* cpu)
 {
     // Mnemonic: LD A,(BC), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->a = cpu->memory.read(cpu->bc.read());
+    cpu->a = cpu->mmu.read(cpu->bc.read());
     return 8;
 }
 
@@ -64,7 +64,7 @@ uint8_t Ld::Ld12(Cpu* cpu)
 {
     // Mnemonic: LD (DE),A, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(cpu->de.read(), cpu->a.read());
+    cpu->mmu.write(cpu->de.read(), cpu->a.read());
     return 8;
 }
 
@@ -80,7 +80,7 @@ uint8_t Ld::Ld1A(Cpu* cpu)
 {
     // Mnemonic: LD A,(DE), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->a = cpu->memory.read(cpu->de.read());
+    cpu->a = cpu->mmu.read(cpu->de.read());
     return 8;
 }
 
@@ -104,7 +104,7 @@ uint8_t Ld::Ld22(Cpu* cpu)
 {
     // Mnemonic: LD (HL+),A, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->a = cpu->memory.read(cpu->hl.read());
+    cpu->a = cpu->mmu.read(cpu->hl.read());
     cpu->hl++;
     return 8;
 }
@@ -121,7 +121,7 @@ uint8_t Ld::Ld2A(Cpu* cpu)
 {
     // Mnemonic: LD A,(HL+), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->a = cpu->memory.read(cpu->hl.read());
+    cpu->a = cpu->mmu.read(cpu->hl.read());
     cpu->hl++;
     return 8;
 }
@@ -146,7 +146,7 @@ uint8_t Ld::Ld32(Cpu* cpu)
 {
     // Mnemonic: LD (HL-),A, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(cpu->hl.read(), cpu->a.read());
+    cpu->mmu.write(cpu->hl.read(), cpu->a.read());
     cpu->hl--;
     return 8;
 }
@@ -155,7 +155,7 @@ uint8_t Ld::Ld36(Cpu* cpu)
 {
     // Mnemonic: LD (HL),d8, Length: 2
     // Cycles: 12, (Z N H C): - - - -
-    cpu->memory.write(cpu->hl.read(), cpu->currentInstruction.parsedBytes.low);
+    cpu->mmu.write(cpu->hl.read(), cpu->currentInstruction.parsedBytes.low);
     return 12;
 }
 
@@ -163,7 +163,7 @@ uint8_t Ld::Ld3A(Cpu* cpu)
 {
     // Mnemonic: LD A,(HL-), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->a = cpu->memory.read(cpu->hl.read());
+    cpu->a = cpu->mmu.read(cpu->hl.read());
     cpu->hl--;
     return 8;
 }
@@ -228,7 +228,7 @@ uint8_t Ld::Ld46(Cpu* cpu)
 {
     // Mnemonic: LD B,(HL), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->b = cpu->memory.read(cpu->hl.read());
+    cpu->b = cpu->mmu.read(cpu->hl.read());
     return 8;
 }
 
@@ -292,7 +292,7 @@ uint8_t Ld::Ld4E(Cpu* cpu)
 {
     // Mnemonic: LD C,(HL), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->c = cpu->memory.read(cpu->hl.read());
+    cpu->c = cpu->mmu.read(cpu->hl.read());
     return 8;
 }
 
@@ -356,7 +356,7 @@ uint8_t Ld::Ld56(Cpu* cpu)
 {
     // Mnemonic: LD D,(HL), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->d = cpu->memory.read(cpu->hl.read());
+    cpu->d = cpu->mmu.read(cpu->hl.read());
     return 8;
 }
 
@@ -420,7 +420,7 @@ uint8_t Ld::Ld5E(Cpu* cpu)
 {
     // Mnemonic: LD E,(HL), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->e = cpu->memory.read(cpu->hl.read());
+    cpu->e = cpu->mmu.read(cpu->hl.read());
     return 8;
 }
 
@@ -484,7 +484,7 @@ uint8_t Ld::Ld66(Cpu* cpu)
 {
     // Mnemonic: LD H,(HL), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->h = cpu->memory.read(cpu->hl.read());
+    cpu->h = cpu->mmu.read(cpu->hl.read());
     return 8;
 }
 
@@ -548,7 +548,7 @@ uint8_t Ld::Ld6E(Cpu* cpu)
 {
     // Mnemonic: LD L,(HL), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->l = cpu->memory.read(cpu->hl.read());
+    cpu->l = cpu->mmu.read(cpu->hl.read());
     return 8;
 }
 
@@ -564,7 +564,7 @@ uint8_t Ld::Ld70(Cpu* cpu)
 {
     // Mnemonic: LD (HL),B, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(cpu->hl.read(), cpu->b.read());
+    cpu->mmu.write(cpu->hl.read(), cpu->b.read());
     return 8;
 }
 
@@ -572,7 +572,7 @@ uint8_t Ld::Ld71(Cpu* cpu)
 {
     // Mnemonic: LD (HL),C, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(cpu->hl.read(), cpu->c.read());
+    cpu->mmu.write(cpu->hl.read(), cpu->c.read());
     return 8;
 }
 
@@ -580,7 +580,7 @@ uint8_t Ld::Ld72(Cpu* cpu)
 {
     // Mnemonic: LD (HL),D, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(cpu->hl.read(), cpu->d.read());
+    cpu->mmu.write(cpu->hl.read(), cpu->d.read());
     return 8;
 }
 
@@ -588,7 +588,7 @@ uint8_t Ld::Ld73(Cpu* cpu)
 {
     // Mnemonic: LD (HL),E, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(cpu->hl.read(), cpu->e.read());
+    cpu->mmu.write(cpu->hl.read(), cpu->e.read());
     return 8;
 }
 
@@ -596,7 +596,7 @@ uint8_t Ld::Ld74(Cpu* cpu)
 {
     // Mnemonic: LD (HL),H, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(cpu->hl.read(), cpu->h.read());
+    cpu->mmu.write(cpu->hl.read(), cpu->h.read());
     return 8;
 }
 
@@ -604,7 +604,7 @@ uint8_t Ld::Ld75(Cpu* cpu)
 {
     // Mnemonic: LD (HL),L, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(cpu->hl.read(), cpu->l.read());
+    cpu->mmu.write(cpu->hl.read(), cpu->l.read());
     return 8;
 }
 
@@ -612,7 +612,7 @@ uint8_t Ld::Ld77(Cpu* cpu)
 {
     // Mnemonic: LD (HL),A, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(cpu->hl.read(), cpu->a.read());
+    cpu->mmu.write(cpu->hl.read(), cpu->a.read());
     return 8;
 }
 
@@ -668,7 +668,7 @@ uint8_t Ld::Ld7E(Cpu* cpu)
 {
     // Mnemonic: LD A,(HL), Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->a = cpu->memory.read(cpu->hl.read());
+    cpu->a = cpu->mmu.read(cpu->hl.read());
     return 8;
 }
 
@@ -684,7 +684,7 @@ uint8_t Ld::LdE2(Cpu* cpu)
 {
     // Mnemonic: LD (C),A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    cpu->memory.write(0xFF00 + cpu->c.read(), cpu->a.read());
+    cpu->mmu.write(0xFF00 + cpu->c.read(), cpu->a.read());
     return 8;
 }
 
@@ -692,7 +692,7 @@ uint8_t Ld::LdEA(Cpu* cpu)
 {
     // Mnemonic: LD (a16),A, Length: 3
     // Cycles: 16, (Z N H C): - - - -
-    cpu->memory.write(cpu->currentInstruction.parsedBytes.b16, cpu->a.read());
+    cpu->mmu.write(cpu->currentInstruction.parsedBytes.b16, cpu->a.read());
     return 16;
 }
 
@@ -700,7 +700,7 @@ uint8_t Ld::LdF2(Cpu* cpu)
 {
     // Mnemonic: LD A,(C), Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    cpu->a = cpu->memory.read(0xFF00 + cpu->c.read());
+    cpu->a = cpu->mmu.read(0xFF00 + cpu->c.read());
     return 8;
 }
 
@@ -724,7 +724,7 @@ uint8_t Ld::LdFA(Cpu* cpu)
 {
     // Mnemonic: LD A,(a16), Length: 3
     // Cycles: 16, (Z N H C): - - - -
-    cpu->a = cpu->memory.read(cpu->currentInstruction.parsedBytes.b16);
+    cpu->a = cpu->mmu.read(cpu->currentInstruction.parsedBytes.b16);
     return 16;
 }
 
@@ -796,7 +796,7 @@ uint8_t Ldh::LdhE0(Cpu* cpu)
 {
     // Mnemonic: LDH (a8),A, Length: 2
     // Cycles: 12, (Z N H C): - - - -
-    cpu->memory.write(0xFF00 + cpu->currentInstruction.parsedBytes.low, cpu->a.read());
+    cpu->mmu.write(0xFF00 + cpu->currentInstruction.parsedBytes.low, cpu->a.read());
     return 12;
 }
 
@@ -804,7 +804,7 @@ uint8_t Ldh::LdhF0(Cpu* cpu)
 {
     // Mnemonic: LDH A,(a8), Length: 2
     // Cycles: 12, (Z N H C): - - - -
-    cpu->a = cpu->memory.read(0xFF00 + cpu->currentInstruction.parsedBytes.low);
+    cpu->a = cpu->mmu.read(0xFF00 + cpu->currentInstruction.parsedBytes.low);
     return 12;
 }
 

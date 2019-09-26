@@ -2,12 +2,12 @@
 #ifndef PPU_H
 #define PPU_H
 
-#include "memory.h"
+#include "../memory/mmu.h"
 
 class Ppu
 {
     public:
-        Ppu(Memory& memory);
+        Ppu(Mmu& mmu);
 
         void cycle(long cycles);
 
@@ -17,7 +17,7 @@ class Ppu
         bool processHBlank();
         bool processVBlank();
 
-        Memory& memory;
+        Mmu& mmu;
         long cycleCount = 0;
 
         const uint16_t CYCLES_PER_HBLANK = 207;   // Mode 0 (H-Blank) 207 cycles

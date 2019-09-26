@@ -28,7 +28,7 @@ int main(int argc, char** args) {
     
     CpuScreen cpuScreen(gameboy.cpu);
     GameboyScreen gameboyScreen(gameboy);   
-    ComponentsScreen componentsScreen(gameboy.memory, cartridge); 
+    ComponentsScreen componentsScreen(gameboy.mmu, cartridge); 
     InstructionScreen instructionScreen(gameboy.cpu);
 
     window.addScreen(&componentsScreen);

@@ -2,7 +2,6 @@
 
 #include "aritmetic.h"
 #include "../../hardware/cpu.h"
-#include "../../hardware/register.h"
 
 
 /************** Inc *******************/
@@ -99,10 +98,10 @@ uint8_t Inc::Inc34(Cpu* cpu)
     // Mnemonic: INC (HL), Length: 1
     // Cycles: 12, (Z N H C): Z 0 H -
     uint16_t address = cpu->hl.read();
-    cpu->memory.write(address, cpu->memory.read(address) + 1);
+    cpu->mmu.write(address, cpu->mmu.read(address) + 1);
     cpu->setFlag(Z_ZERO, false);
     cpu->setFlag(N_SUBSTRACT, false);
-    cpu->setFlag(H_HALFCARRY, (cpu->memory.read(address) & 0x0F) == 0x00);
+    cpu->setFlag(H_HALFCARRY, (cpu->mmu.read(address) & 0x0F) == 0x00);
     return 12;
 }
 
@@ -201,10 +200,10 @@ uint8_t Dec::Dec35(Cpu* cpu)
     // Mnemonic: DEC (HL), Length: 1
     // Cycles: 12, (Z N H C): Z 1 H -
     uint16_t address = cpu->hl.read();
-    cpu->memory.write(address, cpu->memory.read(address) - 1);
+    cpu->mmu.write(address, cpu->mmu.read(address) - 1);
     cpu->setFlag(Z_ZERO, false);
     cpu->setFlag(N_SUBSTRACT, true);
-    cpu->setFlag(H_HALFCARRY, (cpu->memory.read(address) & 0x0F) == 0x0F);
+    cpu->setFlag(H_HALFCARRY, (cpu->mmu.read(address) & 0x0F) == 0x0F);
     return 12;
 }
 
@@ -337,7 +336,7 @@ uint8_t Add::Add86(Cpu* cpu)
 {
     // Mnemonic: ADD A,(HL), Length: 1
     // Cycles: 8, (Z N H C): Z 0 H C
-    Add::AddToRegister(cpu, cpu->a, cpu->memory.read(cpu->hl.read()));
+    Add::AddToRegister(cpu, cpu->a, cpu->mmu.read(cpu->hl.read()));
     return 8;
 }
 
@@ -678,7 +677,7 @@ uint8_t And::AndA6(Cpu* cpu)
 {
     // Mnemonic: AND (HL), Length: 1
     // Cycles: 8, (Z N H C): Z 0 1 0
-    And::AndAcc(cpu, cpu->memory.read(cpu->hl.read()));
+    And::AndAcc(cpu, cpu->mmu.read(cpu->hl.read()));
     return 8;
 }
 
@@ -761,7 +760,7 @@ uint8_t Xor::XorAE(Cpu* cpu)
 {
     // Mnemonic: XOR (HL), Length: 1
     // Cycles: 8, (Z N H C): Z 0 0 0
-    Xor::XorAcc(cpu, cpu->memory.read(cpu->hl.read()));
+    Xor::XorAcc(cpu, cpu->mmu.read(cpu->hl.read()));
     return 4;
 }
 
@@ -844,7 +843,7 @@ uint8_t Or::OrB6(Cpu* cpu)
 {
     // Mnemonic: OR (HL), Length: 1
     // Cycles: 8, (Z N H C): Z 0 0 0
-    Or::OrAcc(cpu, cpu->memory.read(cpu->hl.read()));
+    Or::OrAcc(cpu, cpu->mmu.read(cpu->hl.read()));
     return 8;
 }
 
@@ -927,7 +926,7 @@ uint8_t Cp::CpBE(Cpu* cpu)
 {
     // Mnemonic: CP (HL), Length: 1
     // Cycles: 8, (Z N H C): Z 1 H C
-    Cp::CpAcc(cpu, cpu->memory.read(cpu->hl.read()));
+    Cp::CpAcc(cpu, cpu->mmu.read(cpu->hl.read()));
     return 8;
 }
 

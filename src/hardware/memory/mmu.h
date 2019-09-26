@@ -1,17 +1,17 @@
 #pragma once
-#ifndef MEMORY_H
-#define MEMORY_H
+#ifndef MMU_H
+#define MMU_H
 
-#include "cartridge.h"
+#include "../cartridge.h"
 #include "memory_flags.h"
 
-class Memory
+class Mmu
 {
     public:
-        Memory(Cartridge& cartridge);
+        Mmu(Cartridge& cartridge);
 
-        void write(const uint16_t address, const uint8_t value, const bool ppuWrite = false);
-        uint8_t read(const uint16_t address, const bool debugAccess = false) const;
+        void write(const uint16_t address, const uint8_t value, const bool ppuAccess = false);
+        uint8_t read(const uint16_t address, const bool ppuAccess = false) const;
 
         uint8_t readIORegister(const IORegister reg) const;
         uint8_t readIORegisterBit(const IORegister reg, const uint8_t bitNr) const;
@@ -32,4 +32,4 @@ class Memory
         uint8_t memory[0x10000]; 
 };
 
-#endif // MEMORY_H
+#endif // MMU_H

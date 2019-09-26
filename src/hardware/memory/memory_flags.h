@@ -1,3 +1,7 @@
+#pragma once
+#ifndef MEMORYFLAGS_H
+#define MEMORYFLAGS_H
+
 enum IORegister
 {    
     REG_PAD = 0xFF00,
@@ -107,3 +111,5 @@ enum InterruptVector
     VECTOR_SERIAL = 0x58,
     VECTOR_INPUT = 0x60
 };
+
+#endif // MEMORYFLAGS_H

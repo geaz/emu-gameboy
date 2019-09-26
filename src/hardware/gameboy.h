@@ -3,9 +3,9 @@
 #define GAMEBOY_H
 
 #include "cpu.h"
-#include "ppu.h"
-#include "memory.h"
 #include "cartridge.h"
+#include "video/ppu.h"
+#include "memory/mmu.h"
 
 class Gameboy
 {
@@ -14,7 +14,7 @@ class Gameboy
         void process();
 
         Cartridge& cartridge;
-        Memory memory;
+        Mmu mmu;
         Cpu cpu;
         Ppu ppu;
 };

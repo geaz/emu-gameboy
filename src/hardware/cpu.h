@@ -4,9 +4,9 @@
 
 #include <deque>
 
-#include "helper/clock.h"
-#include "memory.h"
-#include "register.h"
+#include "clock.h"
+#include "memory/register.h"
+#include "memory/mmu.h"
 #include "../instructions/instruction_set.h"
 
 enum CpuState
@@ -29,7 +29,7 @@ enum Flag
 class Cpu 
 {
     public:
-        Cpu(Memory& memory);
+        Cpu(Mmu& mmu);
 
         long cycle();
 
@@ -61,7 +61,7 @@ class Cpu
         ParsedInstruction currentInstruction;
         std::deque<ParsedInstruction> parsedInstructions;
 
-        Memory& memory;
+        Mmu& mmu;
         char breakPoint[5] = "";
         Clock clock = Clock(4194304); // Hz
         bool interruptMasterFlag = false;

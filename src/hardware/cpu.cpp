@@ -11,13 +11,12 @@ long Cpu::cycle()
 {   
     int processedCycles = 0;
     int cycles = clock.getCatchUpCycles();
-    while(cycles > 0 && (state == RUNNING || state == STEP))
+    while(processedCycles < cycles && (state == RUNNING || state == STEP))
     {
         currentInstruction = nextInstruction;
 
         pc += currentInstruction.definition.length;
-        cycles -= currentInstruction.definition.executeInterpreter(this);
-        processedCycles++;
+        processedCycles += currentInstruction.definition.executeInterpreter(this);
 
         handleInterrupts();
         nextInstruction = parseNextInstruction();
@@ -144,6 +143,7 @@ void Cpu::addToParsedInstructions(ParsedInstruction parsedInstruction)
 
 void Cpu::setPowerUpSequence()
 {
+    mmu.write(0xFF00, 0xCF);  // Joypad 1100 1111 (No Buttons pressed)
     mmu.write(0xFF05, 0x0);   // TIMA
     mmu.write(0xFF06, 0x0);   // TMA
     mmu.write(0xFF07, 0x0);   // TAC

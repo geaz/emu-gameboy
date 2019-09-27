@@ -32,7 +32,7 @@ struct ParsedInstruction
 {
     long bytePosition;
     Instruction definition;
-    ParsedBytes parsedbytes;
+    ParsedBytes parsedBytes;
 };
 
 class InstructionSet

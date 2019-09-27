@@ -10,8 +10,9 @@ class Mmu
     public:
         Mmu(Cartridge& cartridge);
 
-        void write(const uint16_t address, const uint8_t value, const bool ppuAccess = false);
         uint8_t read(const uint16_t address, const bool ppuAccess = false) const;
+        void write(const uint16_t address, const uint8_t value, const bool ppuAccess = false);
+        void executeDmaTransfer(const uint8_t value);
 
         uint8_t readIORegister(const IORegister reg) const;
         uint8_t readIORegisterBit(const IORegister reg, const uint8_t bitNr) const;

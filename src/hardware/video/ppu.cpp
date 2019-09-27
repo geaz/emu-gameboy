@@ -57,7 +57,7 @@ bool Ppu::processOam()
         }
 
         mmu.writeLcdMode(MODE_TRANSFER);
-        cycleCount = cycleCount % CYCLES_PER_OAMSEARCH;
+        cycleCount -= CYCLES_PER_OAMSEARCH;
         modeProcessed = true;
     }    
     return modeProcessed;
@@ -70,7 +70,7 @@ bool Ppu::processTransfer()
     {
         // Nothing to do in this stage besides switching into the next mode
         mmu.writeLcdMode(MODE_HBLANK);
-        cycleCount = cycleCount % CYCLES_PER_TRANSFER;
+        cycleCount -= CYCLES_PER_TRANSFER;
         modeProcessed = true;
     }    
     return modeProcessed;
@@ -97,7 +97,7 @@ bool Ppu::processHBlank()
 
         // Increment Line count and update cycles
         mmu.write(REG_LCD_Y, mmu.read(REG_LCD_Y) + 1, true); 
-        cycleCount = cycleCount % CYCLES_PER_HBLANK;  
+        cycleCount -= CYCLES_PER_HBLANK;  
         modeProcessed = true;
     }       
     return modeProcessed; 
@@ -123,7 +123,7 @@ bool Ppu::processVBlank()
         // Else increment Y and stay in V-Blank Mode
         else mmu.write(REG_LCD_Y, mmu.read(REG_LCD_Y) + 1, true);
 
-        cycleCount = cycleCount % CYCLES_PER_VBLANK; 
+        cycleCount -= CYCLES_PER_VBLANK; 
         modeProcess = true;
     }    
     return modeProcess;

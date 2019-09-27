@@ -133,9 +133,9 @@ class InstructionSet
             set[0x7d] = { 1, "LD A,L", &Ld::Ld7D };
             set[0x7e] = { 1, "LD A,(HL)", &Ld::Ld7E };
             set[0x7f] = { 1, "LD A,A", &Ld::Ld7F };
-            set[0xe2] = { 2, "LD (C),A", &Ld::LdE2 };
+            set[0xe2] = { 1, "LD (C),A", &Ld::LdE2 };
             set[0xea] = { 3, "LD (a16),A", &Ld::LdEA };
-            set[0xf2] = { 2, "LD A,(C)", &Ld::LdF2 };
+            set[0xf2] = { 1, "LD A,(C)", &Ld::LdF2 };
             set[0xf8] = { 2, "LD HL,SP+r8", &Ld::LdF8 };
             set[0xf9] = { 1, "LD SP,HL", &Ld::LdF9 };
             set[0xfa] = { 3, "LD A,(a16)", &Ld::LdFA };

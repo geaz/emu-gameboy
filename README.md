@@ -19,6 +19,8 @@ By using this script I got great frame classes to work in.
 
 The top *instruction_set* class contains two maps including all the different opcodes.  
 
+**WARNING:** The Pastraiser OpCode Table has a few bugs. 0xE2 and 0xF2 are only one byte long!
+
 ![instruction_set](screens/gen-instruction-set.png)
 
 Furthermore the script creates frame classes for all opcode groups.  

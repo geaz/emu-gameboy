@@ -387,68 +387,86 @@ uint8_t Sra::Sra2F(Cpu* cpu)
     return 0;
 }
 
+/************** Swap *******************/
+void Swap::SwapRegister(Cpu* cpu, Register<uint8_t>& reg)
+{
+    uint8_t toSwap = reg.read();
+    uint8_t swapped = (toSwap & 0x0F) << 4 | (toSwap & 0xF0) >> 4; 
+    
+    cpu->setFlag(Z_ZERO, swapped == 0);
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, false);
+    cpu->setFlag(C_CARRY, false);
+}
+
 uint8_t Swap::Swap30(Cpu* cpu)
 {
     // Mnemonic: SWAP B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (Swap30)");
-    return 0;
+    Swap::SwapRegister(cpu, cpu->b);
+    return 8;
 }
 
 uint8_t Swap::Swap31(Cpu* cpu)
 {
     // Mnemonic: SWAP C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (Swap31)");
-    return 0;
+    Swap::SwapRegister(cpu, cpu->c);
+    return 8;
 }
 
 uint8_t Swap::Swap32(Cpu* cpu)
 {
     // Mnemonic: SWAP D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (Swap32)");
-    return 0;
+    Swap::SwapRegister(cpu, cpu->d);
+    return 8;
 }
 
 uint8_t Swap::Swap33(Cpu* cpu)
 {
     // Mnemonic: SWAP E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (Swap33)");
-    return 0;
+    Swap::SwapRegister(cpu, cpu->e);
+    return 8;
 }
 
 uint8_t Swap::Swap34(Cpu* cpu)
 {
     // Mnemonic: SWAP H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (Swap34)");
-    return 0;
+    Swap::SwapRegister(cpu, cpu->h);
+    return 8;
 }
 
 uint8_t Swap::Swap35(Cpu* cpu)
 {
     // Mnemonic: SWAP L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (Swap35)");
-    return 0;
+    Swap::SwapRegister(cpu, cpu->l);
+    return 8;
 }
 
 uint8_t Swap::Swap36(Cpu* cpu)
 {
     // Mnemonic: SWAP (HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (Swap36)");
-    return 0;
+    uint16_t toSwap = cpu->hl.read();
+    uint16_t swapped = (toSwap & 0x00FF) << 8 | (toSwap & 0xFF00) >> 8; 
+    
+    cpu->setFlag(Z_ZERO, swapped == 0);
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, false);
+    cpu->setFlag(C_CARRY, false);
+    return 8;
 }
 
 uint8_t Swap::Swap37(Cpu* cpu)
 {
     // Mnemonic: SWAP A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    throw std::runtime_error("Not implemented! (Swap37)");
-    return 0;
+    Swap::SwapRegister(cpu, cpu->a);
+    return 8;
 }
 
 uint8_t Srl::Srl38(Cpu* cpu)
@@ -1027,516 +1045,526 @@ uint8_t Bit::Bit7F(Cpu* cpu)
     return 0;
 }
 
+void Res::ResRegisterBit(Register<uint8_t>& reg, uint8_t bitNr)
+{
+    reg = (reg.read() & ~(0x1 << bitNr)); 
+}
+
+void Res::ResAddressBit(Cpu* cpu, uint16_t address, uint8_t bitNr)
+{
+    cpu->mmu.write(address, cpu->mmu.read(address) & ~(0x1 << bitNr));
+}
+
 uint8_t Res::Res80(Cpu* cpu)
 {
     // Mnemonic: RES 0,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res80)");
-    return 0;
+    Res::ResRegisterBit(cpu->b, 0);
+    return 8;
 }
 
 uint8_t Res::Res81(Cpu* cpu)
 {
     // Mnemonic: RES 0,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res81)");
-    return 0;
+    Res::ResRegisterBit(cpu->c, 0);
+    return 8;
 }
 
 uint8_t Res::Res82(Cpu* cpu)
 {
     // Mnemonic: RES 0,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res82)");
-    return 0;
+    Res::ResRegisterBit(cpu->d, 0);
+    return 8;
 }
 
 uint8_t Res::Res83(Cpu* cpu)
 {
     // Mnemonic: RES 0,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res83)");
-    return 0;
+    Res::ResRegisterBit(cpu->e, 0);
+    return 8;
 }
 
 uint8_t Res::Res84(Cpu* cpu)
 {
     // Mnemonic: RES 0,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res84)");
-    return 0;
+    Res::ResRegisterBit(cpu->h, 0);
+    return 8;
 }
 
 uint8_t Res::Res85(Cpu* cpu)
 {
     // Mnemonic: RES 0,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res85)");
-    return 0;
+    Res::ResRegisterBit(cpu->l, 0);
+    return 8;
 }
 
 uint8_t Res::Res86(Cpu* cpu)
 {
     // Mnemonic: RES 0,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res86)");
-    return 0;
+    Res::ResAddressBit(cpu, cpu->hl.read(), 0);
+    return 16;
 }
 
 uint8_t Res::Res87(Cpu* cpu)
 {
     // Mnemonic: RES 0,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res87)");
-    return 0;
+    Res::ResRegisterBit(cpu->a, 0);
+    return 8;
 }
 
 uint8_t Res::Res88(Cpu* cpu)
 {
     // Mnemonic: RES 1,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res88)");
-    return 0;
+    Res::ResRegisterBit(cpu->b, 1);
+    return 8;
 }
 
 uint8_t Res::Res89(Cpu* cpu)
 {
     // Mnemonic: RES 1,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res89)");
-    return 0;
+    Res::ResRegisterBit(cpu->c, 1);
+    return 8;
 }
 
 uint8_t Res::Res8A(Cpu* cpu)
 {
     // Mnemonic: RES 1,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res8A)");
-    return 0;
+    Res::ResRegisterBit(cpu->d, 1);
+    return 8;
 }
 
 uint8_t Res::Res8B(Cpu* cpu)
 {
     // Mnemonic: RES 1,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res8B)");
-    return 0;
+    Res::ResRegisterBit(cpu->e, 1);
+    return 8;
 }
 
 uint8_t Res::Res8C(Cpu* cpu)
 {
     // Mnemonic: RES 1,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res8C)");
-    return 0;
+    Res::ResRegisterBit(cpu->h, 1);
+    return 8;
 }
 
 uint8_t Res::Res8D(Cpu* cpu)
 {
     // Mnemonic: RES 1,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res8D)");
-    return 0;
+    Res::ResRegisterBit(cpu->l, 1);
+    return 8;
 }
 
 uint8_t Res::Res8E(Cpu* cpu)
 {
     // Mnemonic: RES 1,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res8E)");
-    return 0;
+    Res::ResAddressBit(cpu, cpu->hl.read(), 1);
+    return 16;
 }
 
 uint8_t Res::Res8F(Cpu* cpu)
 {
     // Mnemonic: RES 1,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res8F)");
-    return 0;
+    Res::ResRegisterBit(cpu->a, 1);
+    return 8;
 }
 
 uint8_t Res::Res90(Cpu* cpu)
 {
     // Mnemonic: RES 2,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res90)");
-    return 0;
+    Res::ResRegisterBit(cpu->b, 2);
+    return 8;
 }
 
 uint8_t Res::Res91(Cpu* cpu)
 {
     // Mnemonic: RES 2,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res91)");
-    return 0;
+    Res::ResRegisterBit(cpu->c, 2);
+    return 8;
 }
 
 uint8_t Res::Res92(Cpu* cpu)
 {
     // Mnemonic: RES 2,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res92)");
-    return 0;
+    Res::ResRegisterBit(cpu->d, 2);
+    return 8;
 }
 
 uint8_t Res::Res93(Cpu* cpu)
 {
     // Mnemonic: RES 2,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res93)");
-    return 0;
+    Res::ResRegisterBit(cpu->e, 2);
+    return 8;
 }
 
 uint8_t Res::Res94(Cpu* cpu)
 {
     // Mnemonic: RES 2,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res94)");
-    return 0;
+    Res::ResRegisterBit(cpu->h, 2);
+    return 8;
 }
 
 uint8_t Res::Res95(Cpu* cpu)
 {
     // Mnemonic: RES 2,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res95)");
-    return 0;
+    Res::ResRegisterBit(cpu->l, 2);
+    return 8;
 }
 
 uint8_t Res::Res96(Cpu* cpu)
 {
     // Mnemonic: RES 2,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res96)");
-    return 0;
+    Res::ResAddressBit(cpu, cpu->hl.read(), 2);
+    return 16;
 }
 
 uint8_t Res::Res97(Cpu* cpu)
 {
     // Mnemonic: RES 2,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res97)");
-    return 0;
+    Res::ResRegisterBit(cpu->a, 2);
+    return 8;
 }
 
 uint8_t Res::Res98(Cpu* cpu)
 {
     // Mnemonic: RES 3,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res98)");
-    return 0;
+    Res::ResRegisterBit(cpu->b, 3);
+    return 8;
 }
 
 uint8_t Res::Res99(Cpu* cpu)
 {
     // Mnemonic: RES 3,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res99)");
-    return 0;
+    Res::ResRegisterBit(cpu->c, 3);
+    return 8;
 }
 
 uint8_t Res::Res9A(Cpu* cpu)
 {
     // Mnemonic: RES 3,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res9A)");
-    return 0;
+    Res::ResRegisterBit(cpu->d, 3);
+    return 8;
 }
 
 uint8_t Res::Res9B(Cpu* cpu)
 {
     // Mnemonic: RES 3,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res9B)");
-    return 0;
+    Res::ResRegisterBit(cpu->e, 3);
+    return 8;
 }
 
 uint8_t Res::Res9C(Cpu* cpu)
 {
     // Mnemonic: RES 3,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res9C)");
-    return 0;
+    Res::ResRegisterBit(cpu->h, 3);
+    return 8;
 }
 
 uint8_t Res::Res9D(Cpu* cpu)
 {
     // Mnemonic: RES 3,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res9D)");
-    return 0;
+    Res::ResRegisterBit(cpu->l, 3);
+    return 8;
 }
 
 uint8_t Res::Res9E(Cpu* cpu)
 {
     // Mnemonic: RES 3,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res9E)");
-    return 0;
+    Res::ResAddressBit(cpu, cpu->hl.read(), 3);
+    return 16;
 }
 
 uint8_t Res::Res9F(Cpu* cpu)
 {
     // Mnemonic: RES 3,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Res9F)");
-    return 0;
+    Res::ResRegisterBit(cpu->a, 3);
+    return 8;
 }
 
 uint8_t Res::ResA0(Cpu* cpu)
 {
     // Mnemonic: RES 4,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResA0)");
-    return 0;
+    Res::ResRegisterBit(cpu->b, 4);
+    return 8;
 }
 
 uint8_t Res::ResA1(Cpu* cpu)
 {
     // Mnemonic: RES 4,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResA1)");
-    return 0;
+    Res::ResRegisterBit(cpu->c, 4);
+    return 8;
 }
 
 uint8_t Res::ResA2(Cpu* cpu)
 {
     // Mnemonic: RES 4,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResA2)");
-    return 0;
+    Res::ResRegisterBit(cpu->d, 4);
+    return 8;
 }
 
 uint8_t Res::ResA3(Cpu* cpu)
 {
     // Mnemonic: RES 4,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResA3)");
-    return 0;
+    Res::ResRegisterBit(cpu->e, 4);
+    return 8;
 }
 
 uint8_t Res::ResA4(Cpu* cpu)
 {
     // Mnemonic: RES 4,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResA4)");
-    return 0;
+    Res::ResRegisterBit(cpu->h, 4);
+    return 8;
 }
 
 uint8_t Res::ResA5(Cpu* cpu)
 {
     // Mnemonic: RES 4,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResA5)");
-    return 0;
+    Res::ResRegisterBit(cpu->l, 4);
+    return 8;
 }
 
 uint8_t Res::ResA6(Cpu* cpu)
 {
     // Mnemonic: RES 4,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResA6)");
-    return 0;
+    Res::ResAddressBit(cpu, cpu->hl.read(), 4);
+    return 16;
 }
 
 uint8_t Res::ResA7(Cpu* cpu)
 {
     // Mnemonic: RES 4,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResA7)");
-    return 0;
+    Res::ResRegisterBit(cpu->a, 4);
+    return 8;
 }
 
 uint8_t Res::ResA8(Cpu* cpu)
 {
     // Mnemonic: RES 5,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResA8)");
-    return 0;
+    Res::ResRegisterBit(cpu->b, 5);
+    return 8;
 }
 
 uint8_t Res::ResA9(Cpu* cpu)
 {
     // Mnemonic: RES 5,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResA9)");
-    return 0;
+     Res::ResRegisterBit(cpu->c, 5);
+    return 8;
 }
 
 uint8_t Res::ResAA(Cpu* cpu)
 {
     // Mnemonic: RES 5,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResAA)");
-    return 0;
+     Res::ResRegisterBit(cpu->d, 5);
+    return 8;
 }
 
 uint8_t Res::ResAB(Cpu* cpu)
 {
     // Mnemonic: RES 5,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResAB)");
-    return 0;
+     Res::ResRegisterBit(cpu->e, 5);
+    return 8;
 }
 
 uint8_t Res::ResAC(Cpu* cpu)
 {
     // Mnemonic: RES 5,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResAC)");
-    return 0;
+     Res::ResRegisterBit(cpu->h, 5);
+    return 8;
 }
 
 uint8_t Res::ResAD(Cpu* cpu)
 {
     // Mnemonic: RES 5,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResAD)");
-    return 0;
+     Res::ResRegisterBit(cpu->l, 5);
+    return 8;
 }
 
 uint8_t Res::ResAE(Cpu* cpu)
 {
     // Mnemonic: RES 5,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResAE)");
-    return 0;
+    Res::ResAddressBit(cpu, cpu->hl.read(), 5);
+    return 16;
 }
 
 uint8_t Res::ResAF(Cpu* cpu)
 {
     // Mnemonic: RES 5,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResAF)");
-    return 0;
+     Res::ResRegisterBit(cpu->a, 5);
+    return 8;
 }
 
 uint8_t Res::ResB0(Cpu* cpu)
 {
     // Mnemonic: RES 6,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResB0)");
-    return 0;
+    Res::ResRegisterBit(cpu->b, 6);
+    return 8;
 }
 
 uint8_t Res::ResB1(Cpu* cpu)
 {
     // Mnemonic: RES 6,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResB1)");
-    return 0;
+    Res::ResRegisterBit(cpu->c, 6);
+    return 8;
 }
 
 uint8_t Res::ResB2(Cpu* cpu)
 {
     // Mnemonic: RES 6,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResB2)");
-    return 0;
+    Res::ResRegisterBit(cpu->d, 6);
+    return 8;
 }
 
 uint8_t Res::ResB3(Cpu* cpu)
 {
     // Mnemonic: RES 6,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResB3)");
-    return 0;
+    Res::ResRegisterBit(cpu->e, 6);
+    return 8;
 }
 
 uint8_t Res::ResB4(Cpu* cpu)
 {
     // Mnemonic: RES 6,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResB4)");
-    return 0;
+    Res::ResRegisterBit(cpu->h, 6);
+    return 8;
 }
 
 uint8_t Res::ResB5(Cpu* cpu)
 {
     // Mnemonic: RES 6,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResB5)");
-    return 0;
+    Res::ResRegisterBit(cpu->l, 6);
+    return 8;
 }
 
 uint8_t Res::ResB6(Cpu* cpu)
 {
     // Mnemonic: RES 6,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResB6)");
-    return 0;
+    Res::ResAddressBit(cpu, cpu->hl.read(), 6);
+    return 16;
 }
 
 uint8_t Res::ResB7(Cpu* cpu)
 {
     // Mnemonic: RES 6,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResB7)");
-    return 0;
+    Res::ResRegisterBit(cpu->a, 6);
+    return 8;
 }
 
 uint8_t Res::ResB8(Cpu* cpu)
 {
     // Mnemonic: RES 7,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResB8)");
-    return 0;
+    Res::ResRegisterBit(cpu->b, 7);
+    return 8;
 }
 
 uint8_t Res::ResB9(Cpu* cpu)
 {
     // Mnemonic: RES 7,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResB9)");
-    return 0;
+    Res::ResRegisterBit(cpu->c, 7);
+    return 8;
 }
 
 uint8_t Res::ResBA(Cpu* cpu)
 {
     // Mnemonic: RES 7,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResBA)");
-    return 0;
+    Res::ResRegisterBit(cpu->d, 7);
+    return 8;
 }
 
 uint8_t Res::ResBB(Cpu* cpu)
 {
     // Mnemonic: RES 7,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResBB)");
-    return 0;
+    Res::ResRegisterBit(cpu->e, 7);
+    return 8;
 }
 
 uint8_t Res::ResBC(Cpu* cpu)
 {
     // Mnemonic: RES 7,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResBC)");
-    return 0;
+    Res::ResRegisterBit(cpu->h, 7);
+    return 8;
 }
 
 uint8_t Res::ResBD(Cpu* cpu)
 {
     // Mnemonic: RES 7,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResBD)");
-    return 0;
+    Res::ResRegisterBit(cpu->l, 7);
+    return 8;
 }
 
 uint8_t Res::ResBE(Cpu* cpu)
 {
     // Mnemonic: RES 7,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResBE)");
-    return 0;
+    Res::ResAddressBit(cpu, cpu->hl.read(), 7);
+    return 16;
 }
 
 uint8_t Res::ResBF(Cpu* cpu)
 {
     // Mnemonic: RES 7,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (ResBF)");
-    return 0;
+    Res::ResRegisterBit(cpu->a, 7);
+    return 8;
 }
 
 uint8_t Set::SetC0(Cpu* cpu)

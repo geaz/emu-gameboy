@@ -210,68 +210,77 @@ uint8_t Call::CallDC(Cpu* cpu)
     return carryFlag ? 24 : 12;
 }
 
+/************** Rst *******************/
 uint8_t Rst::RstC7(Cpu* cpu)
 {
     // Mnemonic: RST 00H, Length: 1
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (RstC7)");
-    return 0;
+    cpu->pushStack(cpu->pc.read());
+    cpu->pc = 0x0;
+    return 16;
 }
 
 uint8_t Rst::RstCF(Cpu* cpu)
 {
     // Mnemonic: RST 08H, Length: 1
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (RstCF)");
-    return 0;
+    cpu->pushStack(cpu->pc.read());
+    cpu->pc = 0x08;
+    return 16;
 }
 
 uint8_t Rst::RstD7(Cpu* cpu)
 {
     // Mnemonic: RST 10H, Length: 1
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (RstD7)");
-    return 0;
+    cpu->pushStack(cpu->pc.read());
+    cpu->pc = 0x10;
+    return 16;
 }
 
 uint8_t Rst::RstDF(Cpu* cpu)
 {
     // Mnemonic: RST 18H, Length: 1
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (RstDF)");
-    return 0;
+    cpu->pushStack(cpu->pc.read());
+    cpu->pc = 0x18;
+    return 16;
 }
 
 uint8_t Rst::RstE7(Cpu* cpu)
 {
     // Mnemonic: RST 20H, Length: 1
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (RstE7)");
-    return 0;
+    cpu->pushStack(cpu->pc.read());
+    cpu->pc = 0x20;
+    return 16;
 }
 
 uint8_t Rst::RstEF(Cpu* cpu)
 {
     // Mnemonic: RST 28H, Length: 1
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (RstEF)");
-    return 0;
+    cpu->pushStack(cpu->pc.read());
+    cpu->pc = 0x28;
+    return 16;
 }
 
 uint8_t Rst::RstF7(Cpu* cpu)
 {
     // Mnemonic: RST 30H, Length: 1
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (RstF7)");
-    return 0;
+    cpu->pushStack(cpu->pc.read());
+    cpu->pc = 0x30;
+    return 16;
 }
 
 uint8_t Rst::RstFF(Cpu* cpu)
 {
     // Mnemonic: RST 38H, Length: 1
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (RstFF)");
-    return 0;
+    cpu->pushStack(cpu->pc.read());
+    cpu->pc = 0x38;
+    return 16;
 }
 
 uint8_t Reti::RetiD9(Cpu* cpu)

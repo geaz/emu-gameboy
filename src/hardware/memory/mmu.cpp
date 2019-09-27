@@ -34,8 +34,30 @@ void Mmu::write(const uint16_t address, const uint8_t value, const bool ppuAcces
 {
     // If it is not the PPU writing to the LDCY I/O register, it gets a reset.
     if(address == REG_LCD_Y && !ppuAccess) memory[address] = 0;
-    else if(address == REG_DMA) throw std::runtime_error("NOT IMPLEMENTED");        
+    // If written to DMA start a DMA transfer to OAM
+    else if(address == REG_DMA) 
+        executeDmaTransfer(value);       
+    // If written to the pad register for setting bit 4 & 5
+    // Preserver Lower Bits (= Button pressed atm)
+    // 0x30 = 0011 0000
+    else if(address == REG_PAD && (value & 0x30) != 0) 
+        memory[REG_PAD] = ((value ^ memory[REG_PAD]) & 0xF0) | (memory[REG_PAD] & 0x0F);
     else memory[address] = value; 
+}
+
+void Mmu::executeDmaTransfer(const uint8_t value)
+{
+    memory[REG_DMA] = value;
+    uint16_t startAddress = value * 0x100;
+
+    for (int i = 0x0; i <= 0x9F; i++) 
+    {
+        uint16_t copyFrom = startAddress + i;
+        uint16_t copyTo = 0xFE00 + i;
+
+        uint8_t copyValue = memory[copyFrom];
+        memory[copyTo] = copyValue;
+    }
 }
 
 uint8_t Mmu::readIORegisterBit(const IORegister reg, const uint8_t bitNr) const 

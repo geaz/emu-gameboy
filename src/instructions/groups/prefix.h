@@ -1,6 +1,8 @@
 #pragma once
 #ifndef PREFIX_H
 #define PREFIX_H
+
+#include "../../hardware/memory/register.h"
 class Cpu;
 
 class Rlc
@@ -84,6 +86,8 @@ class Sra
 class Swap
 {
     public:
+        static void SwapRegister(Cpu* cpu, Register<uint8_t>& reg);
+
         static uint8_t Swap30(Cpu* cpu);
         static uint8_t Swap31(Cpu* cpu);
         static uint8_t Swap32(Cpu* cpu);
@@ -179,6 +183,9 @@ class Bit
 class Res
 {
     public:
+        static void ResRegisterBit(Register<uint8_t>& reg, uint8_t bitNr);
+        static void ResAddressBit(Cpu* cpu, uint16_t address, uint8_t bitNr);
+
         static uint8_t Res80(Cpu* cpu);
         static uint8_t Res81(Cpu* cpu);
         static uint8_t Res82(Cpu* cpu);

@@ -376,8 +376,10 @@ uint8_t Cpl::Cpl2F(Cpu* cpu)
 {
     // Mnemonic: CPL, Length: 1
     // Cycles: 4, (Z N H C): - 1 1 -
-    throw std::runtime_error("Not implemented! (Cpl2F)");
-    return 0;
+    cpu->a = ~cpu->a.read();
+    cpu->setFlag(N_SUBSTRACT, true);
+    cpu->setFlag(H_HALFCARRY, true);
+    return 4;
 }
 
 uint8_t Scf::Scf37(Cpu* cpu)

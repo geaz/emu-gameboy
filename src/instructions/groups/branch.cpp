@@ -16,13 +16,7 @@ uint8_t Jr::Jr20(Cpu* cpu)
     // Mnemonic: JR NZ,r8, Length: 2
     // Cycles: 12/8, (Z N H C): - - - -
     bool zeroFlag = cpu->getFlag(Z_ZERO);
-    if(!zeroFlag) 
-        cpu->pc += static_cast<int8_t>(cpu->currentInstruction.parsedBytes.low);
-    else
-    {
-        auto t = "test";
-    }
-    
+    if(!zeroFlag) cpu->pc += static_cast<int8_t>(cpu->currentInstruction.parsedBytes.low);    
     return !zeroFlag ? 12 : 8;
 }
 

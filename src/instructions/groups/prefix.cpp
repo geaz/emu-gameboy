@@ -195,68 +195,82 @@ uint8_t Rl::Rl17(Cpu* cpu)
     return 0;
 }
 
+/************** Rr *******************/
+uint8_t Rr::RotateRightThroughCarryAndSetFlags(Cpu* cpu, uint8_t value)
+{
+    bool carry = cpu->getFlag(C_CARRY);
+    uint8_t result = (value >> 1) | (carry << 7);    
+
+    cpu->setFlag(Z_ZERO, result == 0);
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, false);
+    cpu->setFlag(C_CARRY, (value & 0x1) != 0);
+
+    return result;
+}
+
 uint8_t Rr::Rr18(Cpu* cpu)
 {
     // Mnemonic: RR B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Rr18)");
-    return 0;
+    cpu->b = Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->b.read());    
+    return 8;
 }
 
 uint8_t Rr::Rr19(Cpu* cpu)
 {
     // Mnemonic: RR C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Rr19)");
-    return 0;
+    cpu->c = Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->c.read());    
+    return 8;
 }
 
 uint8_t Rr::Rr1A(Cpu* cpu)
 {
     // Mnemonic: RR D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Rr1A)");
-    return 0;
+    cpu->d = Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->d.read());    
+    return 8;
 }
 
 uint8_t Rr::Rr1B(Cpu* cpu)
 {
     // Mnemonic: RR E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Rr1B)");
-    return 0;
+    cpu->e = Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->e.read());    
+    return 8;
 }
 
 uint8_t Rr::Rr1C(Cpu* cpu)
 {
     // Mnemonic: RR H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Rr1C)");
-    return 0;
+    cpu->h = Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->h.read());    
+    return 8;
 }
 
 uint8_t Rr::Rr1D(Cpu* cpu)
 {
     // Mnemonic: RR L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Rr1D)");
-    return 0;
+    cpu->l = Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->l.read());    
+    return 8;
 }
 
 uint8_t Rr::Rr1E(Cpu* cpu)
 {
     // Mnemonic: RR (HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Rr1E)");
-    return 0;
+    cpu->mmu.write(cpu->hl.read(), Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->mmu.read(cpu->hl.read())));    
+    return 16;
 }
 
 uint8_t Rr::Rr1F(Cpu* cpu)
 {
     // Mnemonic: RR A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Rr1F)");
-    return 0;
+    cpu->a = Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->a.read());    
+    return 8;
 }
 
 uint8_t Sla::Sla20(Cpu* cpu)
@@ -469,68 +483,81 @@ uint8_t Swap::Swap37(Cpu* cpu)
     return 8;
 }
 
+/************** SRL *******************/
+uint8_t Srl::ShiftRightAndSetFlags(Cpu* cpu, uint8_t value)
+{
+    uint8_t result = value >> 1;
+
+    cpu->setFlag(Z_ZERO, result == 0);
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, false);
+    cpu->setFlag(C_CARRY, (value & 0x1) != 0);
+
+    return result;
+}
+
 uint8_t Srl::Srl38(Cpu* cpu)
 {
     // Mnemonic: SRL B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Srl38)");
-    return 0;
+    cpu->b = Srl::ShiftRightAndSetFlags(cpu, cpu->b.read());
+    return 8;
 }
 
 uint8_t Srl::Srl39(Cpu* cpu)
 {
     // Mnemonic: SRL C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Srl39)");
-    return 0;
+    cpu->d = Srl::ShiftRightAndSetFlags(cpu, cpu->d.read());
+    return 8;
 }
 
 uint8_t Srl::Srl3A(Cpu* cpu)
 {
     // Mnemonic: SRL D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Srl3A)");
-    return 0;
+    cpu->d = Srl::ShiftRightAndSetFlags(cpu, cpu->d.read());
+    return 8;
 }
 
 uint8_t Srl::Srl3B(Cpu* cpu)
 {
     // Mnemonic: SRL E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Srl3B)");
-    return 0;
+    cpu->e = Srl::ShiftRightAndSetFlags(cpu, cpu->e.read());
+    return 8;
 }
 
 uint8_t Srl::Srl3C(Cpu* cpu)
 {
     // Mnemonic: SRL H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Srl3C)");
-    return 0;
+    cpu->h = Srl::ShiftRightAndSetFlags(cpu, cpu->h.read());
+    return 8;
 }
 
 uint8_t Srl::Srl3D(Cpu* cpu)
 {
     // Mnemonic: SRL L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Srl3D)");
-    return 0;
+    cpu->l = Srl::ShiftRightAndSetFlags(cpu, cpu->l.read());
+    return 8;
 }
 
 uint8_t Srl::Srl3E(Cpu* cpu)
 {
     // Mnemonic: SRL (HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Srl3E)");
-    return 0;
+    cpu->mmu.write(cpu->hl.read(), Srl::ShiftRightAndSetFlags(cpu, cpu->mmu.read(cpu->hl.read())));
+    return 16;
 }
 
 uint8_t Srl::Srl3F(Cpu* cpu)
 {
     // Mnemonic: SRL A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    throw std::runtime_error("Not implemented! (Srl3F)");
-    return 0;
+    cpu->a = Srl::ShiftRightAndSetFlags(cpu, cpu->a.read());
+    return 8;
 }
 
 uint8_t Bit::Bit40(Cpu* cpu)

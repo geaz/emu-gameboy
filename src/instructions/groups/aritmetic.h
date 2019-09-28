@@ -92,6 +92,8 @@ class Ccf
 class Adc
 {
     public:
+        static void AdcToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value);
+
         static uint8_t Adc88(Cpu* cpu);
         static uint8_t Adc89(Cpu* cpu);
         static uint8_t Adc8A(Cpu* cpu);
@@ -106,6 +108,8 @@ class Adc
 class Sub
 {
     public:
+        static void SubToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value);
+
         static uint8_t Sub90(Cpu* cpu);
         static uint8_t Sub91(Cpu* cpu);
         static uint8_t Sub92(Cpu* cpu);

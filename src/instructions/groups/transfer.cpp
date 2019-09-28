@@ -756,7 +756,8 @@ uint8_t Pop::PopF1(Cpu* cpu)
 {
     // Mnemonic: POP AF, Length: 1
     // Cycles: 12, (Z N H C): Z N H C
-    cpu->af.write(cpu->popStack());
+    // On Pop AF the Bits 0-3 are ignored
+    cpu->af.write(cpu->popStack() & 0xFFF0);
     return 12;
 }
 

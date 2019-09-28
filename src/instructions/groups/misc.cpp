@@ -46,8 +46,9 @@ uint8_t Rra::Rra1F(Cpu* cpu)
 {
     // Mnemonic: RRA, Length: 1
     // Cycles: 4, (Z N H C): 0 0 0 C
-    throw std::runtime_error("Not implemented! (Rra1F)");
-    return 0;
+    cpu->a = Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->a.read());    
+    cpu->setFlag(Z_ZERO, 0);
+    return 4;
 }
 
 uint8_t Halt::Halt76(Cpu* cpu)

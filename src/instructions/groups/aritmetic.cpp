@@ -360,8 +360,17 @@ uint8_t Add::AddE8(Cpu* cpu)
 {
     // Mnemonic: ADD SP,r8, Length: 2
     // Cycles: 16, (Z N H C): 0 0 H C
-    throw std::runtime_error("Not implemented! (AddE8)");
-    return 0;
+    uint16_t result = cpu->sp.read() + cpu->currentInstruction.parsedBytes.low;
+
+    // We only take the first 8 bits of each value and add them
+    // If the result is bigger than 8 bits, we got a half carry!
+    cpu->setFlag(Z_ZERO, false);
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, (cpu->sp.read() & 0xFFF) + (cpu->currentInstruction.parsedBytes.low & 0xFFF) > 0xFFF);
+    cpu->setFlag(C_CARRY, result > 0xFFFF);
+
+    cpu->sp = result;
+    return 16;
 }
 
 uint8_t Daa::Daa27(Cpu* cpu)
@@ -400,148 +409,177 @@ uint8_t Ccf::Ccf3F(Cpu* cpu)
     return 0;
 }
 
+/************** Adc *******************/
+void Adc::AdcToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value)
+{
+    uint8_t result = storeIn.read() + value + cpu->getFlag(C_CARRY);
+
+    // We only take the first 4 bits of each value and add them
+    // If the result is bigger than 4 bits, we got a half carry!
+    cpu->setFlag(Z_ZERO, result == 0);
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, (storeIn.read() & 0xF) + (value & 0xF) > 0xF);
+    cpu->setFlag(C_CARRY, result > 0xFF);
+
+    storeIn = result;
+}
+
 uint8_t Adc::Adc88(Cpu* cpu)
 {
     // Mnemonic: ADC A,B, Length: 1
     // Cycles: 4, (Z N H C): Z 0 H C
-    throw std::runtime_error("Not implemented! (Adc88)");
-    return 0;
+    Adc::AdcToRegister(cpu, cpu->a, cpu->b.read());
+    return 4;
 }
 
 uint8_t Adc::Adc89(Cpu* cpu)
 {
     // Mnemonic: ADC A,C, Length: 1
     // Cycles: 4, (Z N H C): Z 0 H C
-    throw std::runtime_error("Not implemented! (Adc89)");
-    return 0;
+    Adc::AdcToRegister(cpu, cpu->a, cpu->c.read());
+    return 4;
 }
 
 uint8_t Adc::Adc8A(Cpu* cpu)
 {
     // Mnemonic: ADC A,D, Length: 1
     // Cycles: 4, (Z N H C): Z 0 H C
-    throw std::runtime_error("Not implemented! (Adc8A)");
-    return 0;
+    Adc::AdcToRegister(cpu, cpu->a, cpu->d.read());
+    return 4;
 }
 
 uint8_t Adc::Adc8B(Cpu* cpu)
 {
     // Mnemonic: ADC A,E, Length: 1
     // Cycles: 4, (Z N H C): Z 0 H C
-    throw std::runtime_error("Not implemented! (Adc8B)");
-    return 0;
+    Adc::AdcToRegister(cpu, cpu->a, cpu->e.read());
+    return 4;
 }
 
 uint8_t Adc::Adc8C(Cpu* cpu)
 {
     // Mnemonic: ADC A,H, Length: 1
     // Cycles: 4, (Z N H C): Z 0 H C
-    throw std::runtime_error("Not implemented! (Adc8C)");
-    return 0;
+    Adc::AdcToRegister(cpu, cpu->a, cpu->h.read());
+    return 4;
 }
 
 uint8_t Adc::Adc8D(Cpu* cpu)
 {
     // Mnemonic: ADC A,L, Length: 1
     // Cycles: 4, (Z N H C): Z 0 H C
-    throw std::runtime_error("Not implemented! (Adc8D)");
-    return 0;
+    Adc::AdcToRegister(cpu, cpu->a, cpu->l.read());
+    return 4;
 }
 
 uint8_t Adc::Adc8E(Cpu* cpu)
 {
     // Mnemonic: ADC A,(HL), Length: 1
     // Cycles: 8, (Z N H C): Z 0 H C
-    throw std::runtime_error("Not implemented! (Adc8E)");
-    return 0;
+    Adc::AdcToRegister(cpu, cpu->a, cpu->mmu.read(cpu->hl.read()));
+    return 8;
 }
 
 uint8_t Adc::Adc8F(Cpu* cpu)
 {
     // Mnemonic: ADC A,A, Length: 1
     // Cycles: 4, (Z N H C): Z 0 H C
-    throw std::runtime_error("Not implemented! (Adc8F)");
-    return 0;
+    Adc::AdcToRegister(cpu, cpu->a, cpu->a.read());
+    return 4;
 }
 
 uint8_t Adc::AdcCE(Cpu* cpu)
 {
     // Mnemonic: ADC A,d8, Length: 2
     // Cycles: 8, (Z N H C): Z 0 H C
-    throw std::runtime_error("Not implemented! (AdcCE)");
-    return 0;
+    Adc::AdcToRegister(cpu, cpu->a, cpu->currentInstruction.parsedBytes.low);
+    return 8;
+}
+
+/************** Sub *******************/
+void Sub::SubToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value)
+{
+    uint8_t result = storeIn.read() + value;
+
+    // We only take the first 4 bits of each value and sub them
+    // If the result is smaller than 0, we got a half carry!
+    cpu->setFlag(H_HALFCARRY, (storeIn.read() & 0xF) - (value & 0xF) < 0);
+    cpu->setFlag(C_CARRY, storeIn.read() < value);
+    cpu->setFlag(N_SUBSTRACT, true);
+    cpu->setFlag(Z_ZERO, result == 0);
+
+    storeIn = result;
 }
 
 uint8_t Sub::Sub90(Cpu* cpu)
 {
     // Mnemonic: SUB B, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sub90)");
-    return 0;
+    Sub::SubToRegister(cpu, cpu->a, cpu->b.read());
+    return 4;
 }
 
 uint8_t Sub::Sub91(Cpu* cpu)
 {
     // Mnemonic: SUB C, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sub91)");
-    return 0;
+    Sub::SubToRegister(cpu, cpu->a, cpu->c.read());
+    return 4;
 }
 
 uint8_t Sub::Sub92(Cpu* cpu)
 {
     // Mnemonic: SUB D, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sub92)");
-    return 0;
+    Sub::SubToRegister(cpu, cpu->a, cpu->d.read());
+    return 4;
 }
 
 uint8_t Sub::Sub93(Cpu* cpu)
 {
     // Mnemonic: SUB E, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sub93)");
-    return 0;
+    Sub::SubToRegister(cpu, cpu->a, cpu->e.read());
+    return 4;
 }
 
 uint8_t Sub::Sub94(Cpu* cpu)
 {
     // Mnemonic: SUB H, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sub94)");
-    return 0;
+    Sub::SubToRegister(cpu, cpu->a, cpu->h.read());
+    return 4;
 }
 
 uint8_t Sub::Sub95(Cpu* cpu)
 {
     // Mnemonic: SUB L, Length: 1
-    // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sub95)");
-    return 0;
+    Sub::SubToRegister(cpu, cpu->a, cpu->l.read());
+    return 4;
 }
 
 uint8_t Sub::Sub96(Cpu* cpu)
 {
     // Mnemonic: SUB (HL), Length: 1
     // Cycles: 8, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sub96)");
-    return 0;
+    Sub::SubToRegister(cpu, cpu->a, cpu->mmu.read(cpu->hl.read()));
+    return 8;
 }
 
 uint8_t Sub::Sub97(Cpu* cpu)
 {
     // Mnemonic: SUB A, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sub97)");
-    return 0;
+    Sub::SubToRegister(cpu, cpu->a, cpu->a.read());
+    return 4;
 }
 
 uint8_t Sub::SubD6(Cpu* cpu)
 {
     // Mnemonic: SUB d8, Length: 2
     // Cycles: 8, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (SubD6)");
-    return 0;
+    Sub::SubToRegister(cpu, cpu->a, cpu->currentInstruction.parsedBytes.low);
+    return 4;
 }
 
 uint8_t Sbc::Sbc98(Cpu* cpu)

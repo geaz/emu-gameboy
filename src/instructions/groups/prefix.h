@@ -47,6 +47,8 @@ class Rl
 class Rr
 {
     public:
+        static uint8_t RotateRightThroughCarryAndSetFlags(Cpu* cpu, uint8_t value);
+
         static uint8_t Rr18(Cpu* cpu);
         static uint8_t Rr19(Cpu* cpu);
         static uint8_t Rr1A(Cpu* cpu);
@@ -101,6 +103,8 @@ class Swap
 class Srl
 {
     public:
+        static uint8_t ShiftRightAndSetFlags(Cpu* cpu, uint8_t value);
+
         static uint8_t Srl38(Cpu* cpu);
         static uint8_t Srl39(Cpu* cpu);
         static uint8_t Srl3A(Cpu* cpu);

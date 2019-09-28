@@ -14,10 +14,10 @@ uint8_t Mmu::read(const uint16_t address, const bool ppuAccess) const
     {
         LCDMode currentPpuMode = readLcdMode();
         if(currentPpuMode == MODE_TRANSFER && address >= 0x8000 && address <= 0x9FFF)
-            throw std::runtime_error("Illegal VRAM access");
-        else if(  (currentPpuMode == MODE_TRANSFER || currentPpuMode == MODE_OAM)
+            return 0xFF;
+        else if((currentPpuMode == MODE_TRANSFER || currentPpuMode == MODE_OAM)
                 && address >= 0xFE00 && address <= 0xFE9F)
-            throw std::runtime_error("Illegal OAM access");
+            return 0xFF;
     }    
 
     // Cartridge Bank 0

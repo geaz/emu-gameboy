@@ -13,7 +13,7 @@ void ComponentsScreen::update()
 { 
     ImGui::Begin("Components", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
     ImGui::SetWindowPos(ImVec2(480, -1), ImGuiCond_Always);
-    ImGui::SetWindowSize(ImVec2(301, 490), ImGuiCond_Always);
+    ImGui::SetWindowSize(ImVec2(331, 490), ImGuiCond_Always);
     
     ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None);
     if(ImGui::BeginTabItem("Memory"))
@@ -68,7 +68,6 @@ void ComponentsScreen::drawMemoryMap(
                 for(int j = 0; j < bound; j++)
                 {
                     ImGui::SameLine(); 
-                    auto test = memoryReadFunc((i * 10) + j);
                     ImGui::Text(StringHelper::IntToHexString(memoryReadFunc((i * 10) + j), 2, false).c_str());
                     if(ImGui::IsItemHovered())
                     {                        

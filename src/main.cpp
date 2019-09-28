@@ -23,7 +23,7 @@ int main(int argc, char** args) {
     Cartridge cartridge(args[1]);
     Gameboy gameboy(cartridge);
 
-    Window window("Gameboy", 780, 488); // Gameboy Display: 160x144
+    Window window("Gameboy", 810, 488); // Gameboy Display: 160x144
     window.setClearColor(224, 248, 208, 255);
     
     CpuScreen cpuScreen(gameboy.cpu);

@@ -78,7 +78,7 @@ enum LCDRegisterBit
     BG_TILE_MAP_SELECT = 3,         // Bit 3 - BG Tile Map Display Select     (0=9800-9BFF, 1=9C00-9FFF)
     OBJ_SIZE = 2,                   // Bit 2 - OBJ (Sprite) Size              (0=8x8, 1=8x16)
     OBJ_ENABLE = 1,                 // Bit 1 - OBJ (Sprite) Display Enable    (0=Off, 1=On)
-    BG_DISPLAY = 0                  // Bit 0 - BG Display (for CGB see below) (0=Off, 1=On)
+    BG_DISPLAY = 0                  // Bit 0 - BG Display                     (0=Off, 1=On)
 };
 
 enum LCDStatusBit

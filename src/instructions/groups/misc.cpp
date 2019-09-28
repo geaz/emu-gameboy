@@ -14,16 +14,18 @@ uint8_t Rlca::Rlca07(Cpu* cpu)
 {
     // Mnemonic: RLCA, Length: 1
     // Cycles: 4, (Z N H C): 0 0 0 C
-    throw std::runtime_error("Not implemented! (Rlca07)");
-    return 0;
+    cpu->a = Rlc::RotateLeftAndSetFlags(cpu, cpu->a.read());    
+    cpu->setFlag(Z_ZERO, 0);
+    return 4;
 }
 
 uint8_t Rrca::Rrca0F(Cpu* cpu)
 {
     // Mnemonic: RRCA, Length: 1
     // Cycles: 4, (Z N H C): 0 0 0 C
-    throw std::runtime_error("Not implemented! (Rrca0F)");
-    return 0;
+    cpu->a = Rrc::RotateRightAndSetFlags(cpu, cpu->a.read());    
+    cpu->setFlag(Z_ZERO, 0);
+    return 4;
 }
 
 uint8_t Stop::Stop10(Cpu* cpu)
@@ -38,8 +40,9 @@ uint8_t Rla::Rla17(Cpu* cpu)
 {
     // Mnemonic: RLA, Length: 1
     // Cycles: 4, (Z N H C): 0 0 0 C
-    throw std::runtime_error("Not implemented! (Rla17)");
-    return 0;
+    cpu->a = Rl::RotateLeftThroughCarryAndSetFlags(cpu, cpu->a.read());    
+    cpu->setFlag(Z_ZERO, 0);
+    return 4;
 }
 
 uint8_t Rra::Rra1F(Cpu* cpu)

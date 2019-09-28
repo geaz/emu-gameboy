@@ -360,16 +360,17 @@ uint8_t Add::AddE8(Cpu* cpu)
 {
     // Mnemonic: ADD SP,r8, Length: 2
     // Cycles: 16, (Z N H C): 0 0 H C
-    uint16_t result = cpu->sp.read() + cpu->currentInstruction.parsedBytes.low;
+    int8_t signedValue = static_cast<int8_t>(cpu->currentInstruction.parsedBytes.low);  
+    uint32_t result = cpu->sp.read() + signedValue;
 
     // We only take the first 8 bits of each value and add them
     // If the result is bigger than 8 bits, we got a half carry!
     cpu->setFlag(Z_ZERO, false);
     cpu->setFlag(N_SUBSTRACT, false);
-    cpu->setFlag(H_HALFCARRY, (cpu->sp.read() & 0xFFF) + (cpu->currentInstruction.parsedBytes.low & 0xFFF) > 0xFFF);
+    cpu->setFlag(H_HALFCARRY, (cpu->sp.read() & 0xFF) + signedValue > 0xFF);
     cpu->setFlag(C_CARRY, result > 0xFFFF);
 
-    cpu->sp = result;
+    cpu->sp = result & 0xFFFF;
     return 16;
 }
 
@@ -377,8 +378,34 @@ uint8_t Daa::Daa27(Cpu* cpu)
 {
     // Mnemonic: DAA, Length: 1
     // Cycles: 4, (Z N H C): Z - 0 C
-    throw std::runtime_error("Not implemented! (Daa27)");
-    return 0;
+    int32_t result = cpu->a.read();
+    if(cpu->getFlag(N_SUBSTRACT))
+    {
+        if(cpu->getFlag(H_HALFCARRY))
+        {
+            result -= 6;
+        }
+        if(cpu->getFlag(C_CARRY))
+        {
+            result -= 0x60;
+        }
+    }
+    else
+    {
+        if(cpu->getFlag(H_HALFCARRY) || (cpu->a.read() & 0x0F) > 9)
+        {
+            result += 6;
+        }
+        if(cpu->getFlag(C_CARRY) || cpu->a.read() > 0x9F)
+        {
+            result += 0x60;
+        }
+    }
+    cpu->a = static_cast<uint8_t>(result & 0xFF);
+    if(result > 0xFF) cpu->setFlag(C_CARRY, true);
+    cpu->setFlag(Z_ZERO, cpu->a.read() == 0);
+    cpu->setFlag(H_HALFCARRY, false);    
+    return 4;
 }
 
 uint8_t Cpl::Cpl2F(Cpu* cpu)
@@ -405,8 +432,10 @@ uint8_t Ccf::Ccf3F(Cpu* cpu)
 {
     // Mnemonic: CCF, Length: 1
     // Cycles: 4, (Z N H C): - 0 0 C
-    throw std::runtime_error("Not implemented! (Ccf3F)");
-    return 0;
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, false);
+    cpu->setFlag(C_CARRY, !cpu->getFlag(C_CARRY));
+    return 4;
 }
 
 /************** Adc *******************/
@@ -418,7 +447,7 @@ void Adc::AdcToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value)
     // If the result is bigger than 4 bits, we got a half carry!
     cpu->setFlag(Z_ZERO, result == 0);
     cpu->setFlag(N_SUBSTRACT, false);
-    cpu->setFlag(H_HALFCARRY, (storeIn.read() & 0xF) + (value & 0xF) > 0xF);
+    cpu->setFlag(H_HALFCARRY, (storeIn.read() & 0xF) + (value & 0xF) + cpu->getFlag(C_CARRY) > 0xF);
     cpu->setFlag(C_CARRY, result > 0xFF);
 
     storeIn = result;
@@ -582,76 +611,89 @@ uint8_t Sub::SubD6(Cpu* cpu)
     return 4;
 }
 
+/************** Sbc *******************/
+void Sbc::SbcToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value)
+{
+    uint8_t result = storeIn.read() - value - cpu->getFlag(C_CARRY);
+
+    cpu->setFlag(Z_ZERO, result == 0);
+    cpu->setFlag(N_SUBSTRACT, true);
+    cpu->setFlag(H_HALFCARRY, (storeIn.read() & 0xF) - (value & 0xF) - cpu->getFlag(C_CARRY) < 0);
+    cpu->setFlag(C_CARRY, result < 0);
+
+    storeIn = result;
+}
+
 uint8_t Sbc::Sbc98(Cpu* cpu)
 {
     // Mnemonic: SBC A,B, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sbc98)");
-    return 0;
+    Sbc::SbcToRegister(cpu, cpu->a, cpu->b.read());
+    return 4;
 }
 
 uint8_t Sbc::Sbc99(Cpu* cpu)
 {
     // Mnemonic: SBC A,C, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sbc99)");
-    return 0;
+    Sbc::SbcToRegister(cpu, cpu->a, cpu->c.read());
+    return 4;
 }
 
 uint8_t Sbc::Sbc9A(Cpu* cpu)
 {
     // Mnemonic: SBC A,D, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sbc9A)");
-    return 0;
+    Sbc::SbcToRegister(cpu, cpu->a, cpu->d.read());
+    return 4;
 }
 
 uint8_t Sbc::Sbc9B(Cpu* cpu)
 {
     // Mnemonic: SBC A,E, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sbc9B)");
-    return 0;
+    Sbc::SbcToRegister(cpu, cpu->a, cpu->e.read());
+    return 4;
 }
 
 uint8_t Sbc::Sbc9C(Cpu* cpu)
 {
     // Mnemonic: SBC A,H, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sbc9C)");
-    return 0;
+    Sbc::SbcToRegister(cpu, cpu->a, cpu->h.read());
+    return 4;
 }
 
 uint8_t Sbc::Sbc9D(Cpu* cpu)
 {
     // Mnemonic: SBC A,L, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sbc9D)");
-    return 0;
+    Sbc::SbcToRegister(cpu, cpu->a, cpu->l.read());
+    return 4;
 }
 
 uint8_t Sbc::Sbc9E(Cpu* cpu)
 {
     // Mnemonic: SBC A,(HL), Length: 1
     // Cycles: 8, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sbc9E)");
-    return 0;
+    Sbc::SbcToRegister(cpu, cpu->a, cpu->mmu.read(cpu->hl.read()));
+    return 8;
 }
 
 uint8_t Sbc::Sbc9F(Cpu* cpu)
 {
     // Mnemonic: SBC A,A, Length: 1
     // Cycles: 4, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (Sbc9F)");
-    return 0;
+    Sbc::SbcToRegister(cpu, cpu->a, cpu->a.read());
+    return 4;
 }
 
 uint8_t Sbc::SbcDE(Cpu* cpu)
 {
     // Mnemonic: SBC A,d8, Length: 2
     // Cycles: 8, (Z N H C): Z 1 H C
-    throw std::runtime_error("Not implemented! (SbcDE)");
-    return 0;
+    Sbc::SbcToRegister(cpu, cpu->a, cpu->currentInstruction.parsedBytes.low);
+    return 8;
 }
 
 /************** And *******************/

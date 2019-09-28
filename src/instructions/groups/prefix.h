@@ -8,6 +8,8 @@ class Cpu;
 class Rlc
 {
     public:
+        static uint8_t RotateLeftAndSetFlags(Cpu* cpu, uint8_t value);
+
         static uint8_t Rlc00(Cpu* cpu);
         static uint8_t Rlc01(Cpu* cpu);
         static uint8_t Rlc02(Cpu* cpu);
@@ -21,6 +23,8 @@ class Rlc
 class Rrc
 {
     public:
+        static uint8_t RotateRightAndSetFlags(Cpu* cpu, uint8_t value);
+
         static uint8_t Rrc08(Cpu* cpu);
         static uint8_t Rrc09(Cpu* cpu);
         static uint8_t Rrc0A(Cpu* cpu);
@@ -34,6 +38,8 @@ class Rrc
 class Rl
 {
     public:
+        static uint8_t RotateLeftThroughCarryAndSetFlags(Cpu* cpu, uint8_t value);
+
         static uint8_t Rl10(Cpu* cpu);
         static uint8_t Rl11(Cpu* cpu);
         static uint8_t Rl12(Cpu* cpu);
@@ -62,6 +68,8 @@ class Rr
 class Sla
 {
     public:
+        static uint8_t ShiftLeftAndSetFlags(Cpu* cpu, uint8_t value);
+
         static uint8_t Sla20(Cpu* cpu);
         static uint8_t Sla21(Cpu* cpu);
         static uint8_t Sla22(Cpu* cpu);
@@ -75,6 +83,8 @@ class Sla
 class Sra
 {
     public:
+        static uint8_t ShiftRightAndSetFlags(Cpu* cpu, uint8_t value);
+
         static uint8_t Sra28(Cpu* cpu);
         static uint8_t Sra29(Cpu* cpu);
         static uint8_t Sra2A(Cpu* cpu);

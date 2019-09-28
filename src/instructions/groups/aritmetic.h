@@ -124,6 +124,8 @@ class Sub
 class Sbc
 {
     public:
+        static void SbcToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value);
+
         static uint8_t Sbc98(Cpu* cpu);
         static uint8_t Sbc99(Cpu* cpu);
         static uint8_t Sbc9A(Cpu* cpu);

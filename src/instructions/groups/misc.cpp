@@ -41,7 +41,7 @@ uint8_t Rla::Rla17(Cpu* cpu)
     // Mnemonic: RLA, Length: 1
     // Cycles: 4, (Z N H C): 0 0 0 C
     cpu->a = Rl::RotateLeftThroughCarryAndSetFlags(cpu, cpu->a.read());    
-    cpu->setFlag(Z_ZERO, 0);
+    cpu->setFlag(Z_ZERO, false);
     return 4;
 }
 
@@ -58,8 +58,8 @@ uint8_t Halt::Halt76(Cpu* cpu)
 {
     // Mnemonic: HALT, Length: 1
     // Cycles: 4, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (Halt76)");
-    return 0;
+    cpu->halted = true;
+    return 4;
 }
 
 uint8_t Di::DiF3(Cpu* cpu)

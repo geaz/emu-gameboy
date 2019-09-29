@@ -709,14 +709,15 @@ uint8_t Ld::LdF8(Cpu* cpu)
     // Mnemonic: LD HL,SP+r8, Length: 2
     // Cycles: 12, (Z N H C): 0 0 H C  
     int8_t signedValue = static_cast<int8_t>(cpu->currentInstruction.parsedBytes.low);  
-    uint32_t result = cpu->sp.read() + signedValue;
-    cpu->hl.write(result & 0xFFFF);
+    int32_t fullResult = cpu->sp.read() + signedValue;
+    uint16_t result = static_cast<uint16_t>(fullResult);
 
     cpu->setFlag(Z_ZERO, false);
     cpu->setFlag(N_SUBSTRACT, false);
-    cpu->setFlag(H_HALFCARRY, (cpu->sp.read() & 0xFF) + signedValue > 0xFF);
-    cpu->setFlag(C_CARRY, result > 0xFFFF);
+    cpu->setFlag(H_HALFCARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x10) == 0x10);
+    cpu->setFlag(C_CARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x100) == 0x100);
 
+    cpu->hl.write(result);
     return 12;
 }
 

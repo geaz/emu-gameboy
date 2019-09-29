@@ -98,10 +98,12 @@ uint8_t Inc::Inc34(Cpu* cpu)
     // Mnemonic: INC (HL), Length: 1
     // Cycles: 12, (Z N H C): Z 0 H -
     uint16_t address = cpu->hl.read();
-    cpu->mmu.write(address, cpu->mmu.read(address) + 1);
-    cpu->setFlag(Z_ZERO, false);
+    uint8_t result = cpu->mmu.read(address) + 1;
+
+    cpu->mmu.write(address, result);
+    cpu->setFlag(Z_ZERO, result == 0);
     cpu->setFlag(N_SUBSTRACT, false);
-    cpu->setFlag(H_HALFCARRY, (cpu->mmu.read(address) & 0x0F) == 0x00);
+    cpu->setFlag(H_HALFCARRY, (result & 0x0F) == 0x00);
     return 12;
 }
 
@@ -200,10 +202,12 @@ uint8_t Dec::Dec35(Cpu* cpu)
     // Mnemonic: DEC (HL), Length: 1
     // Cycles: 12, (Z N H C): Z 1 H -
     uint16_t address = cpu->hl.read();
-    cpu->mmu.write(address, cpu->mmu.read(address) - 1);
-    cpu->setFlag(Z_ZERO, false);
+    uint8_t result = cpu->mmu.read(address) - 1;
+
+    cpu->mmu.write(address, result);
+    cpu->setFlag(Z_ZERO, result == 0);
     cpu->setFlag(N_SUBSTRACT, true);
-    cpu->setFlag(H_HALFCARRY, (cpu->mmu.read(address) & 0x0F) == 0x0F);
+    cpu->setFlag(H_HALFCARRY, (result & 0x0F) == 0x0F);
     return 12;
 }
 
@@ -227,12 +231,11 @@ uint8_t Dec::Dec3D(Cpu* cpu)
 /************** Add *******************/
 void Add::AddToRegisterPair(Cpu* cpu, RegisterPair& storeIn, uint16_t value)
 {
-    uint16_t result = storeIn.read() + value;
+    uint32_t fullResult = storeIn.read() + value;
+    uint16_t result = static_cast<uint16_t>(fullResult); 
 
-    // We only take the first 8 bits of each value and add them
-    // If the result is bigger than 8 bits, we got a half carry!
-    cpu->setFlag(H_HALFCARRY, (storeIn.read() & 0xFFF) + (value & 0xFFF) > 0xFFF);
-    cpu->setFlag(C_CARRY, result > 0xFFFF);
+    cpu->setFlag(H_HALFCARRY, (storeIn.read() ^ value ^ (fullResult & 0xFFFF)) & 0x1000);
+    cpu->setFlag(C_CARRY, fullResult > 0xFFFF);
     cpu->setFlag(N_SUBSTRACT, false);
 
     storeIn.write(result);
@@ -240,12 +243,13 @@ void Add::AddToRegisterPair(Cpu* cpu, RegisterPair& storeIn, uint16_t value)
 
 void Add::AddToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value)
 {
-    uint8_t result = storeIn.read() + value;
+    uint16_t fullResult = storeIn.read() + value;
+    uint8_t result = static_cast<uint8_t>(fullResult);
 
     // We only take the first 4 bits of each value and add them
     // If the result is bigger than 4 bits, we got a half carry!
     cpu->setFlag(H_HALFCARRY, (storeIn.read() & 0xF) + (value & 0xF) > 0xF);
-    cpu->setFlag(C_CARRY, result > 0xFF);
+    cpu->setFlag(C_CARRY, fullResult > 0xFF);
     cpu->setFlag(N_SUBSTRACT, false);
     cpu->setFlag(Z_ZERO, result == 0);
 
@@ -361,16 +365,15 @@ uint8_t Add::AddE8(Cpu* cpu)
     // Mnemonic: ADD SP,r8, Length: 2
     // Cycles: 16, (Z N H C): 0 0 H C
     int8_t signedValue = static_cast<int8_t>(cpu->currentInstruction.parsedBytes.low);  
-    uint32_t result = cpu->sp.read() + signedValue;
+    int32_t fullResult = cpu->sp.read() + signedValue;
+    uint16_t result = static_cast<uint16_t>(fullResult);
 
-    // We only take the first 8 bits of each value and add them
-    // If the result is bigger than 8 bits, we got a half carry!
     cpu->setFlag(Z_ZERO, false);
     cpu->setFlag(N_SUBSTRACT, false);
-    cpu->setFlag(H_HALFCARRY, (cpu->sp.read() & 0xFF) + signedValue > 0xFF);
-    cpu->setFlag(C_CARRY, result > 0xFFFF);
+    cpu->setFlag(H_HALFCARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x10) == 0x10);
+    cpu->setFlag(C_CARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x100) == 0x100);
 
-    cpu->sp = result & 0xFFFF;
+    cpu->sp = result;
     return 16;
 }
 
@@ -441,14 +444,15 @@ uint8_t Ccf::Ccf3F(Cpu* cpu)
 /************** Adc *******************/
 void Adc::AdcToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value)
 {
-    uint8_t result = storeIn.read() + value + cpu->getFlag(C_CARRY);
+    uint16_t fullResult = storeIn.read() + value + cpu->getFlag(C_CARRY);
+    uint8_t result = static_cast<uint8_t>(fullResult);
 
     // We only take the first 4 bits of each value and add them
     // If the result is bigger than 4 bits, we got a half carry!
     cpu->setFlag(Z_ZERO, result == 0);
     cpu->setFlag(N_SUBSTRACT, false);
     cpu->setFlag(H_HALFCARRY, (storeIn.read() & 0xF) + (value & 0xF) + cpu->getFlag(C_CARRY) > 0xF);
-    cpu->setFlag(C_CARRY, result > 0xFF);
+    cpu->setFlag(C_CARRY, fullResult > 0xFF);
 
     storeIn = result;
 }
@@ -528,7 +532,7 @@ uint8_t Adc::AdcCE(Cpu* cpu)
 /************** Sub *******************/
 void Sub::SubToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value)
 {
-    uint8_t result = storeIn.read() + value;
+    uint8_t result = storeIn.read() - value;
 
     // We only take the first 4 bits of each value and sub them
     // If the result is smaller than 0, we got a half carry!
@@ -614,12 +618,13 @@ uint8_t Sub::SubD6(Cpu* cpu)
 /************** Sbc *******************/
 void Sbc::SbcToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value)
 {
-    uint8_t result = storeIn.read() - value - cpu->getFlag(C_CARRY);
+    int32_t fullResult = storeIn.read() - value - cpu->getFlag(C_CARRY);
+    uint8_t result = static_cast<uint8_t>(fullResult);
 
     cpu->setFlag(Z_ZERO, result == 0);
     cpu->setFlag(N_SUBSTRACT, true);
     cpu->setFlag(H_HALFCARRY, (storeIn.read() & 0xF) - (value & 0xF) - cpu->getFlag(C_CARRY) < 0);
-    cpu->setFlag(C_CARRY, result < 0);
+    cpu->setFlag(C_CARRY, fullResult < 0);
 
     storeIn = result;
 }
@@ -953,7 +958,7 @@ void Cp::CpAcc(Cpu* cpu, uint8_t value)
     cpu->setFlag(Z_ZERO, result == 0);
     cpu->setFlag(N_SUBSTRACT, true);
     cpu->setFlag(H_HALFCARRY, (cpu->a.read() & 0xF) - (value & 0xF) < 0);
-    cpu->setFlag(C_CARRY, cpu->a.read() - value < 0);
+    cpu->setFlag(C_CARRY, cpu->a.read() < value);
 }
 
 uint8_t Cp::CpB8(Cpu* cpu)

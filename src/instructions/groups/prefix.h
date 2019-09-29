@@ -83,7 +83,7 @@ class Sla
 class Sra
 {
     public:
-        static uint8_t ShiftRightAndSetFlags(Cpu* cpu, uint8_t value);
+        static uint8_t ShiftRightAritmeticalAndSetFlags(Cpu* cpu, uint8_t value);
 
         static uint8_t Sra28(Cpu* cpu);
         static uint8_t Sra29(Cpu* cpu);
@@ -128,6 +128,8 @@ class Srl
 class Bit
 {
     public:
+        static void BitCheckAndSetFlags(Cpu* cpu, uint8_t bit, uint8_t value);
+
         static uint8_t Bit40(Cpu* cpu);
         static uint8_t Bit41(Cpu* cpu);
         static uint8_t Bit42(Cpu* cpu);
@@ -269,6 +271,9 @@ class Res
 class Set
 {
     public:
+        static void SetRegisterBit(Register<uint8_t>& reg, uint8_t bitNr);
+        static void SetAddressBit(Cpu* cpu, uint16_t address, uint8_t bitNr);
+
         static uint8_t SetC0(Cpu* cpu);
         static uint8_t SetC1(Cpu* cpu);
         static uint8_t SetC2(Cpu* cpu);

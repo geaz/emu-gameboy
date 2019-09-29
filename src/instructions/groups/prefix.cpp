@@ -160,8 +160,8 @@ uint8_t Rrc::Rrc0F(Cpu* cpu)
 /************** Rl *******************/
 uint8_t Rl::RotateLeftThroughCarryAndSetFlags(Cpu* cpu, uint8_t value)
 {
-    bool carry = cpu->getFlag(C_CARRY);
-    uint8_t result = (value << 1) | (uint8_t) carry;    
+    uint8_t carry = cpu->getFlag(C_CARRY) ? 1 : 0;
+    uint8_t result = (value << 1) | carry;    
 
     cpu->setFlag(Z_ZERO, result == 0);
     cpu->setFlag(N_SUBSTRACT, false);
@@ -238,8 +238,8 @@ uint8_t Rl::Rl17(Cpu* cpu)
 /************** Rr *******************/
 uint8_t Rr::RotateRightThroughCarryAndSetFlags(Cpu* cpu, uint8_t value)
 {
-    bool carry = cpu->getFlag(C_CARRY);
-    uint8_t result = (value >> 1) | (carry << 7);    
+    uint8_t carry = cpu->getFlag(C_CARRY) ? 0x80 : 0;
+    uint8_t result = carry | (value >> 1);    
 
     cpu->setFlag(Z_ZERO, result == 0);
     cpu->setFlag(N_SUBSTRACT, false);
@@ -391,9 +391,9 @@ uint8_t Sla::Sla27(Cpu* cpu)
 }
 
 /************** Sra *******************/
-uint8_t Sra::ShiftRightAndSetFlags(Cpu* cpu, uint8_t value)
+uint8_t Sra::ShiftRightAritmeticalAndSetFlags(Cpu* cpu, uint8_t value)
 {
-    uint8_t result = value >> 1;    
+    uint8_t result = (value & 0x80) | (value >> 1);    
 
     cpu->setFlag(Z_ZERO, result == 0);
     cpu->setFlag(N_SUBSTRACT, false);
@@ -407,7 +407,7 @@ uint8_t Sra::Sra28(Cpu* cpu)
 {
     // Mnemonic: SRA B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    cpu->b = Sra::ShiftRightAndSetFlags(cpu, cpu->b.read());
+    cpu->b = Sra::ShiftRightAritmeticalAndSetFlags(cpu, cpu->b.read());
     return 8;
 }
 
@@ -415,7 +415,7 @@ uint8_t Sra::Sra29(Cpu* cpu)
 {
     // Mnemonic: SRA C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    cpu->c = Sra::ShiftRightAndSetFlags(cpu, cpu->c.read());
+    cpu->c = Sra::ShiftRightAritmeticalAndSetFlags(cpu, cpu->c.read());
     return 8;
 }
 
@@ -423,7 +423,7 @@ uint8_t Sra::Sra2A(Cpu* cpu)
 {
     // Mnemonic: SRA D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    cpu->d = Sra::ShiftRightAndSetFlags(cpu, cpu->d.read());
+    cpu->d = Sra::ShiftRightAritmeticalAndSetFlags(cpu, cpu->d.read());
     return 8;
 }
 
@@ -431,7 +431,7 @@ uint8_t Sra::Sra2B(Cpu* cpu)
 {
     // Mnemonic: SRA E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    cpu->e = Sra::ShiftRightAndSetFlags(cpu, cpu->e.read());
+    cpu->e = Sra::ShiftRightAritmeticalAndSetFlags(cpu, cpu->e.read());
     return 8;
 }
 
@@ -439,7 +439,7 @@ uint8_t Sra::Sra2C(Cpu* cpu)
 {
     // Mnemonic: SRA H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    cpu->h = Sra::ShiftRightAndSetFlags(cpu, cpu->h.read());
+    cpu->h = Sra::ShiftRightAritmeticalAndSetFlags(cpu, cpu->h.read());
     return 8;
 }
 
@@ -447,7 +447,7 @@ uint8_t Sra::Sra2D(Cpu* cpu)
 {
     // Mnemonic: SRA L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    cpu->l = Sra::ShiftRightAndSetFlags(cpu, cpu->l.read());
+    cpu->l = Sra::ShiftRightAritmeticalAndSetFlags(cpu, cpu->l.read());
     return 8;
 }
 
@@ -455,7 +455,7 @@ uint8_t Sra::Sra2E(Cpu* cpu)
 {
     // Mnemonic: SRA (HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 0 0
-    cpu->mmu.write(cpu->hl.read(), Sra::ShiftRightAndSetFlags(cpu, cpu->mmu.read(cpu->hl.read())));
+    cpu->mmu.write(cpu->hl.read(), Sra::ShiftRightAritmeticalAndSetFlags(cpu, cpu->mmu.read(cpu->hl.read())));
     return 16;
 }
 
@@ -463,7 +463,7 @@ uint8_t Sra::Sra2F(Cpu* cpu)
 {
     // Mnemonic: SRA A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 0
-    cpu->a = Sra::ShiftRightAndSetFlags(cpu, cpu->a.read());
+    cpu->a = Sra::ShiftRightAritmeticalAndSetFlags(cpu, cpu->a.read());
     return 8;
 }
 
@@ -626,518 +626,527 @@ uint8_t Srl::Srl3F(Cpu* cpu)
     return 8;
 }
 
+/************** BIT *******************/
+void Bit::BitCheckAndSetFlags(Cpu* cpu, uint8_t bit, uint8_t value)
+{
+    cpu->setFlag(Z_ZERO, ((value >> bit) & 0x1) == 0);
+    cpu->setFlag(N_SUBSTRACT, false);
+    cpu->setFlag(H_HALFCARRY, true);
+}
+
 uint8_t Bit::Bit40(Cpu* cpu)
 {
     // Mnemonic: BIT 0,B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit40)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 0, cpu->b.read());
+    return 8;
 }
 
 uint8_t Bit::Bit41(Cpu* cpu)
 {
     // Mnemonic: BIT 0,C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit41)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 0, cpu->c.read());
+    return 8;
 }
 
 uint8_t Bit::Bit42(Cpu* cpu)
 {
     // Mnemonic: BIT 0,D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit42)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 0, cpu->d.read());
+    return 8;
 }
 
 uint8_t Bit::Bit43(Cpu* cpu)
 {
     // Mnemonic: BIT 0,E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit43)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 0, cpu->e.read());
+    return 8;
 }
 
 uint8_t Bit::Bit44(Cpu* cpu)
 {
     // Mnemonic: BIT 0,H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit44)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 0, cpu->h.read());
+    return 8;
 }
 
 uint8_t Bit::Bit45(Cpu* cpu)
 {
     // Mnemonic: BIT 0,L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit45)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 0, cpu->l.read());
+    return 8;
 }
 
 uint8_t Bit::Bit46(Cpu* cpu)
 {
     // Mnemonic: BIT 0,(HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit46)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 0, cpu->mmu.read(cpu->hl.read()));
+    return 16;
 }
 
 uint8_t Bit::Bit47(Cpu* cpu)
 {
     // Mnemonic: BIT 0,A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit47)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 0, cpu->a.read());
+    return 8;
 }
 
 uint8_t Bit::Bit48(Cpu* cpu)
 {
     // Mnemonic: BIT 1,B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit48)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 1, cpu->b.read());
+    return 8;
 }
 
 uint8_t Bit::Bit49(Cpu* cpu)
 {
     // Mnemonic: BIT 1,C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit49)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 1, cpu->c.read());
+    return 8;
 }
 
 uint8_t Bit::Bit4A(Cpu* cpu)
 {
     // Mnemonic: BIT 1,D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit4A)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 1, cpu->d.read());
+    return 8;
 }
 
 uint8_t Bit::Bit4B(Cpu* cpu)
 {
     // Mnemonic: BIT 1,E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit4B)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 1, cpu->e.read());
+    return 8;
 }
 
 uint8_t Bit::Bit4C(Cpu* cpu)
 {
     // Mnemonic: BIT 1,H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit4C)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 1, cpu->h.read());
+    return 8;
 }
 
 uint8_t Bit::Bit4D(Cpu* cpu)
 {
     // Mnemonic: BIT 1,L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit4D)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 1, cpu->l.read());
+    return 8;
 }
 
 uint8_t Bit::Bit4E(Cpu* cpu)
 {
     // Mnemonic: BIT 1,(HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit4E)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 1, cpu->mmu.read(cpu->hl.read()));
+    return 16;
 }
 
 uint8_t Bit::Bit4F(Cpu* cpu)
 {
     // Mnemonic: BIT 1,A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit4F)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 1, cpu->a.read());
+    return 8;
 }
 
 uint8_t Bit::Bit50(Cpu* cpu)
 {
     // Mnemonic: BIT 2,B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit50)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 2, cpu->b.read());
+    return 8;
 }
 
 uint8_t Bit::Bit51(Cpu* cpu)
 {
     // Mnemonic: BIT 2,C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit51)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 2, cpu->c.read());
+    return 8;
 }
 
 uint8_t Bit::Bit52(Cpu* cpu)
 {
     // Mnemonic: BIT 2,D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit52)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 2, cpu->d.read());
+    return 8;
 }
 
 uint8_t Bit::Bit53(Cpu* cpu)
 {
     // Mnemonic: BIT 2,E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit53)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 2, cpu->e.read());
+    return 8;
 }
 
 uint8_t Bit::Bit54(Cpu* cpu)
 {
     // Mnemonic: BIT 2,H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit54)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 2, cpu->h.read());
+    return 8;
 }
 
 uint8_t Bit::Bit55(Cpu* cpu)
 {
     // Mnemonic: BIT 2,L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit55)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 2, cpu->l.read());
+    return 8;
 }
 
 uint8_t Bit::Bit56(Cpu* cpu)
 {
     // Mnemonic: BIT 2,(HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit56)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 2, cpu->mmu.read(cpu->hl.read()));
+    return 16;
 }
 
 uint8_t Bit::Bit57(Cpu* cpu)
 {
     // Mnemonic: BIT 2,A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit57)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 2, cpu->a.read());
+    return 8;
 }
 
 uint8_t Bit::Bit58(Cpu* cpu)
 {
     // Mnemonic: BIT 3,B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit58)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 3, cpu->b.read());
+    return 8;
 }
 
 uint8_t Bit::Bit59(Cpu* cpu)
 {
     // Mnemonic: BIT 3,C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit59)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 3, cpu->c.read());
+    return 8;
 }
 
 uint8_t Bit::Bit5A(Cpu* cpu)
 {
     // Mnemonic: BIT 3,D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit5A)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 3, cpu->d.read());
+    return 8;
 }
 
 uint8_t Bit::Bit5B(Cpu* cpu)
 {
     // Mnemonic: BIT 3,E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit5B)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 3, cpu->e.read());
+    return 8;
 }
 
 uint8_t Bit::Bit5C(Cpu* cpu)
 {
     // Mnemonic: BIT 3,H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit5C)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 3, cpu->h.read());
+    return 8;
 }
 
 uint8_t Bit::Bit5D(Cpu* cpu)
 {
     // Mnemonic: BIT 3,L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit5D)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 3, cpu->l.read());
+    return 8;
 }
 
 uint8_t Bit::Bit5E(Cpu* cpu)
 {
     // Mnemonic: BIT 3,(HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit5E)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 3, cpu->mmu.read(cpu->hl.read()));
+    return 16;
 }
 
 uint8_t Bit::Bit5F(Cpu* cpu)
 {
     // Mnemonic: BIT 3,A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit5F)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 3, cpu->a.read());
+    return 8;
 }
 
 uint8_t Bit::Bit60(Cpu* cpu)
 {
     // Mnemonic: BIT 4,B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit60)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 4, cpu->b.read());
+    return 8;
 }
 
 uint8_t Bit::Bit61(Cpu* cpu)
 {
     // Mnemonic: BIT 4,C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit61)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 4, cpu->c.read());
+    return 8;
 }
 
 uint8_t Bit::Bit62(Cpu* cpu)
 {
     // Mnemonic: BIT 4,D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit62)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 4, cpu->d.read());
+    return 8;
 }
 
 uint8_t Bit::Bit63(Cpu* cpu)
 {
     // Mnemonic: BIT 4,E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit63)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 4, cpu->e.read());
+    return 8;
 }
 
 uint8_t Bit::Bit64(Cpu* cpu)
 {
     // Mnemonic: BIT 4,H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit64)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 4, cpu->h.read());
+    return 8;
 }
 
 uint8_t Bit::Bit65(Cpu* cpu)
 {
     // Mnemonic: BIT 4,L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit65)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 4, cpu->l.read());
+    return 8;
 }
 
 uint8_t Bit::Bit66(Cpu* cpu)
 {
     // Mnemonic: BIT 4,(HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit66)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 4, cpu->mmu.read(cpu->hl.read()));
+    return 8;
 }
 
 uint8_t Bit::Bit67(Cpu* cpu)
 {
     // Mnemonic: BIT 4,A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit67)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 4, cpu->a.read());
+    return 8;
 }
 
 uint8_t Bit::Bit68(Cpu* cpu)
 {
     // Mnemonic: BIT 5,B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit68)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 5, cpu->b.read());
+    return 8;
 }
 
 uint8_t Bit::Bit69(Cpu* cpu)
 {
     // Mnemonic: BIT 5,C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit69)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 5, cpu->d.read());
+    return 8;
 }
 
 uint8_t Bit::Bit6A(Cpu* cpu)
 {
     // Mnemonic: BIT 5,D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit6A)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 5, cpu->d.read());
+    return 8;
 }
 
 uint8_t Bit::Bit6B(Cpu* cpu)
 {
     // Mnemonic: BIT 5,E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit6B)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 5, cpu->e.read());
+    return 8;
 }
 
 uint8_t Bit::Bit6C(Cpu* cpu)
 {
     // Mnemonic: BIT 5,H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit6C)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 5, cpu->h.read());
+    return 8;
 }
 
 uint8_t Bit::Bit6D(Cpu* cpu)
 {
     // Mnemonic: BIT 5,L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit6D)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 5, cpu->l.read());
+    return 8;
 }
 
 uint8_t Bit::Bit6E(Cpu* cpu)
 {
     // Mnemonic: BIT 5,(HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit6E)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 5, cpu->mmu.read(cpu->hl.read()));
+    return 8;
 }
 
 uint8_t Bit::Bit6F(Cpu* cpu)
 {
     // Mnemonic: BIT 5,A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit6F)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 5, cpu->a.read());
+    return 8;
 }
 
 uint8_t Bit::Bit70(Cpu* cpu)
 {
     // Mnemonic: BIT 6,B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit70)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 6, cpu->b.read());
+    return 8;
 }
 
 uint8_t Bit::Bit71(Cpu* cpu)
 {
     // Mnemonic: BIT 6,C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit71)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 6, cpu->c.read());
+    return 8;
 }
 
 uint8_t Bit::Bit72(Cpu* cpu)
 {
     // Mnemonic: BIT 6,D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit72)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 6, cpu->d.read());
+    return 8;
 }
 
 uint8_t Bit::Bit73(Cpu* cpu)
 {
     // Mnemonic: BIT 6,E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit73)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 6, cpu->e.read());
+    return 8;
 }
 
 uint8_t Bit::Bit74(Cpu* cpu)
 {
     // Mnemonic: BIT 6,H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit74)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 6, cpu->h.read());
+    return 8;
 }
 
 uint8_t Bit::Bit75(Cpu* cpu)
 {
     // Mnemonic: BIT 6,L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit75)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 6, cpu->l.read());
+    return 8;
 }
 
 uint8_t Bit::Bit76(Cpu* cpu)
 {
     // Mnemonic: BIT 6,(HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit76)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 6, cpu->mmu.read(cpu->hl.read()));
+    return 16;
 }
 
 uint8_t Bit::Bit77(Cpu* cpu)
 {
     // Mnemonic: BIT 6,A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit77)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 6, cpu->a.read());
+    return 8;
 }
 
 uint8_t Bit::Bit78(Cpu* cpu)
 {
     // Mnemonic: BIT 7,B, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit78)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 7, cpu->b.read());
+    return 8;
 }
 
 uint8_t Bit::Bit79(Cpu* cpu)
 {
     // Mnemonic: BIT 7,C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit79)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 7, cpu->c.read());
+    return 8;
 }
 
 uint8_t Bit::Bit7A(Cpu* cpu)
 {
     // Mnemonic: BIT 7,D, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit7A)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 7, cpu->d.read());
+    return 8;
 }
 
 uint8_t Bit::Bit7B(Cpu* cpu)
 {
     // Mnemonic: BIT 7,E, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit7B)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 7, cpu->e.read());
+    return 8;
 }
 
 uint8_t Bit::Bit7C(Cpu* cpu)
 {
     // Mnemonic: BIT 7,H, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit7C)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 7, cpu->h.read());
+    return 8;
 }
 
 uint8_t Bit::Bit7D(Cpu* cpu)
 {
     // Mnemonic: BIT 7,L, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit7D)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 7, cpu->l.read());
+    return 8;
 }
 
 uint8_t Bit::Bit7E(Cpu* cpu)
 {
     // Mnemonic: BIT 7,(HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit7E)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 7, cpu->mmu.read(cpu->hl.read()));
+    return 16;
 }
 
 uint8_t Bit::Bit7F(Cpu* cpu)
 {
     // Mnemonic: BIT 7,A, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    throw std::runtime_error("Not implemented! (Bit7F)");
-    return 0;
+    Bit::BitCheckAndSetFlags(cpu, 7, cpu->a.read());
+    return 8;
 }
 
+/************** RES *******************/
 void Res::ResRegisterBit(Register<uint8_t>& reg, uint8_t bitNr)
 {
     reg = (reg.read() & ~(0x1 << bitNr)); 
@@ -1660,515 +1669,526 @@ uint8_t Res::ResBF(Cpu* cpu)
     return 8;
 }
 
+/************** SET *******************/
+void Set::SetRegisterBit(Register<uint8_t>& reg, uint8_t bitNr)
+{
+    reg = reg.read() | (0x1 << bitNr); 
+}
+
+void Set::SetAddressBit(Cpu* cpu, uint16_t address, uint8_t bitNr)
+{
+    cpu->mmu.write(address, cpu->mmu.read(address) | (0x1 << bitNr));
+}
+
 uint8_t Set::SetC0(Cpu* cpu)
 {
     // Mnemonic: SET 0,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetC0)");
-    return 0;
+    Set::SetRegisterBit(cpu->b, 0);
+    return 8;
 }
 
 uint8_t Set::SetC1(Cpu* cpu)
 {
     // Mnemonic: SET 0,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetC1)");
-    return 0;
+    Set::SetRegisterBit(cpu->c, 0);
+    return 8;
 }
 
 uint8_t Set::SetC2(Cpu* cpu)
 {
     // Mnemonic: SET 0,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetC2)");
-    return 0;
+    Set::SetRegisterBit(cpu->d, 0);
+    return 8;
 }
 
 uint8_t Set::SetC3(Cpu* cpu)
 {
     // Mnemonic: SET 0,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetC3)");
-    return 0;
+    Set::SetRegisterBit(cpu->e, 0);
+    return 8;
 }
 
 uint8_t Set::SetC4(Cpu* cpu)
 {
     // Mnemonic: SET 0,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetC4)");
-    return 0;
+    Set::SetRegisterBit(cpu->h, 0);
+    return 8;
 }
 
 uint8_t Set::SetC5(Cpu* cpu)
 {
     // Mnemonic: SET 0,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetC5)");
-    return 0;
+    Set::SetRegisterBit(cpu->l, 0);
+    return 8;
 }
 
 uint8_t Set::SetC6(Cpu* cpu)
 {
     // Mnemonic: SET 0,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetC6)");
-    return 0;
+    Set::SetAddressBit(cpu, cpu->hl.read(), 0);
+    return 16;
 }
 
 uint8_t Set::SetC7(Cpu* cpu)
 {
     // Mnemonic: SET 0,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetC7)");
-    return 0;
+    Set::SetRegisterBit(cpu->a, 0);
+    return 8;
 }
 
 uint8_t Set::SetC8(Cpu* cpu)
 {
     // Mnemonic: SET 1,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetC8)");
-    return 0;
+    Set::SetRegisterBit(cpu->b, 1);
+    return 8;
 }
 
 uint8_t Set::SetC9(Cpu* cpu)
 {
     // Mnemonic: SET 1,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetC9)");
-    return 0;
+    Set::SetRegisterBit(cpu->c, 1);
+    return 8;
 }
 
 uint8_t Set::SetCA(Cpu* cpu)
 {
     // Mnemonic: SET 1,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetCA)");
-    return 0;
+    Set::SetRegisterBit(cpu->d, 1);
+    return 8;
 }
 
 uint8_t Set::SetCB(Cpu* cpu)
 {
     // Mnemonic: SET 1,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetCB)");
-    return 0;
+    Set::SetRegisterBit(cpu->e, 1);
+    return 8;
 }
 
 uint8_t Set::SetCC(Cpu* cpu)
 {
     // Mnemonic: SET 1,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetCC)");
-    return 0;
+    Set::SetRegisterBit(cpu->h, 1);
+    return 8;
 }
 
 uint8_t Set::SetCD(Cpu* cpu)
 {
     // Mnemonic: SET 1,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetCD)");
-    return 0;
+    Set::SetRegisterBit(cpu->l, 1);
+    return 8;
 }
 
 uint8_t Set::SetCE(Cpu* cpu)
 {
     // Mnemonic: SET 1,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetCE)");
-    return 0;
+    Set::SetAddressBit(cpu, cpu->hl.read(), 1);
+    return 16;
 }
 
 uint8_t Set::SetCF(Cpu* cpu)
 {
     // Mnemonic: SET 1,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetCF)");
-    return 0;
+    Set::SetRegisterBit(cpu->a, 1);
+    return 8;
 }
 
 uint8_t Set::SetD0(Cpu* cpu)
 {
     // Mnemonic: SET 2,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetD0)");
-    return 0;
+    Set::SetRegisterBit(cpu->b, 2);
+    return 8;
 }
 
 uint8_t Set::SetD1(Cpu* cpu)
 {
     // Mnemonic: SET 2,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetD1)");
-    return 0;
+    Set::SetRegisterBit(cpu->c, 2);
+    return 8;
 }
 
 uint8_t Set::SetD2(Cpu* cpu)
 {
     // Mnemonic: SET 2,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetD2)");
-    return 0;
+    Set::SetRegisterBit(cpu->d, 2);
+    return 8;
 }
 
 uint8_t Set::SetD3(Cpu* cpu)
 {
     // Mnemonic: SET 2,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetD3)");
-    return 0;
+    Set::SetRegisterBit(cpu->e, 2);
+    return 8;
 }
 
 uint8_t Set::SetD4(Cpu* cpu)
 {
     // Mnemonic: SET 2,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetD4)");
-    return 0;
+    Set::SetRegisterBit(cpu->h, 2);
+    return 8;
 }
 
 uint8_t Set::SetD5(Cpu* cpu)
 {
     // Mnemonic: SET 2,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetD5)");
-    return 0;
+    Set::SetRegisterBit(cpu->l, 2);
+    return 8;
 }
 
 uint8_t Set::SetD6(Cpu* cpu)
 {
     // Mnemonic: SET 2,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetD6)");
-    return 0;
+    Set::SetAddressBit(cpu, cpu->hl.read(), 2);
+    return 16;
 }
 
 uint8_t Set::SetD7(Cpu* cpu)
 {
     // Mnemonic: SET 2,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetD7)");
-    return 0;
+    Set::SetRegisterBit(cpu->a, 2);
+    return 8;
 }
 
 uint8_t Set::SetD8(Cpu* cpu)
 {
     // Mnemonic: SET 3,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetD8)");
-    return 0;
+    Set::SetRegisterBit(cpu->b, 3);
+    return 8;
 }
 
 uint8_t Set::SetD9(Cpu* cpu)
 {
     // Mnemonic: SET 3,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetD9)");
-    return 0;
+    Set::SetRegisterBit(cpu->c, 3);
+    return 8;
 }
 
 uint8_t Set::SetDA(Cpu* cpu)
 {
     // Mnemonic: SET 3,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetDA)");
-    return 0;
+    Set::SetRegisterBit(cpu->d, 3);
+    return 8;
 }
 
 uint8_t Set::SetDB(Cpu* cpu)
 {
     // Mnemonic: SET 3,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetDB)");
-    return 0;
+    Set::SetRegisterBit(cpu->e, 3);
+    return 8;
 }
 
 uint8_t Set::SetDC(Cpu* cpu)
 {
     // Mnemonic: SET 3,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetDC)");
-    return 0;
+    Set::SetRegisterBit(cpu->h, 3);
+    return 8;
 }
 
 uint8_t Set::SetDD(Cpu* cpu)
 {
     // Mnemonic: SET 3,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetDD)");
-    return 0;
+    Set::SetRegisterBit(cpu->l, 3);
+    return 8;
 }
 
 uint8_t Set::SetDE(Cpu* cpu)
 {
     // Mnemonic: SET 3,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetDE)");
-    return 0;
+    Set::SetAddressBit(cpu, cpu->hl.read(), 3);
+    return 16;
 }
 
 uint8_t Set::SetDF(Cpu* cpu)
 {
     // Mnemonic: SET 3,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetDF)");
-    return 0;
+    Set::SetRegisterBit(cpu->a, 3);
+    return 8;
 }
 
 uint8_t Set::SetE0(Cpu* cpu)
 {
     // Mnemonic: SET 4,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetE0)");
-    return 0;
+    Set::SetRegisterBit(cpu->b, 4);
+    return 8;
 }
 
 uint8_t Set::SetE1(Cpu* cpu)
 {
     // Mnemonic: SET 4,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetE1)");
-    return 0;
+    Set::SetRegisterBit(cpu->c, 4);
+    return 8;
 }
 
 uint8_t Set::SetE2(Cpu* cpu)
 {
     // Mnemonic: SET 4,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetE2)");
-    return 0;
+    Set::SetRegisterBit(cpu->d, 4);
+    return 8;
 }
 
 uint8_t Set::SetE3(Cpu* cpu)
 {
     // Mnemonic: SET 4,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetE3)");
-    return 0;
+    Set::SetRegisterBit(cpu->e, 4);
+    return 8;
 }
 
 uint8_t Set::SetE4(Cpu* cpu)
 {
     // Mnemonic: SET 4,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetE4)");
-    return 0;
+    Set::SetRegisterBit(cpu->h, 4);
+    return 8;
 }
 
 uint8_t Set::SetE5(Cpu* cpu)
 {
     // Mnemonic: SET 4,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetE5)");
-    return 0;
+    Set::SetRegisterBit(cpu->l, 4);
+    return 8;
 }
 
 uint8_t Set::SetE6(Cpu* cpu)
 {
     // Mnemonic: SET 4,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetE6)");
-    return 0;
+    Set::SetAddressBit(cpu, cpu->hl.read(), 4);
+    return 16;
 }
 
 uint8_t Set::SetE7(Cpu* cpu)
 {
     // Mnemonic: SET 4,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetE7)");
-    return 0;
+    Set::SetRegisterBit(cpu->a, 4);
+    return 8;
 }
 
 uint8_t Set::SetE8(Cpu* cpu)
 {
     // Mnemonic: SET 5,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetE8)");
-    return 0;
+    Set::SetRegisterBit(cpu->b, 5);
+    return 8;
 }
 
 uint8_t Set::SetE9(Cpu* cpu)
 {
     // Mnemonic: SET 5,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetE9)");
-    return 0;
+    Set::SetRegisterBit(cpu->c, 5);
+    return 8;
 }
 
 uint8_t Set::SetEA(Cpu* cpu)
 {
     // Mnemonic: SET 5,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetEA)");
-    return 0;
+    Set::SetRegisterBit(cpu->d, 5);
+    return 8;
 }
 
 uint8_t Set::SetEB(Cpu* cpu)
 {
     // Mnemonic: SET 5,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetEB)");
-    return 0;
+    Set::SetRegisterBit(cpu->e, 5);
+    return 8;
 }
 
 uint8_t Set::SetEC(Cpu* cpu)
 {
     // Mnemonic: SET 5,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetEC)");
-    return 0;
+    Set::SetRegisterBit(cpu->h, 5);
+    return 8;
 }
 
 uint8_t Set::SetED(Cpu* cpu)
 {
     // Mnemonic: SET 5,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetED)");
-    return 0;
+    Set::SetRegisterBit(cpu->l, 5);
+    return 8;
 }
 
 uint8_t Set::SetEE(Cpu* cpu)
 {
     // Mnemonic: SET 5,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetEE)");
-    return 0;
+    Set::SetAddressBit(cpu, cpu->hl.read(), 5);
+    return 16;
 }
 
 uint8_t Set::SetEF(Cpu* cpu)
 {
     // Mnemonic: SET 5,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetEF)");
-    return 0;
+    Set::SetRegisterBit(cpu->a, 5);
+    return 8;
 }
 
 uint8_t Set::SetF0(Cpu* cpu)
 {
     // Mnemonic: SET 6,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetF0)");
-    return 0;
+    Set::SetRegisterBit(cpu->b, 6);
+    return 8;
 }
 
 uint8_t Set::SetF1(Cpu* cpu)
 {
     // Mnemonic: SET 6,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetF1)");
-    return 0;
+    Set::SetRegisterBit(cpu->c, 6);
+    return 8;
 }
 
 uint8_t Set::SetF2(Cpu* cpu)
 {
     // Mnemonic: SET 6,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetF2)");
-    return 0;
+    Set::SetRegisterBit(cpu->d, 6);
+    return 8;
 }
 
 uint8_t Set::SetF3(Cpu* cpu)
 {
     // Mnemonic: SET 6,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetF3)");
-    return 0;
+    Set::SetRegisterBit(cpu->e, 6);
+    return 8;
 }
 
 uint8_t Set::SetF4(Cpu* cpu)
 {
     // Mnemonic: SET 6,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetF4)");
-    return 0;
+    Set::SetRegisterBit(cpu->h, 6);
+    return 8;
 }
 
 uint8_t Set::SetF5(Cpu* cpu)
 {
     // Mnemonic: SET 6,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetF5)");
-    return 0;
+    Set::SetRegisterBit(cpu->l, 6);
+    return 8;
 }
 
 uint8_t Set::SetF6(Cpu* cpu)
 {
     // Mnemonic: SET 6,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetF6)");
-    return 0;
+    Set::SetAddressBit(cpu, cpu->hl.read(), 6);
+    return 16;
 }
 
 uint8_t Set::SetF7(Cpu* cpu)
 {
     // Mnemonic: SET 6,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetF7)");
-    return 0;
+    Set::SetRegisterBit(cpu->a, 6);
+    return 8;
 }
 
 uint8_t Set::SetF8(Cpu* cpu)
 {
     // Mnemonic: SET 7,B, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetF8)");
-    return 0;
+    Set::SetRegisterBit(cpu->b, 7);
+    return 8;
 }
 
 uint8_t Set::SetF9(Cpu* cpu)
 {
     // Mnemonic: SET 7,C, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetF9)");
-    return 0;
+    Set::SetRegisterBit(cpu->c, 7);
+    return 8;
 }
 
 uint8_t Set::SetFA(Cpu* cpu)
 {
     // Mnemonic: SET 7,D, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetFA)");
-    return 0;
+    Set::SetRegisterBit(cpu->d, 7);
+    return 8;
 }
 
 uint8_t Set::SetFB(Cpu* cpu)
 {
     // Mnemonic: SET 7,E, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetFB)");
-    return 0;
+    Set::SetRegisterBit(cpu->e, 7);
+    return 8;
 }
 
 uint8_t Set::SetFC(Cpu* cpu)
 {
     // Mnemonic: SET 7,H, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetFC)");
-    return 0;
+    Set::SetRegisterBit(cpu->h, 7);
+    return 8;
 }
 
 uint8_t Set::SetFD(Cpu* cpu)
 {
     // Mnemonic: SET 7,L, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetFD)");
-    return 0;
+    Set::SetRegisterBit(cpu->l, 7);
+    return 8;
 }
 
 uint8_t Set::SetFE(Cpu* cpu)
 {
     // Mnemonic: SET 7,(HL), Length: 2
     // Cycles: 16, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetFE)");
-    return 0;
+    Set::SetAddressBit(cpu, cpu->hl.read(), 7);
+    return 16;
 }
 
 uint8_t Set::SetFF(Cpu* cpu)
 {
     // Mnemonic: SET 7,A, Length: 2
     // Cycles: 8, (Z N H C): - - - -
-    throw std::runtime_error("Not implemented! (SetFF)");
-    return 0;
+    Set::SetRegisterBit(cpu->a, 7);
+    return 8;
 }
 

@@ -31,7 +31,7 @@ class Cpu
     public:
         Cpu(Mmu& mmu);
 
-        long cycle();
+        uint8_t cycle();
 
         bool getFlag(Flag flag);
         void setFlag(Flag flag, bool value);
@@ -64,10 +64,10 @@ class Cpu
         Mmu& mmu;
         char breakPoint[5] = "";
         Clock clock = Clock(4194304); // Hz
-        bool interruptMasterFlag = false;
+        bool interruptMasterFlag = false, halted = false;
 
     private:
-        void handleInterrupts();
+        bool handleInterrupts();
         void setPowerUpSequence();
         ParsedInstruction parseNextInstruction();
         void addToParsedInstructions(ParsedInstruction parsedInstruction);

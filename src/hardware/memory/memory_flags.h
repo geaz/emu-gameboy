@@ -15,7 +15,7 @@ enum IORegister
     REG_LCD_CONTROL = 0xFF40,
     REG_LCD_STATUS = 0xFF41,    
     REG_SCROLL_Y = 0xFF42,
-    REG_SCROLL_X = 0xFF42,
+    REG_SCROLL_X = 0xFF43,
     REG_LCD_Y = 0xFF44,
     REG_LCD_Y_COMPARE = 0xFF45,
     REG_DMA = 0xFF46,

@@ -11,7 +11,8 @@ class Mmu
         Mmu(Cartridge& cartridge);
 
         uint8_t read(const uint16_t address, const bool ppuAccess = false) const;
-        void write(const uint16_t address, const uint8_t value, const bool ppuAccess = false);
+        void write(const uint16_t address, const uint8_t value);
+        void rawWrite(const uint16_t address, const uint8_t value);
         void executeDmaTransfer(const uint8_t value);
 
         uint8_t readIORegister(const IORegister reg) const;

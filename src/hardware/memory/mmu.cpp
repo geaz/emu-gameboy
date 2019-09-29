@@ -30,19 +30,30 @@ uint8_t Mmu::read(const uint16_t address, const bool ppuAccess) const
         return memory[address];     
 }
 
-void Mmu::write(const uint16_t address, const uint8_t value, const bool ppuAccess) 
+void Mmu::write(const uint16_t address, const uint8_t value) 
 {
-    // If it is not the PPU writing to the LDCY I/O register, it gets a reset.
-    if(address == REG_LCD_Y && !ppuAccess) memory[address] = 0;
+    if(address == 0x9800)
+        auto t = "";
+    // If writing to LDCY I/O register, it gets a reset.
+    if(address == REG_LCD_Y) memory[address] = 0;
+    else if(address == REG_DIVIDER) memory[address] = 0;
     // If written to DMA start a DMA transfer to OAM
-    else if(address == REG_DMA) 
-        executeDmaTransfer(value);       
+    else if(address == REG_DMA) executeDmaTransfer(value);    
+    else if(address == REG_INTERRUPT_FLAG)
+        memory[address] = value;  
     // If written to the pad register for setting bit 4 & 5
     // Preserver Lower Bits (= Button pressed atm)
     // 0x30 = 0011 0000
     else if(address == REG_PAD && (value & 0x30) != 0) 
         memory[REG_PAD] = ((value ^ memory[REG_PAD]) & 0xF0) | (memory[REG_PAD] & 0x0F);
     else memory[address] = value; 
+}
+
+void Mmu::rawWrite(const uint16_t address, const uint8_t value) 
+{
+    if(address == 0x9800)
+        auto t = "";
+    memory[address] = value;
 }
 
 void Mmu::executeDmaTransfer(const uint8_t value)

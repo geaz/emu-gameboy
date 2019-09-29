@@ -7,27 +7,30 @@ Cpu::Cpu(Mmu& mmu) : mmu(mmu)
     nextInstruction = parseNextInstruction();
 }
 
-long Cpu::cycle() 
+uint8_t Cpu::cycle() 
 {   
-    int processedCycles = 0;
-    int cycles = clock.getCatchUpCycles();
-    while(processedCycles < cycles && (state == RUNNING || state == STEP))
-    {
+    if(handleInterrupts()) nextInstruction = parseNextInstruction();
+
+    uint8_t opCycles = 0;
+    if(!halted)
+    {   
         currentInstruction = nextInstruction;
-
         pc += currentInstruction.definition.length;
-        processedCycles += currentInstruction.definition.executeInterpreter(this);
-
-        handleInterrupts();
+        opCycles = currentInstruction.definition.executeInterpreter(this);
         nextInstruction = parseNextInstruction();
+    }    
 
-        bool breakPointHit = 
-                std::string(breakPoint) != "" 
-                && std::string(breakPoint) == StringHelper::IntToHexString(nextInstruction.bytePosition, 4, false);
-        if(state == STEP || breakPointHit) state = PAUSED;
-    }   
-    clock.Reset(); 
-    return processedCycles;
+    if (mmu.read(0xff02) == 0x81) {
+        char c = mmu.read(0xff01);
+        printf("%c", c);
+        mmu.write(0xff02, 0x0);
+    }
+
+    bool breakPointHit = 
+            std::string(breakPoint) != "" 
+            && std::string(breakPoint) == StringHelper::IntToHexString(nextInstruction.bytePosition, 4, false);
+    if(state == STEP || breakPointHit) state = PAUSED;
+    return opCycles;
 }
 
 bool Cpu::getFlag(Flag flag)
@@ -54,8 +57,9 @@ uint16_t Cpu::popStack()
     return value;
 }
 
-void Cpu::handleInterrupts()
+bool Cpu::handleInterrupts()
 {
+    bool handledInterrupt = false;
     uint16_t interruptVector = 0;
     uint8_t interruptFlag = 0;
 
@@ -74,26 +78,31 @@ void Cpu::handleInterrupts()
     {
         interruptVector = VECTOR_V_BLANK;
         interruptFlag = INTERRUPT_V_BLANK;
+        halted = false;
     } 
     else if(lcdInterrupt)
     {
         interruptVector = VECTOR_LCD;
         interruptFlag = INTERRUPT_LCD;
+        halted = false;
     } 
     else if(timerInterrupt)
     {
         interruptVector = VECTOR_TIMER;
         interruptFlag = INTERRUPT_TIMER;
+        halted = false;
     }
     else if(serialInterrupt)
     {
         interruptVector = VECTOR_SERIAL;
         interruptFlag = INTERRUPT_SERIAL;
+        halted = false;
     }
     else if(joypadInterrupt)
     {
         interruptVector = VECTOR_INPUT;
         interruptFlag = INTERRUPT_INPUT;
+        halted = false;
     }
     
     if(interruptVector != 0 && interruptMasterFlag)
@@ -102,7 +111,9 @@ void Cpu::handleInterrupts()
         mmu.writeIORegisterBit(REG_INTERRUPT_FLAG, interruptFlag, false);
         pushStack(pc.read());
         pc = interruptVector;
+        handledInterrupt = true;
     }    
+    return handledInterrupt;
 }
 
 ParsedInstruction Cpu::parseNextInstruction()
@@ -168,6 +179,7 @@ void Cpu::setPowerUpSequence()
     mmu.write(0xFF40, 0x91);  // LCDC
     mmu.write(0xFF42, 0x00);  // SCY
     mmu.write(0xFF43, 0x00);  // SCX
+    mmu.write(0xFF44, 0x00);  // LY
     mmu.write(0xFF45, 0x00);  // LYC
     mmu.write(0xFF47, 0xFC);  // BGP
     mmu.write(0xFF48, 0xFF);  // OBP0

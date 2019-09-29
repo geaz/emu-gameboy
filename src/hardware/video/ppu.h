@@ -2,6 +2,8 @@
 #ifndef PPU_H
 #define PPU_H
 
+#include "tile_data.h"
+#include "background_maps.h"
 #include "../memory/mmu.h"
 
 class Ppu
@@ -9,7 +11,9 @@ class Ppu
     public:
         Ppu(Mmu& mmu);
 
-        void cycle(long cycles);
+        void cycle(uint8_t cycles);
+
+        std::vector<std::vector<uint8_t>> backgroundBuffer;
 
     private:
         bool processOam();
@@ -18,6 +22,8 @@ class Ppu
         bool processVBlank();
 
         Mmu& mmu;
+        TileData tileData;
+        BackgroundMaps backgroundMaps;
         long cycleCount = 0;
 
         const uint16_t CYCLES_PER_HBLANK = 207;   // Mode 0 (H-Blank) 207 cycles

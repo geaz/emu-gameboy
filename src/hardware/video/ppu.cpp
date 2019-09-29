@@ -1,8 +1,13 @@
 #include "ppu.h"
 
-Ppu::Ppu(Mmu& mmu) : mmu(mmu) { }
+Ppu::Ppu(Mmu& mmu) : 
+    mmu(mmu), 
+    tileData(mmu), 
+    backgroundMaps(mmu),
+    backgroundBuffer(144, std::vector<uint8_t>(160))
+{ }
 
-void Ppu::cycle(long cycles)
+void Ppu::cycle(uint8_t cycles)
 {
     if(!mmu.readIORegisterBit(REG_LCD_CONTROL, LCD_ENABLE)) return;
 
@@ -88,15 +93,52 @@ bool Ppu::processHBlank()
         }
 
         // DRAW Line on Screen
-        // TODO
+        uint8_t lcdY = mmu.readIORegister(REG_LCD_Y);
+        if(lcdY <= 143)
+        {
+            uint8_t scrollY = mmu.readIORegister(REG_SCROLL_Y);
+            uint8_t scrollX = mmu.readIORegister(REG_SCROLL_X);
+            uint8_t windowY = mmu.readIORegister(REG_WINDOW_Y);
+            uint8_t windowX = mmu.readIORegister(REG_WINDOW_X);
+
+            // Wrap the Window around Y
+            uint8_t startBackgroundTileY = (scrollY + lcdY) / 8 >= 32
+                ? (scrollY + lcdY) / 8 % 32
+                : (scrollY + lcdY) / 8;
+            uint8_t backgroundTileYOffset = (scrollY + lcdY) % 8;
+
+            uint8_t startBackgroundTileX = scrollX / 8;
+            uint8_t backgroundTileXOffset = scrollX % 8;
+
+            std::vector<std::vector<uint8_t>> currentBackgroundMap = backgroundMaps.getBackgroundMap();
+            // The Game Boy screen is able to display 20 tiles horizontal (160 pixel / 8 pixel per Tile)
+            for(int i = 0; i < 20; i++)
+            {
+                // Wrap the Window around X
+                uint8_t tileNrX = startBackgroundTileX + i >= 32
+                    ? (startBackgroundTileX + i) % 32
+                    : startBackgroundTileX + i;
+                uint8_t currentTileNr = currentBackgroundMap[startBackgroundTileY][tileNrX];
+                std::vector<std::vector<uint8_t>> currentTile = tileData.getBackgroundTile(currentTileNr);
+                // each tile is 8 pixels wide
+                for(int j = 0; j < 8; j++)
+                {
+                    // Skip the first pixels, if the window start in the middle of the first tile
+                    // And skip the last few pixels of the end tile
+                    if(i == 0 && j < backgroundTileXOffset) continue;
+                    if(i == 19 && j >= backgroundTileXOffset) continue;
+                    backgroundBuffer[lcdY][(i * 8) + j] = currentTile[backgroundTileYOffset][j];
+                }
+            } 
+        }               
 
         // Enter V-BLANK on last line 143
-        if(mmu.read(REG_LCD_Y) == 143) mmu.writeLcdMode(MODE_VBLANK);
+        if(lcdY == 143) mmu.writeLcdMode(MODE_VBLANK);
         // Enter OAM again
         else mmu.writeLcdMode(MODE_OAM);    
 
         // Increment Line count and update cycles
-        mmu.write(REG_LCD_Y, mmu.read(REG_LCD_Y) + 1, true); 
+        mmu.rawWrite(REG_LCD_Y, mmu.read(REG_LCD_Y) + 1); 
         cycleCount -= CYCLES_PER_HBLANK;  
         modeProcessed = true;
     }       
@@ -117,11 +159,11 @@ bool Ppu::processVBlank()
         // Reset on last line 153 and Enter OAM
         if(mmu.read(REG_LCD_Y) == 153)
         {
-            mmu.write(REG_LCD_Y, 0, true);
+            mmu.rawWrite(REG_LCD_Y, 0);
             mmu.writeLcdMode(MODE_OAM);
         }
         // Else increment Y and stay in V-Blank Mode
-        else mmu.write(REG_LCD_Y, mmu.read(REG_LCD_Y) + 1, true);
+        else mmu.rawWrite(REG_LCD_Y, mmu.read(REG_LCD_Y) + 1);
 
         cycleCount -= CYCLES_PER_VBLANK; 
         modeProcess = true;

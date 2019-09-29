@@ -24,7 +24,7 @@ int main(int argc, char** args) {
     Gameboy gameboy(cartridge);
 
     Window window("Gameboy", 810, 488); // Gameboy Display: 160x144
-    window.setClearColor(224, 248, 208, 255);
+    window.setClearColor(255, 255, 255, 255);
     
     CpuScreen cpuScreen(gameboy.cpu);
     GameboyScreen gameboyScreen(gameboy);   

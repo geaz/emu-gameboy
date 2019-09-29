@@ -3,6 +3,7 @@
 #define GAMEBOY_H
 
 #include "cpu.h"
+#include "timer.h"
 #include "cartridge.h"
 #include "video/ppu.h"
 #include "memory/mmu.h"
@@ -31,6 +32,7 @@ class Gameboy
         Mmu mmu;
         Cpu cpu;
         Ppu ppu;
+        Timer timer;
 };
 
 #endif // GAMEBOY_H

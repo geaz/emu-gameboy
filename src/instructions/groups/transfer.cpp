@@ -104,7 +104,7 @@ uint8_t Ld::Ld22(Cpu* cpu)
 {
     // Mnemonic: LD (HL+),A, Length: 1
     // Cycles: 8, (Z N H C): - - - -
-    cpu->a = cpu->mmu.read(cpu->hl.read());
+    cpu->mmu.write(cpu->hl.read(), cpu->a.read());
     cpu->hl++;
     return 8;
 }

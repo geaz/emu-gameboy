@@ -15,7 +15,7 @@ uint8_t Rlca::Rlca07(Cpu* cpu)
     // Mnemonic: RLCA, Length: 1
     // Cycles: 4, (Z N H C): 0 0 0 C
     cpu->a = Rlc::RotateLeftAndSetFlags(cpu, cpu->a.read());    
-    cpu->setFlag(Z_ZERO, 0);
+    cpu->setFlag(Z_ZERO, false);
     return 4;
 }
 
@@ -24,7 +24,7 @@ uint8_t Rrca::Rrca0F(Cpu* cpu)
     // Mnemonic: RRCA, Length: 1
     // Cycles: 4, (Z N H C): 0 0 0 C
     cpu->a = Rrc::RotateRightAndSetFlags(cpu, cpu->a.read());    
-    cpu->setFlag(Z_ZERO, 0);
+    cpu->setFlag(Z_ZERO, false);
     return 4;
 }
 
@@ -50,7 +50,7 @@ uint8_t Rra::Rra1F(Cpu* cpu)
     // Mnemonic: RRA, Length: 1
     // Cycles: 4, (Z N H C): 0 0 0 C
     cpu->a = Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->a.read());    
-    cpu->setFlag(Z_ZERO, 0);
+    cpu->setFlag(Z_ZERO, false);
     return 4;
 }
 

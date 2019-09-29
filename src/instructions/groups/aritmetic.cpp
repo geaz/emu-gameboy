@@ -399,12 +399,12 @@ uint8_t Daa::Daa27(Cpu* cpu)
         {
             result += 6;
         }
-        if(cpu->getFlag(C_CARRY) || cpu->a.read() > 0x9F)
+        if(cpu->getFlag(C_CARRY) || result > 0x9F)
         {
             result += 0x60;
         }
     }
-    cpu->a = static_cast<uint8_t>(result & 0xFF);
+    cpu->a = static_cast<uint8_t>(result);
     if(result > 0xFF) cpu->setFlag(C_CARRY, true);
     cpu->setFlag(Z_ZERO, cpu->a.read() == 0);
     cpu->setFlag(H_HALFCARRY, false);    
@@ -848,7 +848,7 @@ uint8_t Xor::XorAE(Cpu* cpu)
     // Mnemonic: XOR (HL), Length: 1
     // Cycles: 8, (Z N H C): Z 0 0 0
     Xor::XorAcc(cpu, cpu->mmu.read(cpu->hl.read()));
-    return 4;
+    return 8;
 }
 
 uint8_t Xor::XorAF(Cpu* cpu)
@@ -953,9 +953,7 @@ uint8_t Or::OrF6(Cpu* cpu)
 /************** CP *******************/
 void Cp::CpAcc(Cpu* cpu, uint8_t value)
 {
-    uint8_t result = cpu->a.read() - value;
-
-    cpu->setFlag(Z_ZERO, result == 0);
+    cpu->setFlag(Z_ZERO, cpu->a.read() == value);
     cpu->setFlag(N_SUBSTRACT, true);
     cpu->setFlag(H_HALFCARRY, (cpu->a.read() & 0xF) - (value & 0xF) < 0);
     cpu->setFlag(C_CARRY, cpu->a.read() < value);

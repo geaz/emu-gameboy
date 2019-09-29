@@ -145,7 +145,7 @@ uint8_t Rrc::Rrc0E(Cpu* cpu)
 {
     // Mnemonic: RRC (HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 0 C
-    cpu->mmu.read(cpu->hl.read(), Rrc::RotateRightAndSetFlags(cpu, cpu->mmu.read(cpu->hl.read())));
+    cpu->mmu.write(cpu->hl.read(), Rrc::RotateRightAndSetFlags(cpu, cpu->mmu.read(cpu->hl.read())));
     return 16;
 }
 
@@ -477,6 +477,8 @@ void Swap::SwapRegister(Cpu* cpu, Register<uint8_t>& reg)
     cpu->setFlag(N_SUBSTRACT, false);
     cpu->setFlag(H_HALFCARRY, false);
     cpu->setFlag(C_CARRY, false);
+
+    reg = swapped;
 }
 
 uint8_t Swap::Swap30(Cpu* cpu)
@@ -531,13 +533,15 @@ uint8_t Swap::Swap36(Cpu* cpu)
 {
     // Mnemonic: SWAP (HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 0 0
-    uint16_t toSwap = cpu->hl.read();
-    uint16_t swapped = (toSwap & 0x00FF) << 8 | (toSwap & 0xFF00) >> 8; 
+    uint16_t toSwap = cpu->mmu.read(cpu->hl.read());
+    uint16_t swapped = (toSwap & 0x0F) << 4 | (toSwap & 0xF0) >> 4; 
     
     cpu->setFlag(Z_ZERO, swapped == 0);
     cpu->setFlag(N_SUBSTRACT, false);
     cpu->setFlag(H_HALFCARRY, false);
     cpu->setFlag(C_CARRY, false);
+
+    cpu->mmu.write(cpu->hl.read(), swapped);
     return 8;
 }
 
@@ -574,7 +578,7 @@ uint8_t Srl::Srl39(Cpu* cpu)
 {
     // Mnemonic: SRL C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 0 C
-    cpu->d = Srl::ShiftRightAndSetFlags(cpu, cpu->d.read());
+    cpu->c = Srl::ShiftRightAndSetFlags(cpu, cpu->c.read());
     return 8;
 }
 
@@ -966,7 +970,7 @@ uint8_t Bit::Bit69(Cpu* cpu)
 {
     // Mnemonic: BIT 5,C, Length: 2
     // Cycles: 8, (Z N H C): Z 0 1 -
-    Bit::BitCheckAndSetFlags(cpu, 5, cpu->d.read());
+    Bit::BitCheckAndSetFlags(cpu, 5, cpu->c.read());
     return 8;
 }
 

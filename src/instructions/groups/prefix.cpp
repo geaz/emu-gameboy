@@ -533,8 +533,8 @@ uint8_t Swap::Swap36(Cpu* cpu)
 {
     // Mnemonic: SWAP (HL), Length: 2
     // Cycles: 16, (Z N H C): Z 0 0 0
-    uint16_t toSwap = cpu->mmu.read(cpu->hl.read());
-    uint16_t swapped = (toSwap & 0x0F) << 4 | (toSwap & 0xF0) >> 4; 
+    uint8_t toSwap = cpu->mmu.read(cpu->hl.read());
+    uint8_t swapped = (toSwap & 0x0F) << 4 | (toSwap & 0xF0) >> 4; 
     
     cpu->setFlag(Z_ZERO, swapped == 0);
     cpu->setFlag(N_SUBSTRACT, false);

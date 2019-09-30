@@ -282,7 +282,7 @@ uint8_t Reti::RetiD9(Cpu* cpu)
     // Mnemonic: RETI, Length: 1
     // Cycles: 16, (Z N H C): - - - -
     cpu->pc = cpu->popStack();
-    cpu->interruptMasterFlag = false;
+    cpu->interruptMasterFlag = true;
     return 16;
 }
 

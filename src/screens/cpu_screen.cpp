@@ -10,6 +10,8 @@
 #include "cpu_screen.h"
 #include "../helper/string_helper.h"
 
+bool CpuScreen::showCpu = false;
+
 CpuScreen::CpuScreen(Cpu& cpu) : cpu(cpu)
 { }
 
@@ -23,8 +25,8 @@ void CpuScreen::handleKeys(const int key, const int scancode, const int action, 
 
 void CpuScreen::update()
 { 
-    ImGui::Begin("Cpu", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
-    ImGui::SetWindowPos(ImVec2(320, -1), ImGuiCond_Always);
+    if(!CpuScreen::showCpu) return;
+    ImGui::Begin("Cpu", &CpuScreen::showCpu, ImGuiWindowFlags_NoResize); 
     ImGui::SetWindowSize(ImVec2(161, 490), ImGuiCond_Always);
 
     ImGui::Text("General");

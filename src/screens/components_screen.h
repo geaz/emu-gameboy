@@ -18,6 +18,8 @@ class ComponentsScreen : public Screen
         Mmu& mmu;
         Cartridge& cartridge;
 
+        static bool showComponents;
+
     private:
         void drawMemoryMap(
             const std::string title, 

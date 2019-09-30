@@ -1,8 +1,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <gtc/matrix_transform.hpp>
+#include <imgui.h>
 
 #include "gameboy_screen.h"
+#include "cpu_screen.h"
+#include "components_screen.h"
+#include "instruction_screen.h"
 
 GameboyScreen::GameboyScreen(Gameboy& gameboy) : 
     gameboy(gameboy),
@@ -20,6 +24,33 @@ void GameboyScreen::update()
 {
     gameboy.process();
     updateDisplay();
+    drawMenu();
+}
+
+void GameboyScreen::drawMenu()
+{
+    static bool show_app_metrics = false;
+
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Load ROM")) {}
+            if (ImGui::MenuItem("Reset ROM")) {}
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Show"))
+        {
+            if (ImGui::MenuItem("CPU")) CpuScreen::showCpu = !CpuScreen::showCpu;
+            if (ImGui::MenuItem("Components")) ComponentsScreen::showComponents = !ComponentsScreen::showComponents;
+            if (ImGui::MenuItem("Instructions")) InstructionScreen::showInstruction = !InstructionScreen::showInstruction;
+            ImGui::Separator();
+            if (ImGui::MenuItem("App Metrics")) show_app_metrics = !show_app_metrics ;
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
+    if (show_app_metrics) ImGui::ShowMetricsWindow(&show_app_metrics);
 }
 
 void GameboyScreen::updateDisplay()
@@ -49,7 +80,7 @@ void GameboyScreen::drawPixelAt(const int y, const int x)
     float onePixelX = 320 / 160;
     float onePixelY = 288 / 144;
     float scaledX = onePixelX * x;
-    float scaledY = onePixelY * y;
+    float scaledY = (onePixelY * y) + MENU_HEIGHT;
 
     float vertices[] = {
         scaledX, scaledY, //Top Left

@@ -13,6 +13,8 @@ class InstructionScreen : public Screen
         void update() override;
 
         Cpu& cpu;
+
+        static bool showInstruction;
 };
 
 #endif // INSTRUCTIONSCREEN_H

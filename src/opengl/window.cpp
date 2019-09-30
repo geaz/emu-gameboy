@@ -54,12 +54,17 @@ Window::Window(std::string title, const int width, const int height)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
     ImGui::StyleColorsLight();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");    
     io.Fonts->AddFontFromFileTTF("FiraMono-Regular.ttf", 16.0f);
-
+    
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.96f, 0.96f, 0.96f, 255.00f));
+    ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.94f, 0.94f, 0.94f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.00f, 1.00f, 1.00f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.19f, 0.19f, 0.19f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.96f, 0.96f, 0.96f, 255.00f));
     ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.90f, 0.90f, 0.90f, 1.0f));
@@ -108,9 +113,23 @@ void Window::startLoop()
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            GLFWwindow* backup_current_context = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backup_current_context);
+        }
+
         glfwSwapBuffers(window);
         glfwPollEvents();    
     }
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(window);
     glfwTerminate();
 }
 

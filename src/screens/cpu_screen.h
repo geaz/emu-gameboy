@@ -14,6 +14,8 @@ class CpuScreen : public Screen
         void update() override;
 
         Cpu& cpu;
+
+        static bool showCpu;
 };
 
 #endif // CPUSCREEN_H

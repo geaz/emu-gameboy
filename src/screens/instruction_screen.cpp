@@ -8,13 +8,15 @@
 #include "instruction_screen.h"
 #include "../helper/string_helper.h"
 
+bool InstructionScreen::showInstruction = false;
+
 InstructionScreen::InstructionScreen(Cpu& cpu) : cpu(cpu)
 { }
 
 void InstructionScreen::update()
-{     
-    ImGui::Begin("Instructions (Last 500)", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
-    ImGui::SetWindowPos(ImVec2(-1, 288), ImGuiCond_Always);
+{   
+    if(!InstructionScreen::showInstruction) return;  
+    ImGui::Begin("Instructions (Last 500)", &InstructionScreen::showInstruction, ImGuiWindowFlags_NoResize); 
     ImGui::SetWindowSize(ImVec2(322, 201), ImGuiCond_Always);
 
     ImGui::InputText("Breakpoint", cpu.breakPoint, 5);

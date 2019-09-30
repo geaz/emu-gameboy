@@ -4,15 +4,21 @@ The aim of this project was to create a cycle accurate emulator which is capable
 
 ## Compatibility
 
-It is not intended to provide a full compatibility for all available cartridges. It only supports non MBC cartridges.
+It is not intended to provide a full compatibility for all available cartridges.
 This is a programming experience project and it does not aim to be a daily use emulator to play with. 
 Use other great emulators for this purpose. For example:
 - [Gambatte](https://github.com/sinamas/gambatte)
 - [Visualboy Advance](https://github.com/visualboyadvance-m/visualboyadvance-m)
 
+This said, I tried to implement this emulator as accurate as possible.
+It is passing the following **Blargg-Tests**:
+
+**cpu_instrs.gb**  
+![cpu_instrs](pics/blargg-cpu_instrs.png)
+
 ## Opcode Generator
 
-After I started this project I used this great [table](http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html) to create my opcode classes.
+After I started this project I used this [table](http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html) to create my opcode classes.
 Pretty fast I was frustrated by this tedious task. Therefore I created a python script to automate it.
 The script *genOpcodes.py*, in the *gen* folder, scrapes the table and creates C++ classes by using the templates in the *gen/templates* folder.
 By using this script I got great frame classes to work in.
@@ -21,11 +27,11 @@ The top *instruction_set* class contains two maps including all the different op
 
 **WARNING:** The Pastraiser OpCode Table has a few bugs. 0xE2 and 0xF2 are only one byte long! The Carry Flag indicator for the Right Shifting operations seem to be wrong, too.
 
-![instruction_set](screens/gen-instruction-set.png)
+![instruction_set](pics/gen-instruction-set.png)
 
 Furthermore the script creates frame classes for all opcode groups.  
 
-![gen-group](screens/gen-group.png)
+![gen-group](pics/gen-group.png)
 
 ## Instruction struct
 

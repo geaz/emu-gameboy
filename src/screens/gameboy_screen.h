@@ -18,9 +18,12 @@ class GameboyScreen : public Screen
         Shader pixelShader;
         unsigned int VBO, VAO, EBO;
 
+        void drawMenu();
         void updateDisplay();
         void drawPixelAt(const int x, const int y);
         void drawRect(float vertices[], unsigned int indices[], int sizeofVertices, int sizeofIndices);
+
+        const uint16_t MENU_HEIGHT = 22;
 };
 
 #endif // GAMEBOYSCREEN_H

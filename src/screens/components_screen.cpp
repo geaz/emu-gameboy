@@ -6,13 +6,15 @@
 #include "components_screen.h"
 #include "../helper/string_helper.h"
 
+bool ComponentsScreen::showComponents = false;
+
 ComponentsScreen::ComponentsScreen(Mmu& mmu, Cartridge& cartridge) 
     : mmu(mmu), cartridge(cartridge) { }
 
 void ComponentsScreen::update()
 { 
-    ImGui::Begin("Components", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse); 
-    ImGui::SetWindowPos(ImVec2(480, -1), ImGuiCond_Always);
+    if(!ComponentsScreen::showComponents) return;
+    ImGui::Begin("Components", &ComponentsScreen::showComponents, ImGuiWindowFlags_NoResize); 
     ImGui::SetWindowSize(ImVec2(331, 490), ImGuiCond_Always);
     
     ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None);

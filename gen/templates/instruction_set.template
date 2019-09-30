@@ -2,7 +2,6 @@
 #ifndef INSTRUCTION_INCLUDE_H
 #define INSTRUCTION_INCLUDE_H
 
-#include <map>
 #include <functional>
 
 #include "groups/aritmetic.h"
@@ -43,8 +42,8 @@ class InstructionSet
 ${instruction_items}     
 ${prefix_items}        }
 
-        std::map<uint8_t, Instruction> set; 
-        std::map<uint8_t, Instruction> prefixSet;   
+        Instruction set[0x100]; 
+        Instruction prefixSet[0x100];   
 };
 
 #endif // INSTRUCTION_INCLUDE_H

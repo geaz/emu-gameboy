@@ -35,8 +35,7 @@ Furthermore the script creates frame classes for all opcode groups.
 
 ## Instruction struct
 
-The top *instruction_set* class contains two maps. The key of the maps are the opcode of the instruction,
-and the value of the map is of type *struct Instruction*.
+The top *instruction_set* class contains two arrays. Including all opcodes.
 
 ```cpp
 typedef uint8_t (*OpcodeFunc)(Cpu*);

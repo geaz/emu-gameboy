@@ -119,7 +119,7 @@ ParsedInstruction Cpu::parseNextInstruction()
     
     if(nextByte != 0xCB)
     {
-        nextInstruction.definition = instructionSet.set.at(nextByte);
+        nextInstruction.definition = instructionSet.set[nextByte];
         if(nextInstruction.definition.length >= 2) nextInstruction.parsedBytes.low = mmu.read(pc.read() + 1);
         if(nextInstruction.definition.length == 3)
         {

@@ -11,9 +11,7 @@ Use other great emulators for this purpose. For example:
 - [Visualboy Advance](https://github.com/visualboyadvance-m/visualboyadvance-m)
 
 This said, I tried to implement this emulator as accurate as possible.
-It is passing the following **Blargg-Tests**:
 
-**cpu_instrs.gb**  
 ![cpu_instrs](pics/blargg-cpu_instrs.png)
 
 ## Opcode Generator

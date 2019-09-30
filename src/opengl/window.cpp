@@ -64,7 +64,6 @@ Window::Window(std::string title, const int width, const int height)
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.96f, 0.96f, 0.96f, 255.00f));
     ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.94f, 0.94f, 0.94f, 1.00f));
-    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.00f, 1.00f, 1.00f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.19f, 0.19f, 0.19f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.96f, 0.96f, 0.96f, 255.00f));
     ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.90f, 0.90f, 0.90f, 1.0f));

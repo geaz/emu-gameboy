@@ -20,16 +20,7 @@ uint8_t Cpu::cycle()
         nextInstruction = parseNextInstruction();
     }    
 
-    if (mmu.read(0xff02) == 0x81) {
-        char c = mmu.read(0xff01);
-        printf("%c", c);
-        mmu.write(0xff02, 0x0);
-    }
-
-    bool breakPointHit = 
-            std::string(breakPoint) != "" 
-            && std::string(breakPoint) == StringHelper::IntToHexString(nextInstruction.bytePosition, 4, false);
-    if(state == STEP || breakPointHit) state = PAUSED;
+    if(state == STEP) state = PAUSED;
     return opCycles;
 }
 
@@ -64,15 +55,15 @@ bool Cpu::handleInterrupts()
     uint8_t interruptFlag = 0;
 
     bool vBlankInterrupt = mmu.readIORegisterBit(REG_INTERRUPT_ENABLE, INTERRUPT_V_BLANK)
-                         & mmu.readIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_V_BLANK);
+                         && mmu.readIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_V_BLANK);
     bool lcdInterrupt = mmu.readIORegisterBit(REG_INTERRUPT_ENABLE, INTERRUPT_LCD)
-                      & mmu.readIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_LCD);
+                      && mmu.readIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_LCD);
     bool timerInterrupt = mmu.readIORegisterBit(REG_INTERRUPT_ENABLE, INTERRUPT_TIMER)
-                        & mmu.readIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_TIMER);
+                        && mmu.readIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_TIMER);
     bool serialInterrupt = mmu.readIORegisterBit(REG_INTERRUPT_ENABLE, INTERRUPT_SERIAL)
-                         & mmu.readIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_SERIAL);
+                         && mmu.readIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_SERIAL);
     bool joypadInterrupt = mmu.readIORegisterBit(REG_INTERRUPT_ENABLE, INTERRUPT_INPUT)
-                         & mmu.readIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_INPUT);
+                         && mmu.readIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_INPUT);
 
     if(vBlankInterrupt)
     {
@@ -128,7 +119,7 @@ ParsedInstruction Cpu::parseNextInstruction()
     
     if(nextByte != 0xCB)
     {
-        nextInstruction.definition = instructionSet.set[nextByte];
+        nextInstruction.definition = instructionSet.set.at(nextByte);
         if(nextInstruction.definition.length >= 2) nextInstruction.parsedBytes.low = mmu.read(pc.read() + 1);
         if(nextInstruction.definition.length == 3)
         {
@@ -142,14 +133,7 @@ ParsedInstruction Cpu::parseNextInstruction()
         nextInstruction.parsedBytes.low = mmu.read(pc.read() + 1);
     }
 
-    addToParsedInstructions(nextInstruction);
     return nextInstruction;
-}
-
-void Cpu::addToParsedInstructions(ParsedInstruction parsedInstruction)
-{
-    if(parsedInstructions.size() == 500) parsedInstructions.pop_back();
-    parsedInstructions.push_front(parsedInstruction);
 }
 
 void Cpu::setPowerUpSequence()

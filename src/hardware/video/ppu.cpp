@@ -3,9 +3,13 @@
 Ppu::Ppu(Mmu& mmu) : 
     mmu(mmu), 
     tileData(mmu), 
-    backgroundMaps(mmu),
-    backgroundBuffer(144, std::vector<uint8_t>(160))
-{ }
+    backgroundMaps(mmu)
+{ 
+    for(int i = 0; i < 144; i++)
+    {
+        memset(backgroundBuffer[i], 0, 160);
+    }    
+}
 
 void Ppu::cycle(uint8_t cycles)
 {
@@ -43,17 +47,17 @@ bool Ppu::processOam()
     if(cycleCount >= CYCLES_PER_OAMSEARCH)
     {
         // Check for OAM Interrupt
-        if((bool) mmu.readIORegisterBit(REG_LCD_STATUS, LCD_OAM_INTERRUPT_ENABLED))
+        if(mmu.readIORegisterBit(REG_LCD_STATUS, LCD_OAM_INTERRUPT_ENABLED))
         {
             mmu.writeIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_LCD, true);
         }
 
         // Check for LCD Y Compare Interrupt, if it is enabled
-        if((bool) mmu.readIORegisterBit(REG_LCD_STATUS, LCD_C_INTERRUPT_ENABLED))
+        if(mmu.readIORegisterBit(REG_LCD_STATUS, LCD_C_INTERRUPT_ENABLED))
         {
             uint8_t lcdy = mmu.readIORegister(REG_LCD_Y);
             uint8_t lcdyc = mmu.readIORegister(REG_LCD_Y_COMPARE);
-            bool isLycEqualMode = (bool) mmu.readIORegisterBit(REG_LCD_STATUS, LCD_COINCIDENCE_MODE);
+            bool isLycEqualMode = mmu.readIORegisterBit(REG_LCD_STATUS, LCD_COINCIDENCE_MODE);
             if(    (isLycEqualMode && lcdy == lcdyc)
                 || (!isLycEqualMode && lcdy != lcdyc))
             {
@@ -87,7 +91,7 @@ bool Ppu::processHBlank()
     if(cycleCount >= CYCLES_PER_HBLANK)
     {
         // Check for H-BLANK Interrupt
-        if((bool) mmu.readIORegisterBit(REG_LCD_STATUS, LCD_H_BLANK_INTERRUPT_ENABLE))
+        if(mmu.readIORegisterBit(REG_LCD_STATUS, LCD_H_BLANK_INTERRUPT_ENABLE))
         {
             mmu.writeIORegisterBit(REG_INTERRUPT_FLAG, INTERRUPT_LCD, true);
         }
@@ -110,7 +114,7 @@ bool Ppu::processHBlank()
             uint8_t startBackgroundTileX = scrollX / 8;
             uint8_t backgroundTileXOffset = scrollX % 8;
 
-            std::vector<std::vector<uint8_t>> currentBackgroundMap = backgroundMaps.getBackgroundMap();
+            BackgroundMap currentBackgroundMap = backgroundMaps.getBackgroundMap();
             // The Game Boy screen is able to display 20 tiles horizontal (160 pixel / 8 pixel per Tile)
             for(int i = 0; i < 20; i++)
             {
@@ -118,8 +122,8 @@ bool Ppu::processHBlank()
                 uint8_t tileNrX = startBackgroundTileX + i >= 32
                     ? (startBackgroundTileX + i) % 32
                     : startBackgroundTileX + i;
-                uint8_t currentTileNr = currentBackgroundMap[startBackgroundTileY][tileNrX];
-                std::vector<std::vector<uint8_t>> currentTile = tileData.getBackgroundTile(currentTileNr);
+                uint8_t currentTileNr = currentBackgroundMap.data[startBackgroundTileY][tileNrX];
+                Tile currentTile = tileData.getBackgroundTile(currentTileNr);
                 // each tile is 8 pixels wide
                 for(int j = 0; j < 8; j++)
                 {
@@ -127,7 +131,7 @@ bool Ppu::processHBlank()
                     // And skip the last few pixels of the end tile
                     if(i == 0 && j < backgroundTileXOffset) continue;
                     if(i == 19 && j >= backgroundTileXOffset) continue;
-                    backgroundBuffer[lcdY][(i * 8) + j] = currentTile[backgroundTileYOffset][j];
+                    backgroundBuffer[lcdY][(i * 8) + j] = currentTile.data[backgroundTileYOffset][j];
                 }
             } 
         }               

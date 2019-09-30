@@ -2,16 +2,19 @@
 #ifndef BACKGROUNDMAPS_H
 #define BACKGROUNDMAPS_H
 
-#include <vector>
 #include "color_palettes.h"
 #include "../memory/mmu.h"
+
+struct BackgroundMap{
+    uint8_t data[32][32];
+};
 
 class BackgroundMaps
 {
     public:
         BackgroundMaps(Mmu& mmu);
 
-        std::vector<std::vector<uint8_t>> getBackgroundMap() const;
+        BackgroundMap getBackgroundMap() const;
 
     private:
         Mmu& mmu;

@@ -2,19 +2,22 @@
 #ifndef TILEDATA_H
 #define TILEDATA_H
 
-#include <vector>
 #include "color_palettes.h"
 #include "../memory/mmu.h"
+
+struct Tile {
+    uint8_t data[8][8];
+};
 
 class TileData
 {
     public:
         TileData(Mmu& mmu);
 
-        std::vector<std::vector<uint8_t>> getBackgroundTile(const uint8_t number) const;
+        Tile getBackgroundTile(const uint8_t number) const;
 
     private:
-        std::vector<std::vector<uint8_t>> getTile(const uint16_t start, const uint8_t number) const;
+        Tile getTile(const uint16_t start, const uint8_t number) const;
 
         Mmu& mmu;
 

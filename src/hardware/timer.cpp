@@ -11,7 +11,7 @@ void Timer::cycle(uint8_t cycles)
 
     mmu.rawWrite(REG_DIVIDER, (uint8_t) (mmu.read(REG_DIVIDER) + dividerCycles));
 
-    if(mmu.readIORegisterBit(REG_TAC, TIMER_STOP) == 1)
+    if(mmu.readIORegisterBit(REG_TAC, TIMER_STOP))
     {
         timerCycleCount += cycles;
         uint32_t timerCycles = timerCycleCount / (CPU_FREQUENCY / getTimerFrequency());
@@ -33,7 +33,9 @@ void Timer::cycle(uint8_t cycles)
 uint32_t Timer::getTimerFrequency() const
 {
     uint32_t frequency = 0;
-    switch((mmu.readIORegisterBit(REG_TAC, CLOCK_SELECT_HIGH) << 1) | mmu.readIORegisterBit(REG_TAC, CLOCK_SELECT_LOW))
+    uint8_t regTac = mmu.readIORegister(REG_TAC);
+    uint8_t setFrequency = (regTac & CLOCK_SELECT_HIGH) | (regTac & CLOCK_SELECT_LOW);
+    switch(setFrequency)
     {
         case 0:
             frequency = 4096;

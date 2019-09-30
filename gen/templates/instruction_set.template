@@ -15,7 +15,7 @@ typedef uint8_t (*OpcodeFunc)(Cpu*);
 struct Instruction
 {
     uint8_t length;                 // Byte Length of the Instruction
-    std::string mnemonic;           // Mnemonic of the Instruction
+    char* mnemonic;                 // Mnemonic of the Instruction
     OpcodeFunc executeInterpreter;  // Function Pointer to execute interpreter mode for given opcode
     //TODO OpcodeFunc? eecuteJit;   // Function Pointer to execute jit mode for given opcode
 };

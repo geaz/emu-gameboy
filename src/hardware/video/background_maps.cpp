@@ -2,17 +2,16 @@
 
 BackgroundMaps::BackgroundMaps(Mmu& mmu) : mmu(mmu) { }
 
-std::vector<std::vector<uint8_t>> BackgroundMaps::getBackgroundMap() const
+BackgroundMap BackgroundMaps::getBackgroundMap() const
 {
-    uint8_t selectedMap = mmu.readIORegisterBit(REG_LCD_CONTROL, WINDOW_TILE_MAP_SELECT);
-    uint16_t startAddress = selectedMap == 0
-        ? MAP_0_START
-        : MAP_1_START;
+    uint16_t startAddress = mmu.readIORegisterBit(REG_LCD_CONTROL, WINDOW_TILE_MAP_SELECT)
+        ? MAP_1_START
+        : MAP_0_START;
     
-    std::vector<std::vector<uint8_t>> backgroundMap(32, std::vector<uint8_t>(32));
+    BackgroundMap backgroundMap;
     for(int i = 0; i < 32 * 32; i++)
     {
-        backgroundMap[i/32][i%32] = mmu.read(startAddress + i);
+        backgroundMap.data[i/32][i%32] = mmu.read(startAddress + i);
     }
     return backgroundMap;
 }

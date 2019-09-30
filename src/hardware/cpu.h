@@ -2,8 +2,6 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include <deque>
-
 #include "clock.h"
 #include "memory/register.h"
 #include "memory/mmu.h"
@@ -59,10 +57,8 @@ class Cpu
         CpuState state = PAUSED;
         ParsedInstruction nextInstruction;
         ParsedInstruction currentInstruction;
-        std::deque<ParsedInstruction> parsedInstructions;
 
         Mmu& mmu;
-        char breakPoint[5] = "";
         Clock clock = Clock(4194304); // Hz
         bool interruptMasterFlag = false, halted = false;
 

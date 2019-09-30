@@ -16,8 +16,8 @@ class Mmu
         void executeDmaTransfer(const uint8_t value);
 
         uint8_t readIORegister(const IORegister reg) const;
-        uint8_t readIORegisterBit(const IORegister reg, const uint8_t bitNr) const;
-        void writeIORegisterBit(const IORegister reg, const uint8_t bitNr, const bool value);
+        bool readIORegisterBit(const IORegister reg, const uint8_t flag) const;
+        void writeIORegisterBit(const IORegister reg, const uint8_t flag, const bool value);
 
         LCDMode readLcdMode() const;
         void writeLcdMode(const LCDMode lcdMode);

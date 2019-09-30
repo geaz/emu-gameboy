@@ -13,7 +13,7 @@ class Ppu
 
         void cycle(uint8_t cycles);
 
-        std::vector<std::vector<uint8_t>> backgroundBuffer;
+        uint8_t backgroundBuffer[144][160];
 
     private:
         bool processOam();

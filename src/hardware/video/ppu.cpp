@@ -3,7 +3,8 @@
 Ppu::Ppu(Mmu& mmu) : 
     mmu(mmu), 
     tileData(mmu), 
-    backgroundMaps(mmu)
+    backgroundMaps(mmu),
+    colorPalettes(mmu)
 { 
     for(int i = 0; i < 144; i++)
     {
@@ -77,7 +78,6 @@ bool Ppu::processTransfer()
     bool modeProcessed = false;
     if(cycleCount >= CYCLES_PER_TRANSFER)
     {
-        // Nothing to do in this stage besides switching into the next mode
         mmu.writeLcdMode(MODE_HBLANK);
         cycleCount -= CYCLES_PER_TRANSFER;
         modeProcessed = true;
@@ -113,8 +113,10 @@ bool Ppu::processHBlank()
 
             uint8_t startBackgroundTileX = scrollX / 8;
             uint8_t backgroundTileXOffset = scrollX % 8;
+            
+            backgroundPalette = colorPalettes.getBWPalette();
+            currentBackgroundMap = backgroundMaps.getBackgroundMap();
 
-            BackgroundMap currentBackgroundMap = backgroundMaps.getBackgroundMap();
             // The Game Boy screen is able to display 20 tiles horizontal (160 pixel / 8 pixel per Tile)
             for(int i = 0; i < 20; i++)
             {
@@ -130,7 +132,7 @@ bool Ppu::processHBlank()
                     // Skip the first pixels, if the window start in the middle of the first tile
                     // And skip the last few pixels of the end tile
                     if(i == 0 && j < backgroundTileXOffset) continue;
-                    if(i == 19 && j >= backgroundTileXOffset) continue;
+                    if(i == 19 && backgroundTileXOffset != 0 && j >= backgroundTileXOffset) continue;
                     backgroundBuffer[lcdY][(i * 8) + j] = currentTile.data[backgroundTileYOffset][j];
                 }
             } 

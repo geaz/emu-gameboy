@@ -4,7 +4,7 @@ BackgroundMaps::BackgroundMaps(Mmu& mmu) : mmu(mmu) { }
 
 BackgroundMap BackgroundMaps::getBackgroundMap() const
 {
-    uint16_t startAddress = mmu.readIORegisterBit(REG_LCD_CONTROL, WINDOW_TILE_MAP_SELECT)
+    uint16_t startAddress = mmu.readIORegisterBit(REG_LCD_CONTROL, BG_TILE_MAP_SELECT)
         ? MAP_1_START
         : MAP_0_START;
     

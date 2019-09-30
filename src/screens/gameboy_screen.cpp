@@ -78,10 +78,24 @@ void GameboyScreen::renderBackground()
         for(int x = 0; x < 160; x++)
         {
             uint8_t pixelData = gameboy.ppu.backgroundBuffer[y][x];
-            if(pixelData != 0)
-                data[160*y + x] = ((0x0 << 24) |(0x0 << 16) | (0x0 << 8) | (0xFF << 0));
-            else
-                data[160*y + x] = ((0xFF << 24) |(0xFF << 16) | (0xFF << 8) | (0xFF << 0));
+            switch(gameboy.ppu.backgroundPalette.colors[pixelData])
+            {
+                case WHITE:
+                    data[160*y + x] = colorWhite;
+                    break;
+                case LIGHT_GRAY:
+                    data[160*y + x] = colorLightGray;
+                    break;
+                case DARK_GRAY:
+                    data[160*y + x] = colorDarkGray;
+                    break;
+                case BLACK:
+                    data[160*y + x] = colorBlack;
+                    break;
+                default:
+                    data[160*y + x] = colorWhite;
+                    break;
+            }
         }        
     }
     

@@ -3,6 +3,7 @@
 #define PPU_H
 
 #include "tile_data.h"
+#include "color_palettes.h"
 #include "background_maps.h"
 #include "../memory/mmu.h"
 
@@ -13,6 +14,7 @@ class Ppu
 
         void cycle(uint8_t cycles);
 
+        ColorPalette backgroundPalette;
         uint8_t backgroundBuffer[144][160];
 
     private:
@@ -23,7 +25,10 @@ class Ppu
 
         Mmu& mmu;
         TileData tileData;
+        ColorPalettes colorPalettes;
         BackgroundMaps backgroundMaps;
+
+        BackgroundMap currentBackgroundMap;        
         long cycleCount = 0;
 
         const uint16_t CYCLES_PER_HBLANK = 207;   // Mode 0 (H-Blank) 207 cycles

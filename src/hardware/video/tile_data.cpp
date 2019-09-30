@@ -4,14 +4,17 @@ TileData::TileData(Mmu& mmu) : mmu(mmu) { }
 
 Tile TileData::getBackgroundTile(const uint8_t number) const
 {
-    return mmu.readIORegisterBit(REG_LCD_CONTROL, WINDOW_TILE_MAP_SELECT)
-        ? getTile(BW_MAP_START, number + 128)
-        : getTile(SB_MAP_START, number); 
+    return mmu.readIORegisterBit(REG_LCD_CONTROL, BG_TILE_DATA_SELECT)
+        ? getTile(TILE_DATA_1, number)
+        : getTile(TILE_DATA_0, number); 
 }
 
 Tile TileData::getTile(const uint16_t start, const uint8_t number) const
 {
-    uint16_t memoryStart = start + (number * 16); // Each tile is 16 bytes long
+    // Each tile is 16 bytes long
+    uint16_t memoryStart = start == TILE_DATA_1
+        ? start + (number * 16) 
+        : start + ((static_cast<int8_t>(number) + 128) * 16);
     Tile tile;
     for(int i = 0; i < 8; i++)
     {

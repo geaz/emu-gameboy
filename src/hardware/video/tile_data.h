@@ -21,10 +21,8 @@ class TileData
 
         Mmu& mmu;
 
-        const uint16_t SB_MAP_START = 0x8000;
-        const uint16_t BW_MAP_START = 0x8800;
-        const uint16_t SB_MAP_END = 0x8FFF;
-        const uint16_t BW_MAP_END = 0x97FF;        
+        const uint16_t TILE_DATA_0 = 0x8800;  
+        const uint16_t TILE_DATA_1 = 0x8000;   
 };
 
 #endif // TILEDATA_H

@@ -14,10 +14,7 @@ enum GBShade
 
 struct ColorPalette
 {
-    GBShade Color3;
-    GBShade Color2;
-    GBShade Color1;
-    GBShade Color0;
+    uint8_t colors[4];
 };
 
 class ColorPalettes

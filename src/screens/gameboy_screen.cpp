@@ -4,117 +4,89 @@
 #include <imgui.h>
 
 #include "gameboy_screen.h"
-#include "cpu_screen.h"
-#include "components_screen.h"
-#include "instruction_screen.h"
+#include "debug_screen.h"
 
 GameboyScreen::GameboyScreen(Gameboy& gameboy) : 
     gameboy(gameboy),
-    pixelShader("shaders\\rect.vshader", "shaders\\rect.fshader")
-{ 
-    pixelShader.use();
-    pixelShader.setVec4("clearColor", 0, 0, 0, 255);
+    textureShader("shaders\\texture.vshader", "shaders\\texture.fshader")
+{    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
+    glGenTextures(1, &texture);
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 }
 
 void GameboyScreen::update()
 {
     gameboy.process();
-    updateDisplay();
-    drawMenu();
+    renderBackground();
 }
 
-void GameboyScreen::drawMenu()
+void GameboyScreen::handleKeys(const int key, const int scancode, const int action, const int mods) 
 {
-    static bool show_app_metrics = false;
-
-    if (ImGui::BeginMainMenuBar())
-    {
-        if (ImGui::BeginMenu("File"))
-        {
-            if (ImGui::MenuItem("Load ROM")) {}
-            if (ImGui::MenuItem("Reset ROM")) {}
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("Show"))
-        {
-            if (ImGui::MenuItem("CPU")) CpuScreen::showCpu = !CpuScreen::showCpu;
-            if (ImGui::MenuItem("Components")) ComponentsScreen::showComponents = !ComponentsScreen::showComponents;
-            if (ImGui::MenuItem("Instructions")) InstructionScreen::showInstruction = !InstructionScreen::showInstruction;
-            ImGui::Separator();
-            if (ImGui::MenuItem("App Metrics")) show_app_metrics = !show_app_metrics ;
-            ImGui::EndMenu();
-        }
-        ImGui::EndMainMenuBar();
-    }
-    if (show_app_metrics) ImGui::ShowMetricsWindow(&show_app_metrics);
+    if(key == GLFW_KEY_D && action == GLFW_PRESS) DebugScreen::showCpu = !DebugScreen::showCpu;
 }
 
-void GameboyScreen::updateDisplay()
-{
-    for(int i = 0; i < 144; i++)
-    {
-        for(int j = 0; j < 160; j++)
-        {
-            if(gameboy.ppu.backgroundBuffer[i][j] != 0)
-            {
-                drawPixelAt(i, j);
-            }
-        }        
-    }
-}
-    
 /**
- *  Sets a rectangle on the screeen. It takes the native Game Boy
- *  x and y coordinates and sets the pixel of the current screen
- *  by taking screen scales into consideration.
- * 
- *  @param  x   The x coordinate of the pixel on the Game Boy (0-159)
- *  @param  y   The y coordinate of the pixel on the Game Boy (0-143)
-*/
-void GameboyScreen::drawPixelAt(const int y, const int x)
-{
-    float onePixelX = 320 / 160;
-    float onePixelY = 288 / 144;
-    float scaledX = onePixelX * x;
-    float scaledY = (onePixelY * y) + MENU_HEIGHT;
-
+ * This method creates a texture out of the current Game Boy Background
+ * and just renders one rectangle with the background texture
+ **/
+void GameboyScreen::renderBackground()
+{   
     float vertices[] = {
-        scaledX, scaledY, //Top Left
-        scaledX + onePixelX, scaledY, //Top Right
-        scaledX + onePixelX, scaledY + onePixelY, // Bottom Right
-        scaledX, scaledY + onePixelY // Bottom Left
+        // positions          // texture coords
+         1.0f,  1.0f, 0.0f,   1.0f, 0.0f, // top right
+         1.0f, -1.0f, 0.0f,   1.0f, 1.0f, // bottom right
+        -1.0f, -1.0f, 0.0f,   0.0f, 1.0f, // bottom left
+        -1.0f,  1.0f, 0.0f,   0.0f, 0.0f  // top left 
     };
-    unsigned int indices[] = {
-        0, 1, 2,
-        0, 3, 2
+    unsigned int indices[] = {  
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
     };
-    drawRect(vertices, indices, sizeof(vertices), sizeof(indices));
-}
 
-void GameboyScreen::drawRect(float vertices[], unsigned int indices[], int sizeofVertices, int sizeofIndices)
-{
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeofVertices, vertices, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeofIndices, indices, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    // position
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    // texture
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    // Create a texture array for OpenGL
+    GLuint* data = new GLuint[144*160];
+    for(int y = 0; y < 144; y++)
+    {
+        for(int x = 0; x < 160; x++)
+        {
+            uint8_t pixelData = gameboy.ppu.backgroundBuffer[y][x];
+            if(pixelData != 0)
+                data[160*y + x] = ((0x0 << 24) |(0x0 << 16) | (0x0 << 8) | (0xFF << 0));
+            else
+                data[160*y + x] = ((0xFF << 24) |(0xFF << 16) | (0xFF << 8) | (0xFF << 0));
+        }        
+    }
     
-    auto projection = glm::ortho(
-        0.0f,         
-        static_cast<GLfloat>(ResourceManager::ViewportWidth), 
-        static_cast<GLfloat>(ResourceManager::ViewportHeight), 
-        0.0f);
-    pixelShader.use();
-    pixelShader.setMatrix4("projection", projection);
-    
+    textureShader.use();
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 160, 144, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, (GLvoid*)data);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

@@ -30,3 +30,5 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/opengl/shaders/rect.vshader shade
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/opengl/shaders/rect.fshader shaders/rect.fshader COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/opengl/shaders/text.vshader shaders/text.vshader COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/opengl/shaders/text.fshader shaders/text.fshader COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/opengl/shaders/texture.vshader shaders/texture.vshader COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/opengl/shaders/texture.fshader shaders/texture.fshader COPYONLY)

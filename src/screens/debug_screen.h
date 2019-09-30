@@ -1,14 +1,14 @@
 #pragma once
-#ifndef CPUSCREEN_H
-#define CPUSCREEN_H
+#ifndef DEBUGSCREEN_H
+#define DEBUGSCREEN_H
 
 #include "../opengl/screen.h"
 #include "../hardware/cpu.h"
 
-class CpuScreen : public Screen
+class DebugScreen : public Screen
 {   
     public:
-        CpuScreen(Cpu& cpu);
+        DebugScreen(Cpu& cpu);
 
         void handleKeys(const int key, const int scancode, const int action, const int mods) override; 
         void update() override;
@@ -18,4 +18,4 @@ class CpuScreen : public Screen
         static bool showCpu;
 };
 
-#endif // CPUSCREEN_H
+#endif // DEBUGSCREEN_H

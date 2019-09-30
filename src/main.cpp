@@ -1,5 +1,3 @@
-#define STB_TRUETYPE_IMPLEMENTATION
-
 #include <iostream>
 
 #include <glad/glad.h>
@@ -8,8 +6,7 @@
 #include "opengl/window.h"
 #include "hardware/gameboy.h"
 #include "hardware/cartridge.h"
-#include "screens/cpu_screen.h"
-#include "screens/instruction_screen.h"
+#include "screens/debug_screen.h"
 #include "screens/components_screen.h"
 #include "screens/gameboy_screen.h"
 
@@ -23,17 +20,17 @@ int main(int argc, char** args) {
     Cartridge cartridge(args[1]);
     Gameboy gameboy(cartridge);
 
-    Window window("Gameboy", 320, 288); // Gameboy Display: 160x144
+    Window window("Gameboy", 
+        gameboy.DISPLAY_WIDTH * 2, 
+        (gameboy.DISPLAY_HEIGHT * 2)); // Gameboy Display: 160x144, Window Size: 2xDisplay
     window.setClearColor(255, 255, 255, 255);
     
-    CpuScreen cpuScreen(gameboy.cpu);
+    DebugScreen debugScreen(gameboy.cpu);
     GameboyScreen gameboyScreen(gameboy);   
     ComponentsScreen componentsScreen(gameboy.mmu, cartridge); 
-    InstructionScreen instructionScreen(gameboy.cpu);
 
     window.addScreen(&componentsScreen);
-    window.addScreen(&cpuScreen);
+    window.addScreen(&debugScreen);
     window.addScreen(&gameboyScreen);
-    window.addScreen(&instructionScreen);
     window.startLoop();
 }

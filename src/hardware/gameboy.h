@@ -33,6 +33,9 @@ class Gameboy
         Cpu cpu;
         Ppu ppu;
         Timer timer;
+
+        const uint8_t DISPLAY_WIDTH = 166;
+        const uint8_t DISPLAY_HEIGHT = 144;
 };
 
 #endif // GAMEBOY_H

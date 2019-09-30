@@ -15,7 +15,7 @@ void ComponentsScreen::update()
 { 
     if(!ComponentsScreen::showComponents) return;
     ImGui::Begin("Components", &ComponentsScreen::showComponents, ImGuiWindowFlags_NoResize); 
-    ImGui::SetWindowSize(ImVec2(331, 490), ImGuiCond_Always);
+    ImGui::SetWindowSize(ImVec2(331, 420), ImGuiCond_Always);
     
     ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None);
     if(ImGui::BeginTabItem("Memory"))
@@ -26,6 +26,8 @@ void ComponentsScreen::update()
     }
     if(ImGui::BeginTabItem("Cartridge"))
     {
+        char* supported = cartridge.supported ? "True" : "False";
+        ImGui::InputText("Supported", supported, 6, ImGuiInputTextFlags_ReadOnly);
         drawMemoryMap("Cartridge", cartridgeToolTips, cartridge.cartridgeSize, 
             [this] (uint32_t address) -> uint8_t { return cartridge.read(address); });
         ImGui::EndTabItem();

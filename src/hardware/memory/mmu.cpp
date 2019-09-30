@@ -32,20 +32,20 @@ uint8_t Mmu::read(const uint16_t address, const bool ppuAccess) const
 
 void Mmu::write(const uint16_t address, const uint8_t value) 
 {
-    if(address == 0x9800)
-        auto t = "";
-    // If writing to LDCY I/O register, it gets a reset.
+    // If writing to LDCY I/O register, reset it
     if(address == REG_LCD_Y) memory[address] = 0;
+    // If writing to the Timer Divider, reset it
     else if(address == REG_DIVIDER) memory[address] = 0;
     // If written to DMA start a DMA transfer to OAM
     else if(address == REG_DMA) executeDmaTransfer(value);    
-    else if(address == REG_INTERRUPT_FLAG)
-        memory[address] = value;  
-    // If written to the pad register for setting bit 4 & 5
+    // If writing to the pad register for setting bit 4 & 5
     // Preserver Lower Bits (= Button pressed atm)
     // 0x30 = 0011 0000
     else if(address == REG_PAD && (value & 0x30) != 0) 
         memory[REG_PAD] = ((value ^ memory[REG_PAD]) & 0xF0) | (memory[REG_PAD] & 0x0F);
+    // If writing into this range, change the rom bank in the cartridge
+    else if(address >= ROM_SWITCHING_START && address <= ROM_SWITCHING_END) 
+        cartridge.selectRomBank(value);
     else memory[address] = value; 
 }
 
@@ -71,9 +71,9 @@ void Mmu::executeDmaTransfer(const uint8_t value)
     }
 }
 
-uint8_t Mmu::readIORegisterBit(const IORegister reg, const uint8_t bitNr) const 
+bool Mmu::readIORegisterBit(const IORegister reg, const uint8_t flag) const 
 { 
-    return (memory[reg] >> bitNr) & 0x1; 
+    return memory[reg] & flag; 
 }
 
 uint8_t Mmu::readIORegister(const IORegister reg) const 
@@ -81,15 +81,16 @@ uint8_t Mmu::readIORegister(const IORegister reg) const
     return memory[reg]; 
 }
 
-void Mmu::writeIORegisterBit(const IORegister reg, const uint8_t bitNr, const bool value) 
+void Mmu::writeIORegisterBit(const IORegister reg, const uint8_t flag, const bool value) 
 { 
-    if(value) memory[reg] |= (0x1 << bitNr); 
-    else memory[reg] &= ~(0x1 << bitNr); 
+    if(value) memory[reg] |= flag; 
+    else memory[reg] &= ~flag; 
 }
 
 LCDMode Mmu::readLcdMode() const
 {
-    return (LCDMode)(readIORegisterBit(REG_LCD_STATUS, LCD_MODE_HIGH) << 1 | readIORegisterBit(REG_LCD_STATUS, LCD_MODE_LOW));
+    uint8_t lcdReg = readIORegister(REG_LCD_STATUS);
+    return (LCDMode)((lcdReg & LCD_MODE_HIGH) | (lcdReg & LCD_MODE_LOW));
 }
 
 void Mmu::writeLcdMode(const LCDMode lcdMode)

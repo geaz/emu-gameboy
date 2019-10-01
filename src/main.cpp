@@ -23,7 +23,6 @@ int main(int argc, char** args) {
     Window window("Gameboy", 
         gameboy.DISPLAY_WIDTH * 2, 
         (gameboy.DISPLAY_HEIGHT * 2)); // Gameboy Display: 160x144, Window Size: 2xDisplay
-    window.setClearColor(255, 255, 255, 255);
     
     DebugScreen debugScreen(gameboy.cpu);
     GameboyScreen gameboyScreen(gameboy);   

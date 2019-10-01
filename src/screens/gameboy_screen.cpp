@@ -31,6 +31,7 @@ void GameboyScreen::update()
 {
     gameboy.process();
     renderBackground();
+    renderSprites();
 }
 
 void GameboyScreen::handleKeys(const int key, const int scancode, const int action, const int mods) 
@@ -44,6 +45,71 @@ void GameboyScreen::handleKeys(const int key, const int scancode, const int acti
  **/
 void GameboyScreen::renderBackground()
 {   
+    // Create a texture array for OpenGL
+    GLuint data[144*160];
+    for(int y = 0; y < 144; y++)
+    {
+        for(int x = 0; x < 160; x++)
+        {
+            uint8_t pixelData = gameboy.ppu.backgroundData[y][x];
+            switch(gameboy.ppu.backgroundPalette.colors[pixelData])
+            {
+                case LIGHT_GRAY:
+                    data[160*y + x] = colorLightGray;
+                    break;
+                case DARK_GRAY:
+                    data[160*y + x] = colorDarkGray;
+                    break;
+                case BLACK:
+                    data[160*y + x] = colorBlack;
+                    break;
+                default:
+                case WHITE:
+                    data[160*y + x] = colorWhite;
+                    break;
+            }
+        }        
+    }
+    
+    renderTexture(data);
+}
+
+void GameboyScreen::renderSprites()
+{
+    // Create a texture array for OpenGL
+    GLuint data[144*160];
+    for(int y = 0; y < 144; y++)
+    {
+        for(int x = 0; x < 160; x++)
+        {
+            uint8_t pixelData = gameboy.ppu.spriteData[y][x];
+            switch(pixelData)
+            {
+                case WHITE:
+                    data[160*y + x] = colorWhite;
+                    break;
+                case LIGHT_GRAY:
+                    data[160*y + x] = colorLightGray;
+                    break;
+                case DARK_GRAY:
+                    data[160*y + x] = colorDarkGray;
+                    break;
+                case BLACK:
+                    data[160*y + x] = colorBlack;
+                    break;
+                default:
+                case TRANSPARENT:
+                    data[160*y + x] = colorTransparent;
+                    break;
+            }
+        }        
+    }
+    
+    renderTexture(data);
+}
+
+void GameboyScreen::renderTexture(GLuint* data)
+{
     float vertices[] = {
         // positions          // texture coords
          1.0f,  1.0f, 0.0f,   1.0f, 0.0f, // top right
@@ -71,34 +137,6 @@ void GameboyScreen::renderBackground()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // Create a texture array for OpenGL
-    GLuint* data = new GLuint[144*160];
-    for(int y = 0; y < 144; y++)
-    {
-        for(int x = 0; x < 160; x++)
-        {
-            uint8_t pixelData = gameboy.ppu.backgroundBuffer[y][x];
-            switch(gameboy.ppu.backgroundPalette.colors[pixelData])
-            {
-                case WHITE:
-                    data[160*y + x] = colorWhite;
-                    break;
-                case LIGHT_GRAY:
-                    data[160*y + x] = colorLightGray;
-                    break;
-                case DARK_GRAY:
-                    data[160*y + x] = colorDarkGray;
-                    break;
-                case BLACK:
-                    data[160*y + x] = colorBlack;
-                    break;
-                default:
-                    data[160*y + x] = colorWhite;
-                    break;
-            }
-        }        
-    }
-    
     textureShader.use();
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 160, 144, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, (GLvoid*)data);

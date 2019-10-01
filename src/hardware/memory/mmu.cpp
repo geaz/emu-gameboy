@@ -43,6 +43,12 @@ void Mmu::write(const uint16_t address, const uint8_t value)
     // 0x30 = 0011 0000
     else if(address == REG_PAD && (value & 0x30) != 0) 
         memory[REG_PAD] = ((value ^ memory[REG_PAD]) & 0xF0) | (memory[REG_PAD] & 0x0F);
+    // If writing to the lcd status register
+    // Preserver Lower two Bits (= current lcd mode (read only))
+    // 0x03 = 0000 0011
+    // 0x7C = 0111 1100
+    else if(address == REG_LCD_STATUS) 
+        memory[REG_LCD_STATUS] = (value & 0x7C) | (memory[REG_LCD_STATUS] & 0x03);
     // If writing into this range, change the rom bank in the cartridge
     else if(address >= ROM_SWITCHING_START && address <= ROM_SWITCHING_END) 
         cartridge.selectRomBank(value);
@@ -51,8 +57,6 @@ void Mmu::write(const uint16_t address, const uint8_t value)
 
 void Mmu::rawWrite(const uint16_t address, const uint8_t value) 
 {
-    if(address == 0x9800)
-        auto t = "";
     memory[address] = value;
 }
 

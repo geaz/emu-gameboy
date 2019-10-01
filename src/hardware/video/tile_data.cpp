@@ -4,18 +4,21 @@ TileData::TileData(Mmu& mmu) : mmu(mmu) { }
 
 Tile TileData::getBackgroundTile(const uint8_t number) const
 {
+    // Each tile is 16 bytes long
     return mmu.readIORegisterBit(REG_LCD_CONTROL, BG_TILE_DATA_SELECT)
-        ? getTile(TILE_DATA_1, number)
-        : getTile(TILE_DATA_0, number); 
+        ? getTile(TILE_DATA_1, (number * 16))
+        : getTile(TILE_DATA_0, ((static_cast<int8_t>(number) + 128) * 16)); 
 }
 
-Tile TileData::getTile(const uint16_t start, const uint8_t number) const
+Tile TileData::getSpriteTile(const uint8_t number) const
 {
-    // Each tile is 16 bytes long
-    uint16_t memoryStart = start == TILE_DATA_1
-        ? start + (number * 16) 
-        : start + ((static_cast<int8_t>(number) + 128) * 16);
+    return getTile(TILE_DATA_1, (number * 16)); 
+}
+
+Tile TileData::getTile(const uint16_t start, const int16_t number) const
+{
     Tile tile;
+    uint16_t memoryStart = start + number;
     for(int i = 0; i < 8; i++)
     {
         uint8_t lineData1 = mmu.read(memoryStart + (i * 2));

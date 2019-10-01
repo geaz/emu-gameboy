@@ -9,7 +9,8 @@ enum GBShade
     WHITE = 0,
     LIGHT_GRAY = 1,
     DARK_GRAY = 2,
-    BLACK = 3
+    BLACK = 3,    
+    TRANSPARENT = 4
 };
 
 struct ColorPalette
@@ -27,6 +28,8 @@ class ColorPalettes
         ColorPalette getOBP1Palette();      
     
     private:
+        ColorPalette getPalette(const uint8_t colorData, const bool lowerIsTransparent);
+
         Mmu& mmu;
 };
 

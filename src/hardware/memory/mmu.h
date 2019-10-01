@@ -3,7 +3,7 @@
 #define MMU_H
 
 #include "../cartridge.h"
-#include "memory_flags.h"
+#include "io_register_flags.h"
 
 class Mmu
 {

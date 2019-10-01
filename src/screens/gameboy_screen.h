@@ -15,6 +15,10 @@ class GameboyScreen : public Screen
         void handleKeys(const int key, const int scancode, const int action, const int mods) override;
 
     private:
+        void renderBackground();
+        void renderSprites();
+        void renderTexture(GLuint* data);
+
         Gameboy& gameboy;
         Shader textureShader;
         unsigned int VBO, VAO, EBO, texture;
@@ -24,8 +28,6 @@ class GameboyScreen : public Screen
         uint32_t colorDarkGray = ((0x1E << 24) |(0x60 << 16) | (0x6E << 8) | (0xFF << 0));
         uint32_t colorLightGray = ((0x5A << 24) |(0xB9 << 16) | (0xA8 << 8) | (0xFF << 0));
         uint32_t colorTransparent = ((0x00 << 24) |(0x00 << 16) | (0x00 << 8) | (0x00 << 0));
-
-        void renderBackground();
 };
 
 #endif // GAMEBOYSCREEN_H

@@ -228,7 +228,7 @@ void Ppu::drawSprites()
         {                
             uint8_t xCord = currentSprite.flipX ? (7 - j) : j;
             uint8_t yCord = currentSprite.flipY 
-                ? lcdY - ((currentSprite.posY - 16) * -1)
+                ? abs(lcdY - (currentSprite.posY - 16 + 8))
                 : lcdY - (currentSprite.posY - 16);
             
             uint8_t pixelData = currentTile.data[yCord][xCord];

@@ -2,20 +2,22 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
+ #include <cstdint>
+
 class Clock
 {
     public:
-        Clock(long frequency);
+        Clock(uint32_t frequency);
 
         void Reset();
-        long getCatchUpCycles();
+        uint32_t getCatchUpCycles();
 
-        long frequency;
+        uint32_t frequency;
 
     private:
-        long long getNowMs();
+        uint64_t getNowMs();
 
-        long long lastCycle = -1;
+        uint64_t lastCycle = -1;
 };
 
 #endif

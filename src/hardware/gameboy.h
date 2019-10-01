@@ -4,21 +4,10 @@
 
 #include "cpu.h"
 #include "timer.h"
+#include "input.h"
 #include "cartridge.h"
 #include "video/ppu.h"
 #include "memory/mmu.h"
-
-enum Button
-{
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-    A,
-    B,
-    START,
-    SELECT
-};
 
 class Gameboy
 {
@@ -26,12 +15,12 @@ class Gameboy
         Gameboy(Cartridge& cartridge);
         
         void process();
-        void pressButton(Button button);
 
         Cartridge& cartridge;
         Mmu mmu;
         Cpu cpu;
         Ppu ppu;
+        Input input;
         Timer timer;
 
         const uint8_t DISPLAY_WIDTH = 166;

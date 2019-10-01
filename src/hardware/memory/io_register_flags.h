@@ -32,14 +32,14 @@ enum IORegister
 
 enum PadRegisterFlag
 {
-                // Bit 7 - Not used           
-                // Bit 6 - Not used
-    P15 = 32,   // Bit 5 - P15 out port
-    P14 = 16,   // Bit 4 - P14 out port
-    P13 = 8,    // Bit 3 - P13 in port
-    P12 = 4,    // Bit 2 - P12 in port
-    P11 = 2,    // Bit 1 - P11 in port
-    P10 = 1     // Bit 0 - P10 in port
+                        // Bit 7 - Not used           
+                        // Bit 6 - Not used
+    BUTTONS_SET = 32,   // Bit 5 - P15 out port
+    DIRECTION_SET = 16, // Bit 4 - P14 out port
+    DOWN_START = 8,     // Bit 3 - P13 in port
+    UP_SELECT = 4,      // Bit 2 - P12 in port
+    LEFT_B = 2,         // Bit 1 - P11 in port
+    RIGHT_A = 1         // Bit 0 - P10 in port
 };
 
 enum SerialTransferFlag

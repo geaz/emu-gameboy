@@ -41,8 +41,8 @@ void Mmu::write(const uint16_t address, const uint8_t value)
     // If writing to the pad register for setting bit 4 & 5
     // Preserver Lower Bits (= Button pressed atm)
     // 0x30 = 0011 0000
-    else if(address == REG_PAD && (value & 0x30) != 0) 
-        memory[REG_PAD] = ((value ^ memory[REG_PAD]) & 0xF0) | (memory[REG_PAD] & 0x0F);
+    else if(address == REG_PAD) 
+        memory[REG_PAD] = (value & 0x30) | (memory[REG_PAD] & 0xCF);
     // If writing to the lcd status register
     // Preserver Lower two Bits (= current lcd mode (read only))
     // 0x03 = 0000 0011

@@ -5,6 +5,7 @@ Gameboy::Gameboy(Cartridge& cartridge) :
     mmu(Mmu(cartridge)),
     cpu(Cpu(mmu)),
     ppu(mmu),
+    input(Input(mmu)),
     timer(Timer(mmu))
 { }
 
@@ -24,13 +25,8 @@ void Gameboy::process()
 
         ppu.cycle(opCycles);
         timer.cycle(opCycles);
+        input.cycle(opCycles);
         
         cycles -= opCycles;
-    }
-    cpu.clock.Reset();    
-}
-
-void Gameboy::pressButton(Button button)
-{
-    mmu.write(REG_PAD, 0xCF); //1100 1111 (No Buttons pressed)
+    } 
 }

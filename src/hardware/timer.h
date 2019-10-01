@@ -18,7 +18,7 @@ class Timer
         uint32_t dividerCycleCount = 0, timerCycleCount = 0;
 
         const uint32_t CPU_FREQUENCY = 4194304;
-        const uint16_t DIV_FREQUENCY = 16384;
+        const uint32_t DIV_FREQUENCY = 16384;
 };
 
 #endif // TIMER_H

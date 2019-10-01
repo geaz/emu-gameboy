@@ -1,19 +1,21 @@
 #include <chrono>
 #include "clock.h"
 
-Clock::Clock(long frequency) : frequency(frequency) { }
+Clock::Clock(uint32_t frequency) : frequency(frequency) { }
 
 void Clock::Reset() { lastCycle = getNowMs(); }
 
-long Clock::getCatchUpCycles() 
+uint32_t Clock::getCatchUpCycles() 
 {
     if(lastCycle == -1) Reset();
-    long long nowMs = getNowMs();
-    long cycles = (long) (nowMs - lastCycle) * frequency / 1000;
+    uint64_t nowMs = getNowMs();
+    uint32_t cycles = (uint32_t) (nowMs - lastCycle) * frequency / 1000;
+    
+    lastCycle = nowMs;
     return cycles;
 }
 
-long long Clock::getNowMs()
+uint64_t Clock::getNowMs()
 {
     auto now = std::chrono::system_clock::now();
     return std::chrono::time_point_cast<std::chrono::milliseconds>(now).time_since_epoch().count();

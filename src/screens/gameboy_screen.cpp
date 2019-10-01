@@ -37,6 +37,36 @@ void GameboyScreen::update()
 void GameboyScreen::handleKeys(const int key, const int scancode, const int action, const int mods) 
 {
     if(key == GLFW_KEY_D && action == GLFW_PRESS) DebugScreen::showCpu = !DebugScreen::showCpu;
+    if(action == GLFW_PRESS || action == GLFW_RELEASE)
+    {
+        switch(key)
+        {
+            case GLFW_KEY_UP:
+                gameboy.input.toggleButton(GB_UP, action == GLFW_PRESS);
+                break;
+            case GLFW_KEY_DOWN:
+                gameboy.input.toggleButton(GB_DOWN, action == GLFW_PRESS);
+                break;
+            case GLFW_KEY_LEFT:
+                gameboy.input.toggleButton(GB_LEFT, action == GLFW_PRESS);
+                break;
+            case GLFW_KEY_RIGHT:
+                gameboy.input.toggleButton(GB_RIGHT, action == GLFW_PRESS);
+                break;
+            case GLFW_KEY_X:
+                gameboy.input.toggleButton(GB_A, action == GLFW_PRESS);
+                break;
+            case GLFW_KEY_Y:
+                gameboy.input.toggleButton(GB_B, action == GLFW_PRESS);
+                break;
+            case GLFW_KEY_ENTER:
+                gameboy.input.toggleButton(GB_START, action == GLFW_PRESS);
+                break;
+            case GLFW_KEY_SPACE:
+                gameboy.input.toggleButton(GB_SELECT, action == GLFW_PRESS);
+                break;
+        }
+    }
 }
 
 /**

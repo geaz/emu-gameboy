@@ -1,16 +1,13 @@
 #include "resource_manager.h"
 
-// Instantiate static variables
-int ResourceManager::ViewportWidth;
-int ResourceManager::ViewportHeight;
-
-std::map<std::string, Shader>       ResourceManager::Shaders;
-
-Shader ResourceManager::LoadShader(const char* shaderName, const char* vertextPath, const char* fragmentPath)
+namespace OpenGL
 {
-    if (ResourceManager::Shaders.find(shaderName) == ResourceManager::Shaders.end() )
+    Shader ResourceManager::LoadShader(const char* shaderName, const char* vertextPath, const char* fragmentPath)
     {
-        ResourceManager::Shaders[shaderName] = Shader(vertextPath, fragmentPath);
+        if (LoadedShaders.find(shaderName) == LoadedShaders.end() )
+        {
+            LoadedShaders[shaderName] = Shader(vertextPath, fragmentPath);
+        }
+        return LoadedShaders[shaderName];
     }
-    return ResourceManager::Shaders[shaderName];
 }

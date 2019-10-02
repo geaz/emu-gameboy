@@ -5,22 +5,28 @@
 #include "color_palettes.h"
 #include "../memory/mmu.h"
 
-struct BackgroundMap{
-    uint8_t data[32][32];
-};
-
-class BackgroundMaps
+namespace GGB::Hardware::Video
 {
-    public:
-        BackgroundMaps(Mmu& mmu);
+    struct BackgroundMap{
+        uint8_t data[32][32];
+    };
 
-        BackgroundMap getBackgroundMap() const;
+    class BackgroundMaps
+    {
+        public:
+            BackgroundMaps(Mmu& mmu);
 
-    private:
-        Mmu& mmu;
+            BackgroundMap getBackgroundMap() const;
+            BackgroundMap getWindowMap() const;
 
-        const uint16_t MAP_0_START = 0x9800;
-        const uint16_t MAP_1_START = 0x9C00;     
-};
+        private:
+            BackgroundMap getMap(Enums::LCD_CONTROL_FLAG controlFlag) const;
+
+            Mmu& mmu;
+
+            const uint16_t MAP_0_START = 0x9800;
+            const uint16_t MAP_1_START = 0x9C00;     
+    };
+}
 
 #endif // BACKGROUNDMAPS_H

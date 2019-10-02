@@ -6,28 +6,36 @@
 #include "../opengl/resource_manager.h"
 #include "../hardware/gameboy.h"
 
-class GameboyScreen : public Screen
+namespace GGB
 {
-    public:
-        GameboyScreen(Gameboy& gameboy);
+    /**
+     * The GameboyScreen emulates the display of the Game Boy and is
+     * responsible for the update of the CPU by calling the 'cycle' method
+     * of the Game Boy.
+     **/
+    class GameboyScreen : public OpenGL::Screen
+    {
+        public:
+            GameboyScreen(GameBoy& gameBoy);
 
-        void update() override;
-        void handleKeys(const int key, const int scancode, const int action, const int mods) override;
+            void update() override;
+            void handleKeys(const int key, const int scancode, const int action, const int mods) override;
 
-    private:
-        void renderBackground();
-        void renderSprites();
-        void renderTexture(GLuint* data);
+        private:
+            void renderBackground();
+            void renderSprites();
+            void renderTexture(GLuint* data);
 
-        Gameboy& gameboy;
-        Shader textureShader;
-        unsigned int VBO, VAO, EBO, texture;
-        
-        uint32_t colorBlack = ((0x2D << 24) |(0x1B << 16) | (0x0 << 8) | (0xFF << 0));
-        uint32_t colorWhite = ((0xC4 << 24) |(0xF0 << 16) | (0xC2 << 8) | (0xFF << 0));
-        uint32_t colorDarkGray = ((0x1E << 24) |(0x60 << 16) | (0x6E << 8) | (0xFF << 0));
-        uint32_t colorLightGray = ((0x5A << 24) |(0xB9 << 16) | (0xA8 << 8) | (0xFF << 0));
-        uint32_t colorTransparent = ((0x00 << 24) |(0x00 << 16) | (0x00 << 8) | (0x00 << 0));
-};
+            GameBoy& gameBoy;
+            OpenGL::Shader textureShader;
+            unsigned int VBO, VAO, EBO, texture;
+            
+            uint32_t glColorBlack = ((0x2D << 24) |(0x1B << 16) | (0x0 << 8) | (0xFF << 0));
+            uint32_t glColorWhite = ((0xC4 << 24) |(0xF0 << 16) | (0xC2 << 8) | (0xFF << 0));
+            uint32_t glColorDarkGray = ((0x1E << 24) |(0x60 << 16) | (0x6E << 8) | (0xFF << 0));
+            uint32_t glColorLightGray = ((0x5A << 24) |(0xB9 << 16) | (0xA8 << 8) | (0xFF << 0));
+            uint32_t glColorTransparent = ((0x00 << 24) |(0x00 << 16) | (0x00 << 8) | (0x00 << 0));
+    };
+}
 
 #endif // GAMEBOYSCREEN_H

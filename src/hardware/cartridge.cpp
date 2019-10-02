@@ -1,32 +1,42 @@
+#include <fstream>
 #include "cartridge.h"
 
-#include <fstream>
-
-Cartridge::Cartridge(std::string path) : cartridgePath(path)
+namespace GGB::Hardware
 {
-    std::ifstream cartridgeFile;
-    cartridgeFile.open(cartridgePath, std::ifstream::binary);
-    
-    cartridgeFile.seekg(0, cartridgeFile.end);
-    cartridgeSize = (unsigned long) cartridgeFile.tellg();
-    cartridgeFile.seekg(0, cartridgeFile.beg);
+    Cartridge::Cartridge(std::string path) : cartridgePath(path)
+    {
+        using Enums::CARTRIDGE_FLAG;
+        using Enums::CARTRIDGE_TYPE;
 
-    cartridgeData = new char[cartridgeSize];
-    cartridgeFile.read(cartridgeData, cartridgeSize);
-    cartridgeFile.close();
+        std::ifstream cartridgeFile;
+        cartridgeFile.open(cartridgePath, std::ifstream::binary);
+        
+        cartridgeFile.seekg(0, cartridgeFile.end);
+        cartridgeSize = (unsigned long) cartridgeFile.tellg();
+        cartridgeFile.seekg(0, cartridgeFile.beg);
 
-    supported = cartridgeData[TYPE] >= ROM && cartridgeData[TYPE] <= MBC1;
-}
+        cartridgeData = new char[cartridgeSize];
+        cartridgeFile.read(cartridgeData, cartridgeSize);
+        cartridgeFile.close();
 
-uint8_t Cartridge::read(uint16_t address)
-{
-    if(address >= SWITCH_ROM_START && address <= SWITCH_ROM_END)
-        return (uint8_t)cartridgeData[address + ((selectedBankNr - 1) * 0x4000)];
-    else
-        return (uint8_t)cartridgeData[address];
-}
+        supported = 
+            cartridgeData[(uint16_t)CARTRIDGE_FLAG::TYPE] >= (uint8_t)CARTRIDGE_TYPE::ROM 
+            && cartridgeData[(uint16_t)CARTRIDGE_FLAG::TYPE] <= (uint8_t)CARTRIDGE_TYPE::MBC1;
+    }
 
-void Cartridge::selectRomBank(const uint8_t bankNr)
-{
-    selectedBankNr = bankNr;
+    uint8_t Cartridge::read(uint16_t address)
+    {
+        using Enums::CARTRIDGE_FLAG;
+
+        if(address >= (uint16_t)CARTRIDGE_FLAG::SWITCHABLE_BANK_START 
+        && address <= (uint16_t)CARTRIDGE_FLAG::SWITCHABLE_BANK_END)
+            return (uint8_t)cartridgeData[address + ((selectedBankNr - 1) * 0x4000)];
+        else
+            return (uint8_t)cartridgeData[address];
+    }
+
+    void Cartridge::selectRomBank(const uint8_t bankNr)
+    {
+        selectedBankNr = bankNr;
+    }
 }

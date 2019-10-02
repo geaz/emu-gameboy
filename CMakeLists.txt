@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(emu-gameboy VERSION 0.1.0)
+project(ggb VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -21,9 +21,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/glad/include)
 link_directories(${GLFW_LIBRARY_DIR})
 
 add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLAD)
-add_executable(emu-gameboy ${EMU_SOURCES})
-add_dependencies(emu-gameboy glfw)
-target_link_libraries(emu-gameboy glfw3 ${OPENGL_LIBRARIES} ${APPLE_LIBS})
+add_executable(ggb ${EMU_SOURCES})
+add_dependencies(ggb glfw)
+target_link_libraries(ggb glfw3 ${OPENGL_LIBRARIES} ${APPLE_LIBS})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/opengl/fonts/FiraMono-Regular.ttf FiraMono-Regular.ttf COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/opengl/shaders/rect.vshader shaders/rect.vshader COPYONLY)

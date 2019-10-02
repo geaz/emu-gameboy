@@ -7,27 +7,28 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
-#include "structs.h"
 #include "screen.h"
 
-class Window
-{
-    public:        
-        Window(std::string title, const int width, const int height);
-        
-        void setClearColor(const GLfloat red, const GLfloat green, const GLfloat blue, const GLfloat alpha) const;
-        void startLoop();
+namespace OpenGL
+{    
+    class Window
+    {
+        public:        
+            Window(std::string title, const int width, const int height);
+            
+            void startLoop();
+            void addScreen(Screen* screen);
+            void setClearColor(const GLfloat red, const GLfloat green, const GLfloat blue, const GLfloat alpha) const;
 
-        void addScreen(Screen* screen);
+        private:
+            void handleKeys(const int key, const int scancode, const int action, const int mods) const;
 
-        static Window* windowPointer;
-
-    private:
-        void handleKeys(const int key, const int scancode, const int action, const int mods) const;
-
-        GLFWwindow* window;
-        std::vector<Screen*> screenVec;
-};
+            GLFWwindow* glfwWindow;
+            std::vector<Screen*> screenVec;
+    };
+    
+    // Init Window Pointer for OpenGL callbacks
+    static Window* WindowPointer;
+}
 
 #endif // WINDOW_H

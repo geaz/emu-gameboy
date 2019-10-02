@@ -5,17 +5,26 @@
 #include "../opengl/screen.h"
 #include "../hardware/cpu.h"
 
-class DebugScreen : public Screen
-{   
-    public:
-        DebugScreen(Cpu& cpu);
+namespace GGB
+{
+    static bool ShowDebugScreen = false;
+    static bool ShowAppMetrics = false;
 
-        void handleKeys(const int key, const int scancode, const int action, const int mods) override; 
-        void update() override;
+    /**
+     * The DebugScreen renders the debugging view of the emulator.
+     * It closing / opening mechanism is triggered by the 'handleKeys'
+     * method in the GameBoyScreen. The GUI gets rendered by ImGUI.
+     **/
+    class DebugScreen : public OpenGL::Screen
+    {   
+        public:
+            DebugScreen(Hardware::Cpu& cpu);
 
-        Cpu& cpu;
+            void handleKeys(const int key, const int scancode, const int action, const int mods) override; 
+            void update() override;
 
-        static bool showCpu;
-};
+            Hardware::Cpu& cpu;
+    };
+}
 
 #endif // DEBUGSCREEN_H

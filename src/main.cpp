@@ -17,16 +17,16 @@ int main(int argc, char** args) {
         return 0;
     }
 
-    Cartridge cartridge(args[1]);
-    Gameboy gameboy(cartridge);
+    GGB::Hardware::Cartridge cartridge(args[1]);
+    GGB::GameBoy gameBoy(cartridge);
 
-    Window window("Gameboy", 
-        gameboy.DISPLAY_WIDTH * 2, 
-        (gameboy.DISPLAY_HEIGHT * 2)); // Gameboy Display: 160x144, Window Size: 2xDisplay
-    
-    DebugScreen debugScreen(gameboy.cpu);
-    GameboyScreen gameboyScreen(gameboy);   
-    ComponentsScreen componentsScreen(gameboy.mmu, cartridge); 
+    OpenGL::Window window("GGB", 
+        GGB::Constants::GAMEBOY_LCD_WIDTH * 2, 
+        GGB::Constants::GAMEBOY_LCD_HEIGHT * 2);
+        
+    GGB::DebugScreen debugScreen(gameBoy.cpu);
+    GGB::GameboyScreen gameboyScreen(gameBoy);   
+    GGB::ComponentsScreen componentsScreen(gameBoy.mmu, cartridge); 
 
     window.addScreen(&componentsScreen);
     window.addScreen(&debugScreen);

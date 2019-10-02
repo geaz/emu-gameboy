@@ -4,33 +4,38 @@
 
 #include "memory/mmu.h"
 
-enum Button
+namespace GGB
 {
-    GB_DOWN = 128,
-    GB_UP = 64,
-    GB_LEFT = 32,
-    GB_RIGHT = 16,
-    GB_START = 8,
-    GB_SELECT = 4,
-    GB_B = 2,
-    GB_A = 1,
-};
+    namespace Enums
+    {
+        enum JOYPAD
+        {
+            DOWN = 128,
+            UP = 64,
+            LEFT = 32,
+            RIGHT = 16,
+            START = 8,
+            SELECT = 4,
+            B = 2,
+            A = 1,
+        };
+    }   
 
-class Input
-{
-    public:
-        Input(Mmu& mmu);
+    namespace Hardware
+    {
+        class Input
+        {
+            public:
+                Input(Mmu& mmu);
 
-        void cycle(const uint8_t cycles);        
-        void toggleButton(const Button button, const bool pressed);
+                void cycle();        
+                void toggleButton(const Enums::JOYPAD button, const bool pressed);
 
-    private:
-        Mmu& mmu;
-
-        uint32_t cycleCount = 0;
-        uint8_t padState = 0xFF;
-
-        const uint32_t PAD_FREQUENCY = 65536;
-};
+            private:
+                Mmu& mmu;
+                uint8_t padState = 0xFF;
+        };
+    }
+}
 
 #endif // INPUT_H

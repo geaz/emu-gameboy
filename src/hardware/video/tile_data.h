@@ -5,28 +5,32 @@
 #include "color_palettes.h"
 #include "../memory/mmu.h"
 
-struct Tile {
-    uint8_t data[8][8];
-};
-
-enum TileDataPosition
+namespace GGB::Hardware::Video
 {
-    TILE_DATA_0 = 0x8800,
-    TILE_DATA_1 = 0x8000
-};
+    struct Tile {
+        uint8_t data[8][8];
+    };
 
-class TileData
-{
-    public:
-        TileData(Mmu& mmu);
+    enum class TILE_DATA_POSITION
+    {
+        TILE_DATA_0 = 0x8800,
+        TILE_DATA_1 = 0x8000
+    };
 
-        Tile getBackgroundTile(const uint8_t number) const;
-        Tile getSpriteTile(const uint8_t number) const;
+    class TileData
+    {
+        public:
+            TileData(Mmu& mmu);
 
-    private:
-        Tile getTile(const uint16_t start, const int16_t number) const;
+            Tile getBackgroundTile(const uint8_t number) const;
+            Tile getSpriteTile(const uint8_t number) const;
+            Tile getWindowTile(const uint8_t number) const;
 
-        Mmu& mmu;  
-};
+        private:
+            Tile getTile(const TILE_DATA_POSITION start, const int16_t number) const;
+
+            Mmu& mmu;  
+    };
+}
 
 #endif // TILEDATA_H

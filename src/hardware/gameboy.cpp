@@ -1,32 +1,37 @@
 #include "gameboy.h"
 
-Gameboy::Gameboy(Cartridge& cartridge) : 
-    cartridge(cartridge),
-    mmu(Mmu(cartridge)),
-    cpu(Cpu(mmu)),
-    ppu(mmu),
-    input(Input(mmu)),
-    timer(Timer(mmu))
-{ }
-
-void Gameboy::process()
+namespace GGB
 {
-    int cycles = cpu.clock.getCatchUpCycles();
-    while(cycles > 0 && (cpu.state == RUNNING || cpu.state == STEP))
+    GameBoy::GameBoy(Hardware::Cartridge& cartridge) : 
+        cartridge(cartridge),
+        mmu(Hardware::Mmu(cartridge)),
+        cpu(Hardware::Cpu(mmu)),
+        ppu(mmu),
+        input(Hardware::Input(mmu)),
+        timer(Hardware::Timer(mmu))
+    { }
+
+    void GameBoy::process()
     {
-        int opCycles = cpu.cycle();
+        using Enums::CPU_STATE;
 
-        // If the CPU is halted, it won't process any operations
-        // In this case we set the cycles to four to do 
-        // progress on the PPU and Timer
-        opCycles = opCycles == 0
-            ? 4
-            : opCycles;
+        int cycles = cpu.clock.getCatchUpCycles();
+        while(cycles > 0 && (cpu.state == CPU_STATE::RUNNING || cpu.state == CPU_STATE::STEP))
+        {
+            int opCycles = cpu.cycle();
 
-        ppu.cycle(opCycles);
-        timer.cycle(opCycles);
-        input.cycle(opCycles);
-        
-        cycles -= opCycles;
-    } 
+            // If the CPU is halted, it won't process any operations
+            // In this case we set the cycles to four (NOP) to do 
+            // progress on the PPU and Timer
+            opCycles = opCycles == 0
+                ? 4
+                : opCycles;
+
+            ppu.cycle(opCycles);
+            timer.cycle(opCycles);
+            input.cycle();
+            
+            cycles -= opCycles;
+        } 
+    }
 }

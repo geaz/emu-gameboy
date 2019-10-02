@@ -7,15 +7,17 @@
 
 #include "shader.h"
 
-class ResourceManager
+namespace OpenGL
 {
-    public:
-        static Shader LoadShader(const char* shaderName, const char* vertextPath, const char* fragmentPath);
-        
-        static int ViewportWidth;
-        static int ViewportHeight;
+    static int ViewportWidth;
+    static int ViewportHeight;
+    static std::map<std::string, Shader> LoadedShaders;
 
-        static std::map<std::string, Shader> Shaders;
-};
+    class ResourceManager
+    {
+        public:
+            static Shader LoadShader(const char* shaderName, const char* vertextPath, const char* fragmentPath);
+    };
+}
 
 #endif // RESOURCEMANAGER_H

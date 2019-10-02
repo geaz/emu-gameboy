@@ -1,4 +1,4 @@
-# A Game Boy emulator written in C++ (WIP)
+# GGB - A Game Boy emulator written in C++ (WIP)
 
 The aim of this project was to create a cycle accurate emulator which is capable to do emulation in **interpreter mode** and in **jit mode**.
 
@@ -53,6 +53,7 @@ struct Instruction
 ## Ressources
 
 - 8080 Manual (see *docs folder* - really great to understand how a cpu works)
+- [The Cycle-Accurate Game Boy Docs]https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf) (Back up in the *docs* folder)
 - [Pandocs](http://bgb.bircd.org/pandocs.htm) (Backup of the Site in the *docs folder*)
 - [Opcodes](http://www.devrs.com/gb/files/opcodes.html)
 - [Opcodes Table](http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html)

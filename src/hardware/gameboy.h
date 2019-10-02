@@ -9,22 +9,22 @@
 #include "video/ppu.h"
 #include "memory/mmu.h"
 
-class Gameboy
+namespace GGB
 {
-    public:
-        Gameboy(Cartridge& cartridge);
-        
-        void process();
+    class GameBoy
+    {
+        public:
+            GameBoy(Hardware::Cartridge& cartridge);
+            
+            void process();
 
-        Cartridge& cartridge;
-        Mmu mmu;
-        Cpu cpu;
-        Ppu ppu;
-        Input input;
-        Timer timer;
-
-        const uint8_t DISPLAY_WIDTH = 166;
-        const uint8_t DISPLAY_HEIGHT = 144;
-};
+            Hardware::Cartridge& cartridge;
+            Hardware::Mmu mmu;
+            Hardware::Cpu cpu;
+            Hardware::Ppu ppu;
+            Hardware::Input input;
+            Hardware::Timer timer;
+    };
+}
 
 #endif // GAMEBOY_H

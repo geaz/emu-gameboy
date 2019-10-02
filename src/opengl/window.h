@@ -28,7 +28,7 @@ namespace OpenGL
     };
     
     // Init Window Pointer for OpenGL callbacks
-    static Window* WindowPointer;
+    extern Window* WindowPointer;
 }
 
 #endif // WINDOW_H

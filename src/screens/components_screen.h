@@ -10,7 +10,7 @@
 
 namespace GGB
 {    
-    static bool ShowComponentsScreen = false;
+    extern bool ShowComponentsScreen;
 
     /**
      * The ComponentsScreen renders the memory of the Game Boy and

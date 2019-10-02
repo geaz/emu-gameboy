@@ -8,6 +8,8 @@
 
 namespace GGB 
 {
+    bool ShowComponentsScreen = false;
+
     ComponentsScreen::ComponentsScreen(Hardware::Mmu& mmu, Hardware::Cartridge& cartridge) 
         : mmu(mmu), cartridge(cartridge) { }
 

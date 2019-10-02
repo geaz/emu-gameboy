@@ -3,11 +3,9 @@
 
 Clock::Clock(uint32_t frequency) : frequency(frequency) { }
 
-void Clock::Reset() { lastCycle = getNowMs(); }
-
 uint32_t Clock::getCatchUpCycles() 
 {
-    if(lastCycle == -1) Reset();
+    if(lastCycle == -1) lastCycle = getNowMs();
     uint64_t nowMs = getNowMs();
     uint32_t cycles = (uint32_t) (nowMs - lastCycle) * frequency / 1000;
     

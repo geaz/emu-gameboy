@@ -7,8 +7,8 @@
 
 namespace GGB
 {
-    static bool ShowDebugScreen = false;
-    static bool ShowAppMetrics = false;
+    extern bool ShowDebugScreen;
+    extern bool ShowAppMetrics;
 
     /**
      * The DebugScreen renders the debugging view of the emulator.

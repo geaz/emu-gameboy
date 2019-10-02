@@ -13,6 +13,9 @@
 
 namespace GGB
 {
+    bool ShowDebugScreen = false;
+    bool ShowAppMetrics = false;
+    
     DebugScreen::DebugScreen(Hardware::Cpu& cpu) : cpu(cpu) { }
 
     void DebugScreen::handleKeys(const int key, const int scancode, const int action, const int mods) 

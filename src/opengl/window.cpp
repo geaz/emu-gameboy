@@ -9,6 +9,8 @@
 
 namespace OpenGL
 {
+    Window* WindowPointer = NULL;
+
     Window::Window(std::string title, const int width, const int height)
     {
         // Store Pointer for OpenGL callbacks

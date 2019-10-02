@@ -9,9 +9,9 @@
 
 namespace OpenGL
 {
-    static int ViewportWidth;
-    static int ViewportHeight;
-    static std::map<std::string, Shader> LoadedShaders;
+    extern int ViewportWidth;
+    extern int ViewportHeight;
+    extern std::map<std::string, Shader> LoadedShaders;
 
     class ResourceManager
     {

@@ -9,7 +9,6 @@ class Clock
     public:
         Clock(uint32_t frequency);
 
-        void Reset();
         uint32_t getCatchUpCycles();
 
         uint32_t frequency;

@@ -1,28 +1,28 @@
-#include "tile_data.h"
+#include "tile_list.h"
 
 namespace GGB::Hardware::Video
 {
-    TileData::TileData(Mmu& mmu) : mmu(mmu) { }
+    TileList::TileList(Mmu& mmu) : mmu(mmu) { }
 
-    Tile TileData::getBackgroundTile(const uint8_t number) const
+    Tile TileList::loadBackgroundTile(const uint8_t number) const
     {
         // Each tile is 16 bytes long
         return mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::BG_TILE_DATA_SELECT)
-            ? getTile(TILE_DATA_POSITION::TILE_DATA_1, (number * 16))
-            : getTile(TILE_DATA_POSITION::TILE_DATA_0, ((static_cast<int8_t>(number) + 128) * 16)); 
+            ? loadTileFromMem(TILE_DATA_POSITION::TILE_DATA_1, (number * 16))
+            : loadTileFromMem(TILE_DATA_POSITION::TILE_DATA_0, ((static_cast<int8_t>(number) + 128) * 16)); 
     }
 
-    Tile TileData::getWindowTile(const uint8_t number) const
+    Tile TileList::loadWindowTile(const uint8_t number) const
     {
-        return getTile(TILE_DATA_POSITION::TILE_DATA_1, (number * 16)); 
+        return loadTileFromMem(TILE_DATA_POSITION::TILE_DATA_1, (number * 16)); 
     }
 
-    Tile TileData::getSpriteTile(const uint8_t number) const
+    Tile TileList::loadSpriteTile(const uint8_t number) const
     {
-        return getTile(TILE_DATA_POSITION::TILE_DATA_1, (number * 16)); 
+        return loadTileFromMem(TILE_DATA_POSITION::TILE_DATA_1, (number * 16)); 
     }
 
-    Tile TileData::getTile(const TILE_DATA_POSITION start, const int16_t number) const
+    Tile TileList::loadTileFromMem(const TILE_DATA_POSITION start, const int16_t number) const
     {
         Tile tile;
         uint16_t memoryStart = (uint16_t)start + number;

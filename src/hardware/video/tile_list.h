@@ -17,19 +17,20 @@ namespace GGB::Hardware::Video
         TILE_DATA_1 = 0x8000
     };
 
-    class TileData
+    class TileList
     {
         public:
-            TileData(Mmu& mmu);
-
-            Tile getBackgroundTile(const uint8_t number) const;
-            Tile getSpriteTile(const uint8_t number) const;
-            Tile getWindowTile(const uint8_t number) const;
+            TileList(Mmu& mmu);
+            
+            Tile loadBackgroundTile(const uint8_t number) const;
+            Tile loadSpriteTile(const uint8_t number) const;
+            Tile loadWindowTile(const uint8_t number) const;
 
         private:
-            Tile getTile(const TILE_DATA_POSITION start, const int16_t number) const;
+            Tile loadTileFromMem(const TILE_DATA_POSITION start, const int16_t number) const;
 
             Mmu& mmu;  
+            Tile data0Cache[256], data1Cache[256];
     };
 }
 

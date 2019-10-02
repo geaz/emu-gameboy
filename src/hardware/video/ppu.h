@@ -2,7 +2,7 @@
 #ifndef PPU_H
 #define PPU_H
 
-#include "tile_data.h"
+#include "tile_list.h"
 #include "sprite_list.h"
 #include "color_palettes.h"
 #include "background_maps.h"
@@ -46,10 +46,12 @@ namespace GGB
                 void resetBuffers(const bool initial);
 
                 Mmu& mmu;
-                Video::TileData tileData;
+                Video::TileList tileList;
                 Video::SpriteList spriteList;   
                 Video::ColorPalettes colorPalettes;
                 Video::BackgroundMaps backgroundMaps;
+
+                Video::BackgroundMap currentBackgroundMap;
 
                 long cycleCount = 0;
 

@@ -5,7 +5,7 @@ namespace GGB::Hardware
 {
     Ppu::Ppu(Mmu& mmu) : 
         mmu(mmu), 
-        tileData(mmu), 
+        tileList(mmu), 
         spriteList(mmu),
         backgroundMaps(mmu),
         colorPalettes(mmu)
@@ -174,7 +174,7 @@ namespace GGB::Hardware
                 ? (startBackgroundTileX + i) % 32
                 : startBackgroundTileX + i;
             uint8_t currentTileNr = currentBackgroundMap.data[startBackgroundTileY][tileNrX];
-            Video::Tile currentTile = tileData.getBackgroundTile(currentTileNr);
+            Video::Tile currentTile = tileList.loadBackgroundTile(currentTileNr);
             // each tile is 8 pixels wide
             for(int j = 0; j < 8; j++)
             {
@@ -205,7 +205,7 @@ namespace GGB::Hardware
             for(int tileX = 0; tileX < 32; tileX++)
             {
                 uint8_t currentTileNr = currentWindowMap.data[(lcdY - windowY) / 8][tileX];            
-                Video::Tile currentTile = tileData.getWindowTile(currentTileNr);
+                Video::Tile currentTile = tileList.loadWindowTile(currentTileNr);
                 for(int j = 0; j < 8; j++)
                 {
                     // Skip the first pixels, if the window start in the middle of the first tile
@@ -259,8 +259,8 @@ namespace GGB::Hardware
         {
             Video::Sprite currentSprite = visibleSprites[i];
             Video::Tile currentTile = currentSprite.bigSprite && lcdY >= currentSprite.posY - 8
-                ? tileData.getSpriteTile(currentSprite.upperTileNr)
-                : tileData.getSpriteTile(currentSprite.lowerTileNr);    
+                ? tileList.loadSpriteTile(currentSprite.upperTileNr)
+                : tileList.loadSpriteTile(currentSprite.lowerTileNr);    
 
             for(int j = 0; j < 8; j++)
             {                

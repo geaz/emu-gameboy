@@ -9,14 +9,14 @@
 namespace GGB
 {
     /**
-     * The GameboyScreen emulates the display of the Game Boy and is
+     * The GameBoyScreen emulates the display of the Game Boy and is
      * responsible for the update of the CPU by calling the 'cycle' method
      * of the Game Boy.
      **/
-    class GameboyScreen : public OpenGL::Screen
+    class GameBoyScreen : public OpenGL::Screen
     {
         public:
-            GameboyScreen(GameBoy& gameBoy);
+            GameBoyScreen(GameBoy& gameBoy);
 
             void update() override;
             void handleKeys(const int key, const int scancode, const int action, const int mods) override;

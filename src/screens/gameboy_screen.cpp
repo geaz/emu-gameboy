@@ -8,7 +8,7 @@
 
 namespace GGB
 {
-    GameboyScreen::GameboyScreen(GameBoy& gameBoy) : 
+    GameBoyScreen::GameBoyScreen(GameBoy& gameBoy) : 
         gameBoy(gameBoy),
         textureShader("shaders\\texture.vshader", "shaders\\texture.fshader")
     {    
@@ -29,14 +29,14 @@ namespace GGB
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
     }
 
-    void GameboyScreen::update()
+    void GameBoyScreen::update()
     {
         gameBoy.process();
         renderBackground();
         renderSprites();
     }
 
-    void GameboyScreen::handleKeys(const int key, const int scancode, const int action, const int mods) 
+    void GameBoyScreen::handleKeys(const int key, const int scancode, const int action, const int mods) 
     {
         using Enums::JOYPAD;
         if(key == GLFW_KEY_D && action == GLFW_PRESS) GGB::ShowDebugScreen = !GGB::ShowDebugScreen;
@@ -77,7 +77,7 @@ namespace GGB
      * and just renders one rectangle with the background texture. This way
      * we get the best rendering performance.
      **/
-    void GameboyScreen::renderBackground()
+    void GameBoyScreen::renderBackground()
     {   
         // Create a texture array for OpenGL
         GLuint data[144*160];
@@ -108,7 +108,7 @@ namespace GGB
         renderTexture(data);
     }
 
-    void GameboyScreen::renderSprites()
+    void GameBoyScreen::renderSprites()
     {
         // Create a texture array for OpenGL
         GLuint data[144*160];
@@ -141,7 +141,7 @@ namespace GGB
         renderTexture(data);
     }
 
-    void GameboyScreen::renderTexture(GLuint* data)
+    void GameBoyScreen::renderTexture(GLuint* data)
     {
         float vertices[] = {
             // positions          // texture coords

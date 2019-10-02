@@ -14,7 +14,6 @@ namespace GGB::Hardware
         // for the debugging tools and the PPU to read memory during each state
         if(!ppuAccess)
         {
-            Enums::LCD_MODE currentPpuMode = readLcdMode();
             if(currentPpuMode == Enums::LCD_MODE::TRANSFER && address >= 0x8000 && address <= 0x9FFF)
                 return 0xFF;
             else if((currentPpuMode == Enums::LCD_MODE::TRANSFER || currentPpuMode == Enums::LCD_MODE::OAM)
@@ -79,14 +78,14 @@ namespace GGB::Hardware
         }
     }
 
-    bool Mmu::readIORegisterBit(const Enums::IO_REGISTER reg, const uint8_t flag) const 
+    bool Mmu::readIORegisterBit(const Enums::IO_REGISTER reg, const uint8_t flag, const bool ppuAccess) const 
     { 
-        return memory[reg] & flag; 
+        return read(reg, ppuAccess) & flag; 
     }
 
-    uint8_t Mmu::readIORegister(const Enums::IO_REGISTER reg) const 
+    uint8_t Mmu::readIORegister(const Enums::IO_REGISTER reg, const bool ppuAccess) const 
     {
-        return memory[reg]; 
+        return read(reg, ppuAccess); 
     }
 
     void Mmu::writeIORegisterBit(const Enums::IO_REGISTER reg, const uint8_t flag, const bool value) 
@@ -97,9 +96,7 @@ namespace GGB::Hardware
 
     Enums::LCD_MODE Mmu::readLcdMode() const
     {
-        using Enums::IO_REGISTER, Enums::LCD_STATUS_FLAG;
-        uint8_t lcdReg = readIORegister(IO_REGISTER::REG_LCD_STATUS);
-        return (Enums::LCD_MODE)((lcdReg & LCD_STATUS_FLAG::MODE_HIGH) | (lcdReg & LCD_STATUS_FLAG::MODE_LOW));
+        return currentPpuMode;
     }
 
     void Mmu::writeLcdMode(const Enums::LCD_MODE lcdMode)
@@ -107,6 +104,7 @@ namespace GGB::Hardware
         using Enums::IO_REGISTER, Enums::LCD_STATUS_FLAG;
         writeIORegisterBit(IO_REGISTER::REG_LCD_STATUS, LCD_STATUS_FLAG::MODE_HIGH, (lcdMode >> 1) & 0x1);
         writeIORegisterBit(IO_REGISTER::REG_LCD_STATUS, LCD_STATUS_FLAG::MODE_LOW, lcdMode & 0x1);
+        currentPpuMode = lcdMode;
     }
 
     uint32_t Mmu::getSize() const 

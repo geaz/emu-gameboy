@@ -7,7 +7,7 @@ namespace GGB::Hardware::Video
     Tile TileList::loadBackgroundTile(const uint8_t number) const
     {
         // Each tile is 16 bytes long
-        return mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::BG_TILE_DATA_SELECT)
+        return mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::BG_TILE_DATA_SELECT, true)
             ? loadTileFromMem(TILE_DATA_POSITION::TILE_DATA_1, (number * 16))
             : loadTileFromMem(TILE_DATA_POSITION::TILE_DATA_0, ((static_cast<int8_t>(number) + 128) * 16)); 
     }
@@ -28,8 +28,8 @@ namespace GGB::Hardware::Video
         uint16_t memoryStart = (uint16_t)start + number;
         for(int i = 0; i < 8; i++)
         {
-            uint8_t lineData1 = mmu.read(memoryStart + (i * 2));
-            uint8_t lineData2 = mmu.read(memoryStart + (i * 2) + 1);
+            uint8_t lineData1 = mmu.read(memoryStart + (i * 2), true);
+            uint8_t lineData2 = mmu.read(memoryStart + (i * 2) + 1, true);
             for(int j = 7; j >= 0; j--)
             {
                 uint8_t lowBit = (lineData1 >> j) & 0x1; 

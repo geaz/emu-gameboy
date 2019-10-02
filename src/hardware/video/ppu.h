@@ -35,10 +35,10 @@ namespace GGB
                 Enums::GB_SHADE backgroundBuffer[144][160];
 
             private:
-                bool processOam();
-                bool processTransfer();
-                bool processHBlank();
-                bool processVBlank();
+                void processOam();
+                void processTransfer();
+                void processHBlank();
+                void processVBlank();
 
                 void drawBackground();
                 void drawWindow();

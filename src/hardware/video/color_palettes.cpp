@@ -7,19 +7,19 @@ namespace GGB::Hardware::Video
 
     ColorPalette ColorPalettes::getBWPalette()
     {
-        uint8_t colorData = mmu.readIORegister(Enums::IO_REGISTER::REG_BG_PALETTE);
+        uint8_t colorData = mmu.readIORegister(Enums::IO_REGISTER::REG_BG_PALETTE, true);
         return getPalette(colorData, false);
     }
 
     ColorPalette ColorPalettes::getOBP0Palette()
     {
-        uint8_t colorData = mmu.readIORegister(Enums::IO_REGISTER::REG_OB_PALETTE_0);
+        uint8_t colorData = mmu.readIORegister(Enums::IO_REGISTER::REG_OB_PALETTE_0, true);
         return getPalette(colorData, true);
     }
 
     ColorPalette ColorPalettes::getOBP1Palette()
     {
-        uint8_t colorData = mmu.readIORegister(Enums::IO_REGISTER::REG_OB_PALETTE_1);
+        uint8_t colorData = mmu.readIORegister(Enums::IO_REGISTER::REG_OB_PALETTE_1, true);
         return getPalette(colorData, true);
     }
 

@@ -16,14 +16,14 @@ namespace GGB::Hardware::Video
 
     BackgroundMap BackgroundMaps::getMap(Enums::LCD_CONTROL_FLAG controlFlag) const
     {
-        uint16_t startAddress = mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, controlFlag)
+        uint16_t startAddress = mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, controlFlag, true)
             ? MAP_1_START
             : MAP_0_START;
         
         BackgroundMap backgroundMap;
         for(int i = 0; i < 32 * 32; i++)
         {
-            backgroundMap.data[i/32][i%32] = mmu.read(startAddress + i);
+            backgroundMap.data[i/32][i%32] = mmu.read(startAddress + i, true);
         }
         return backgroundMap;
     }

@@ -10,10 +10,11 @@ namespace GGB::Hardware
         using Enums::IO_REGISTER, Enums::INTERRUPT_FLAG, Enums::TIMER_FLAG;
 
         dividerCycleCount += cycles;
-        uint16_t dividerCycles = dividerCycleCount / (CPU_FREQUENCY / DIV_FREQUENCY);
-        dividerCycleCount %= (CPU_FREQUENCY / DIV_FREQUENCY);
-
-        mmu.rawWrite(IO_REGISTER::REG_DIVIDER, (uint8_t) (mmu.read(IO_REGISTER::REG_DIVIDER) + dividerCycles));
+        if(dividerCycleCount > DIV_CYCLES)
+        {
+            mmu.rawWrite(IO_REGISTER::REG_DIVIDER, (uint8_t) (mmu.read(IO_REGISTER::REG_DIVIDER) + 1));
+            dividerCycleCount -= DIV_CYCLES;
+        }
 
         if(mmu.readIORegisterBit(IO_REGISTER::REG_TAC, TIMER_FLAG::TIMER_STOP))
         {

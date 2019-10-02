@@ -17,8 +17,8 @@ namespace GGB::Hardware
             void rawWrite(const uint16_t address, const uint8_t value);
             void executeDmaTransfer(const uint8_t value);
 
-            uint8_t readIORegister(const Enums::IO_REGISTER reg) const;
-            bool readIORegisterBit(const Enums::IO_REGISTER reg, const uint8_t flag) const;
+            uint8_t readIORegister(const Enums::IO_REGISTER reg, const bool ppuAccess = false) const;
+            bool readIORegisterBit(const Enums::IO_REGISTER reg, const uint8_t flag, const bool ppuAccess = false) const;
             void writeIORegisterBit(const Enums::IO_REGISTER reg, const uint8_t flag, const bool value);
 
             Enums::LCD_MODE readLcdMode() const;
@@ -28,6 +28,9 @@ namespace GGB::Hardware
 
         private:
             Cartridge& cartridge;
+            // Because the mode gets rapidly read
+            // we also save it in this variable for faster access
+            Enums::LCD_MODE currentPpuMode = Enums::LCD_MODE::HBLANK;
             // The gameboy is able to address 16bit memory room
             // Thats why the memory is always of size 0x10000 (Highest Adress 0xFFFF)
             // The cartridge gets mapped into 0x0100 - 0x3FFF (larger cartridges use bank switching)

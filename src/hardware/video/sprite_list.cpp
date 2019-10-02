@@ -6,13 +6,13 @@ namespace GGB::Hardware::Video
 
     void SpriteList::loadSprites()
     {    
-        bool bigSprite = mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::OBJ_SIZE);
+        bool bigSprite = mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::OBJ_SIZE, true);
         for(int i = 0; i < TOTAL_SPRITES; i++)
         {
-            uint8_t posY = mmu.read(OAM_MEM_START + (i * 4) + POSITION_Y);
-            uint8_t posX = mmu.read(OAM_MEM_START + (i * 4) + POSITION_X);
-            uint8_t tileNr = mmu.read(OAM_MEM_START + (i * 4) + TILE_NR);
-            uint8_t attributes = mmu.read(OAM_MEM_START + (i * 4) + ATTRIBUTES);
+            uint8_t posY = mmu.read(OAM_MEM_START + (i * 4) + POSITION_Y, true);
+            uint8_t posX = mmu.read(OAM_MEM_START + (i * 4) + POSITION_X, true);
+            uint8_t tileNr = mmu.read(OAM_MEM_START + (i * 4) + TILE_NR, true);
+            uint8_t attributes = mmu.read(OAM_MEM_START + (i * 4) + ATTRIBUTES, true);
             
             Sprite sprite;
             sprite.memAdress = OAM_MEM_START + (i * 4);

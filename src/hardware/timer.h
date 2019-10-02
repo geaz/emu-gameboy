@@ -17,10 +17,11 @@ namespace GGB::Hardware
             uint32_t getTimerFrequency() const;
 
             Mmu& mmu;
+
             uint32_t dividerCycleCount = 0, timerCycleCount = 0;
 
+            const uint16_t DIV_CYCLES = 4194304 / 16384; // CPU FREQUENCE / DIV FREQUENCY
             const uint32_t CPU_FREQUENCY = 4194304;
-            const uint32_t DIV_FREQUENCY = 16384;
     };
 }
 

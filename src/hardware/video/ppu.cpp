@@ -15,51 +15,44 @@ namespace GGB::Hardware
 
     void Ppu::cycle(const uint8_t cycles)
     {
-        if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::ENABLE)) return;
+        if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::ENABLE, true)) return;
 
         cycleCount += cycles;
         Enums::LCD_MODE currentMode = mmu.readLcdMode();
 
-        bool modeProcessed = false;
         switch (currentMode)
         {
             case Enums::LCD_MODE::OAM:
-                modeProcessed = processOam();
+                processOam();
                 break;
             case Enums::LCD_MODE::TRANSFER:
-                modeProcessed = processTransfer();
+                processTransfer();
                 break;
             case Enums::LCD_MODE::HBLANK:
-                modeProcessed = processHBlank();
+                processHBlank();
                 break;
             case Enums::LCD_MODE::VBLANK:
-                modeProcessed = processVBlank();
+                processVBlank();
                 break;
         }
-
-        // Because the CPU maybe processed so many cycles since
-        // the last PPU cycle, we will work as much as we can
-        // with the cycles we got to catch up
-        if(modeProcessed) cycle(0);
     }
 
-    bool Ppu::processOam()
+    void Ppu::processOam()
     {
-        bool modeProcessed = false;
         if(cycleCount >= CYCLES_PER_OAMSEARCH)
         {
             // Check for OAM Interrupt
-            if(mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::OAM_INTERRUPT_ENABLED))
+            if(mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::OAM_INTERRUPT_ENABLED, true))
             {
                 mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_INTERRUPT_FLAG, Enums::INTERRUPT_FLAG::LCD, true);
             }
 
             // Check for LCD Y Compare Interrupt, if it is enabled
-            if(mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::C_INTERRUPT_ENABLED))
+            if(mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::C_INTERRUPT_ENABLED, true))
             {
-                uint8_t lcdy = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y);
-                uint8_t lcdyc = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y_COMPARE);
-                bool isLycEqualMode = mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::COINCIDENCE_MODE);
+                uint8_t lcdy = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true);
+                uint8_t lcdyc = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y_COMPARE, true);
+                bool isLycEqualMode = mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::COINCIDENCE_MODE, true);
                 if(    (isLycEqualMode && lcdy == lcdyc)
                     || (!isLycEqualMode && lcdy != lcdyc))
                 {
@@ -69,30 +62,24 @@ namespace GGB::Hardware
 
             mmu.writeLcdMode(Enums::LCD_MODE::TRANSFER);
             cycleCount -= CYCLES_PER_OAMSEARCH;
-            modeProcessed = true;
         }    
-        return modeProcessed;
     }
 
-    bool Ppu::processTransfer()
+    void Ppu::processTransfer()
     {
-        bool modeProcessed = false;
         if(cycleCount >= CYCLES_PER_TRANSFER)
         {
             mmu.writeLcdMode(Enums::LCD_MODE::HBLANK);
             cycleCount -= CYCLES_PER_TRANSFER;
-            modeProcessed = true;
         }    
-        return modeProcessed;
     }
         
-    bool Ppu::processHBlank()
+    void Ppu::processHBlank()
     {
-        bool modeProcessed = false;
         if(cycleCount >= CYCLES_PER_HBLANK)
         {
             // Check for H-BLANK Interrupt
-            if(mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::H_BLANK_INTERRUPT_ENABLE))
+            if(mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::H_BLANK_INTERRUPT_ENABLE, true))
             {
                 mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_INTERRUPT_FLAG, Enums::INTERRUPT_FLAG::LCD, true);
             }
@@ -102,25 +89,22 @@ namespace GGB::Hardware
             drawSprites();
 
             // Enter V-BLANK on last line 143
-            if(mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y) == 143) mmu.writeLcdMode(Enums::LCD_MODE::VBLANK);
+            if(mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true) == 143) mmu.writeLcdMode(Enums::LCD_MODE::VBLANK);
             // Enter OAM again
             else mmu.writeLcdMode(Enums::LCD_MODE::OAM);    
 
             // Increment Line count and update cycles
-            mmu.rawWrite(Enums::IO_REGISTER::REG_LCD_Y, mmu.read(Enums::IO_REGISTER::REG_LCD_Y) + 1); 
+            mmu.rawWrite(Enums::IO_REGISTER::REG_LCD_Y, mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true) + 1); 
             cycleCount -= CYCLES_PER_HBLANK;  
-            modeProcessed = true;
         }       
-        return modeProcessed; 
     }
         
-    bool Ppu::processVBlank()
+    void Ppu::processVBlank()
     {
-        bool modeProcess = false;
         if(cycleCount >= CYCLES_PER_VBLANK)
         {
             // Set V_BLANK interrupt on V-Blank mode begin (Line 144)
-            if(mmu.read(Enums::IO_REGISTER::REG_LCD_Y) == 144)
+            if(mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true) == 144)
             {
                 mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_INTERRUPT_FLAG, Enums::INTERRUPT_FLAG::V_BLANK, true);
 
@@ -131,27 +115,25 @@ namespace GGB::Hardware
             }
 
             // Reset on last line 153 and Enter OAM
-            if(mmu.read(Enums::IO_REGISTER::REG_LCD_Y) == 153)
+            if(mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true) == 153)
             {
                 mmu.rawWrite(Enums::IO_REGISTER::REG_LCD_Y, 0);
                 mmu.writeLcdMode(Enums::LCD_MODE::OAM);
             }
             // Else increment Y and stay in V-Blank Mode
-            else mmu.rawWrite(Enums::IO_REGISTER::REG_LCD_Y, mmu.read(Enums::IO_REGISTER::REG_LCD_Y) + 1);
+            else mmu.rawWrite(Enums::IO_REGISTER::REG_LCD_Y, mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true) + 1);
 
             cycleCount -= CYCLES_PER_VBLANK; 
-            modeProcess = true;
         }    
-        return modeProcess;
     }
 
     void Ppu::drawBackground()
     {
-        if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::BG_ENABLE)) return;
+        if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::BG_ENABLE, true)) return;
 
-        uint8_t lcdY = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y);
-        uint8_t scrollY = mmu.readIORegister(Enums::IO_REGISTER::REG_SCROLL_Y);
-        uint8_t scrollX = mmu.readIORegister(Enums::IO_REGISTER::REG_SCROLL_X);
+        uint8_t lcdY = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true);
+        uint8_t scrollY = mmu.readIORegister(Enums::IO_REGISTER::REG_SCROLL_Y, true);
+        uint8_t scrollX = mmu.readIORegister(Enums::IO_REGISTER::REG_SCROLL_X, true);
 
         // Wrap the Window around Y
         uint8_t startBackgroundTileY = (scrollY + lcdY) / 8 >= 32
@@ -192,11 +174,11 @@ namespace GGB::Hardware
 
     void Ppu::drawWindow()
     {
-        if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::WINDOW_ENABLE)) return;
+        if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::WINDOW_ENABLE, true)) return;
 
-        uint8_t lcdY = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y);
-        uint8_t windowY = mmu.readIORegister(Enums::IO_REGISTER::REG_WINDOW_Y);
-        uint8_t windowX = mmu.readIORegister(Enums::IO_REGISTER::REG_WINDOW_X) - 7;
+        uint8_t lcdY = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true);
+        uint8_t windowY = mmu.readIORegister(Enums::IO_REGISTER::REG_WINDOW_Y, true);
+        uint8_t windowX = mmu.readIORegister(Enums::IO_REGISTER::REG_WINDOW_X, true) - 7;
 
         if(lcdY >= windowY)
         {
@@ -227,7 +209,7 @@ namespace GGB::Hardware
 
     void Ppu::drawSprites()
     {
-        if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::OBJ_ENABLE)) return;
+        if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::OBJ_ENABLE, true)) return;
 
         obj0Palette = colorPalettes.getOBP0Palette();
         obj1Palette = colorPalettes.getOBP1Palette();
@@ -235,7 +217,7 @@ namespace GGB::Hardware
         Video::Sprite visibleSprites[Video::TOTAL_SPRITES];
         spriteList.loadSprites();
 
-        uint8_t lcdY = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y);
+        uint8_t lcdY = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true);
         int vCounter = 0;
         for(int i = 0; i < Video::TOTAL_SPRITES; i++)
         {

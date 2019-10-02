@@ -55,10 +55,10 @@ namespace GGB
 
                 long cycleCount = 0;
 
-                const uint16_t CYCLES_PER_HBLANK = 207;   // Mode 0 (H-Blank) 207 cycles
-                const uint16_t CYCLES_PER_VBLANK = 4560;  // Mode 1 (V-Blank) 4560 cycles
-                const uint16_t CYCLES_PER_OAMSEARCH = 83; // Mode 2 (OAM Search) 83 cycles
-                const uint16_t CYCLES_PER_TRANSFER = 175; // Mode 3 (Transfer LCD) 175 cycles
+                const uint16_t CYCLES_PER_HBLANK = 204;     // Mode 0 (H-Blank) 204 cycles per Scanline
+                const uint16_t CYCLES_PER_VBLANK = 456;     // Mode 1 (V-Blank) 4560 cycles per Frame 4560/10 times per Frame
+                const uint16_t CYCLES_PER_OAMSEARCH = 80;   // Mode 2 (OAM Search) 80 cycles per Scanline
+                const uint16_t CYCLES_PER_TRANSFER = 173;   // Mode 3 (Transfer LCD) 173 cycles per Scanline
         };
     }
 }

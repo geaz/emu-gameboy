@@ -1,18 +1,30 @@
 # GGB - A Game Boy emulator written in C++ (WIP)
 
-The aim of this project was to create a cycle accurate emulator which is capable to do emulation in **interpreter mode** and in **jit mode**.
+## Compatibility / Aims
 
-## Compatibility
+*It is not intended to provide a full compatibility for all available cartridges.*
+*Or to implement every single quirk of the Game Boy Hardware.*
 
-It is not intended to provide a full compatibility for all available cartridges.
-This is a programming experience project and it does not aim to be a daily use emulator to play with. 
+This is a *programming experience project* and it does not aim to be a daily use emulator to play with. 
 Use other great emulators for this purpose. For example:
 - [Gambatte](https://github.com/sinamas/gambatte)
+- [Sameboy](https://sameboy.github.io/)
+- [BGB](http://bgb.bircd.org/)
 - [Visualboy Advance](https://github.com/visualboyadvance-m/visualboyadvance-m)
 
-This said, I tried to implement this emulator as accurate as possible.
+Primary aims were:
+    - get a common understanding of emulation and the interaction of the components
+    - create a **interpreter mode** CPU and a **JIT mode** CPU, to learn about JIT
 
-![cpu_instrs](pics/blargg-cpu_instrs.png)
+Further more I wanted to get the CPU right, without to overcomplicate the code to much, to get it as accuarate as possible.
+Thats why this emulator uses a rather simple cycle count method to keep the components in sync.
+There are more accurate methods like described [here](https://gekkio.fi/blog/2015/mooneye-gb-a-gameboy-emulator-written-in-rust/).
+
+| Blargg CPU Test   |      Tetris      |  Tennis |
+|-------------------|------------------|---------|
+| ![cpu_instrs](pics/blargg-cpu_instrs.png) |  ![cpu_instrs](pics/Tetris.gif) | ![cpu_instrs](pics/Tennis.gif) |
+
+
 
 ## Opcode Generator
 

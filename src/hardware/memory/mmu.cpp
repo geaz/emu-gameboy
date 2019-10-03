@@ -33,6 +33,14 @@ namespace GGB::Hardware
 
     void Mmu::write(const uint16_t address, const uint8_t value) 
     {
+        // VRAM Access through the PPU. CPU is not allowed to access it directly.
+        // PPU Mode has to be checked, weather the CPU is currently allowed to write.
+        // Any attempt to write during the forbidden modes will keep the memory unchanged.
+        // PPU components are using the rawWrite method to overwrite this behaviour.
+        if(currentPpuMode == Enums::LCD_MODE::TRANSFER && address >= 0x8000 && address <= 0x9FFF) return;
+        else if((currentPpuMode == Enums::LCD_MODE::TRANSFER || currentPpuMode == Enums::LCD_MODE::OAM)
+                && address >= 0xFE00 && address <= 0xFE9F) return;   
+
         using Enums::IO_REGISTER;
         // If writing to LDCY I/O register, reset it
         if(address == IO_REGISTER::REG_LCD_Y) memory[address] = 0;
@@ -65,6 +73,8 @@ namespace GGB::Hardware
 
     void Mmu::executeDmaTransfer(const uint8_t value)
     {
+        // DMA has a higher priority than PPU modes
+        // Thats why we do rawWrites/rawReads here.
         memory[Enums::IO_REGISTER::REG_DMA] = value;
         uint16_t startAddress = value << 8;
 
@@ -73,8 +83,8 @@ namespace GGB::Hardware
             uint16_t copyFrom = startAddress + i;
             uint16_t copyTo = 0xFE00 + i;
 
-            uint8_t copyValue = read(copyFrom);
-            write(copyTo, copyValue);
+            uint8_t copyValue = read(copyFrom, true);
+            rawWrite(copyTo, copyValue);
         }
     }
 

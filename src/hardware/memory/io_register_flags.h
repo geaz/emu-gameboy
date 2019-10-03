@@ -89,7 +89,7 @@ namespace GGB::Enums
         OAM_INTERRUPT_ENABLED = 32,     // Bit 5 - Mode 2 OAM Interrupt         (1=Enable) (Read/Write)
         V_BLANK_INTERRUPT_ENABLED = 16, // Bit 4 - Mode 1 V-Blank Interrupt     (1=Enable) (Read/Write)
         H_BLANK_INTERRUPT_ENABLE = 8,   // Bit 3 - Mode 0 H-Blank Interrupt     (1=Enable) (Read/Write)
-        COINCIDENCE_MODE = 4,           // Bit 2 - Coincidence Flag  (0:LYC<>LY, 1:LYC=LY) (Read Only)
+        COINCIDENCE_FLAG = 4,           // Bit 2 - Coincidence Flag  (0:LYC<>LY, 1:LYC=LY) (Read Only)
         MODE_HIGH = 2,                  //Bit 1-0 - Mode Flag       (Mode 0-3, see below) (Read Only)
         MODE_LOW = 1                    //        00: During H-Blank
                                             //        01: During V-Blank

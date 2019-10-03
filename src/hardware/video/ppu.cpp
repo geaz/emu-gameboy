@@ -266,9 +266,10 @@ namespace GGB::Hardware
 
                 // If the sprite has bgPrio and the background color is not WHITE, skip rendering of pixel
                 // also skip it, if it is a transparent pixel (pixelData = 0) - this way we don't override previous rendered priority sprites
-                if(!(currentSprite.bgPrio && backgroundBuffer[lcdY][(currentSprite.posX - 8) + j] != Enums::GB_SHADE::WHITE) 
-                && color != Enums::GB_SHADE::TRANSPARENT && (currentSprite.posX - 8) + j < 160)
-                    spriteBuffer[lcdY][(currentSprite.posX - 8) + j] = color;                  
+                int16_t backgroundXCord = (currentSprite.posX - 8) + j;
+                if(!(currentSprite.bgPrio && backgroundBuffer[lcdY][backgroundXCord] != Enums::GB_SHADE::WHITE) 
+                && color != Enums::GB_SHADE::TRANSPARENT && backgroundXCord < 160 && backgroundXCord >= 0)
+                    spriteBuffer[lcdY][backgroundXCord] = color;                  
             }
         }   
     }

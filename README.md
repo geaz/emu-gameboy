@@ -13,8 +13,8 @@ Use other great emulators for this purpose. For example:
 - [Visualboy Advance](https://github.com/visualboyadvance-m/visualboyadvance-m)
 
 Primary aims were:
-    - get a common understanding of emulation and the interaction of the components
-    - create a **interpreter mode** CPU and a **JIT mode** CPU, to learn about JIT
+- get a common understanding of emulation and the interaction of the components
+- create a **interpreter mode** CPU and a **JIT mode** CPU, to learn about JIT
 
 Further more I wanted to get the CPU right, without to overcomplicate the code to much, to get it as accuarate as possible.
 Thats why this emulator uses a rather simple cycle count method to keep the components in sync.

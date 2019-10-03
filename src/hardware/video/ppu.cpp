@@ -47,17 +47,21 @@ namespace GGB::Hardware
                 mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_INTERRUPT_FLAG, Enums::INTERRUPT_FLAG::LCD, true);
             }
 
-            // Check for LCD Y Compare Interrupt, if it is enabled
-            if(mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::C_INTERRUPT_ENABLED, true))
+            // Check for LCD Y Compare
+            uint8_t lcdy = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true);
+            uint8_t lcdyc = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y_COMPARE, true);
+            if(lcdy == lcdyc)
             {
-                uint8_t lcdy = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true);
-                uint8_t lcdyc = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y_COMPARE, true);
-                bool isLycEqualMode = mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::COINCIDENCE_MODE, true);
-                if(    (isLycEqualMode && lcdy == lcdyc)
-                    || (!isLycEqualMode && lcdy != lcdyc))
+                mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::COINCIDENCE_FLAG, true); 
+                // Interrupt, if it is enabled
+                if(mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::C_INTERRUPT_ENABLED, true))
                 {
                     mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_INTERRUPT_FLAG, Enums::INTERRUPT_FLAG::LCD, true);
-                }                
+                }
+            }  
+            else
+            {                
+                mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::COINCIDENCE_FLAG, false);
             }
 
             mmu.writeLcdMode(Enums::LCD_MODE::TRANSFER);

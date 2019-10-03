@@ -1,20 +1,26 @@
-#include <chrono>
 #include "clock.h"
 
-Clock::Clock(uint32_t frequency) : frequency(frequency) { }
-
-uint32_t Clock::getCatchUpCycles() 
+namespace GGB::Hardware
 {
-    if(lastCycle == -1) lastCycle = getNowMs();
-    uint64_t nowMs = getNowMs();
-    uint32_t cycles = (uint32_t) (nowMs - lastCycle) * frequency / 1000;
-    
-    lastCycle = nowMs;
-    return cycles;
-}
+    Clock::Clock()
+    {   
+        startPoint = std::chrono::high_resolution_clock::now();     
+    }
 
-uint64_t Clock::getNowMs()
-{
-    auto now = std::chrono::system_clock::now();
-    return std::chrono::time_point_cast<std::chrono::milliseconds>(now).time_since_epoch().count();
+    void Clock::start()
+    {
+        startPoint = std::chrono::high_resolution_clock::now(); 
+        started = true;
+    }
+
+    bool Clock::shouldSleep()
+    {
+        started = false;    
+        auto now = std::chrono::high_resolution_clock::now();
+        auto chronoOne = std::chrono::nanoseconds(ONE_FRAME_DURATION_NSEC);
+        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(now - startPoint);    
+        auto shouldSleep = std::chrono::duration_cast<std::chrono::nanoseconds>(chronoOne - elapsed);
+
+        return shouldSleep.count() > 0;
+    }
 }

@@ -9,29 +9,39 @@ namespace GGB::Hardware
     {    
         using Enums::IO_REGISTER, Enums::INTERRUPT_FLAG, Enums::TIMER_FLAG;
 
+        uint8_t regDivider = mmu.read(IO_REGISTER::REG_DIVIDER);
+
         dividerCycleCount += cycles;
-        if(dividerCycleCount > DIV_CYCLES)
+        if(dividerCycleCount >= DIV_CYCLES)
         {
-            mmu.rawWrite(IO_REGISTER::REG_DIVIDER, (uint8_t) (mmu.read(IO_REGISTER::REG_DIVIDER) + 1));
+            mmu.rawWrite(IO_REGISTER::REG_DIVIDER, (uint8_t) (regDivider + 1));
             dividerCycleCount -= DIV_CYCLES;
         }
 
-        if(mmu.readIORegisterBit(IO_REGISTER::REG_TAC, TIMER_FLAG::TIMER_STOP))
+        if(mmu.readIORegisterBit(IO_REGISTER::REG_TAC, TIMER_FLAG::TIMER_START))
         {
             timerCycleCount += cycles;
-            uint32_t timerCycles = timerCycleCount / (CPU_FREQUENCY / getTimerFrequency());
-            timerCycleCount %= (CPU_FREQUENCY / getTimerFrequency());
-
-            uint32_t timerValue = mmu.readIORegister(IO_REGISTER::REG_TIMA) + timerCycles;
-            if(timerValue > 0xFF) 
+            uint32_t currentCyclesPerTick = CPU_FREQUENCY / getTimerFrequency();
+            if(timerCycleCount >= currentCyclesPerTick)
             {
-                mmu.write(IO_REGISTER::REG_TIMA, mmu.readIORegister(IO_REGISTER::REG_TMA));
-                mmu.writeIORegisterBit(IO_REGISTER::REG_INTERRUPT_FLAG, INTERRUPT_FLAG::TIMER, true);
-            }
-            else
-            {
-                mmu.write(IO_REGISTER::REG_TIMA, timerValue);
-            }   
+                uint32_t timerValue = mmu.readIORegister(IO_REGISTER::REG_TIMA) + 1;
+                // Reset if, DIV got a reset
+                if(oldRegDivider != 0xFF && regDivider == 0x00)
+                {
+                    mmu.write(IO_REGISTER::REG_TIMA, 0);
+                }
+                else if(timerValue > 0xFF) 
+                {
+                    mmu.write(IO_REGISTER::REG_TIMA, mmu.readIORegister(IO_REGISTER::REG_TMA));
+                    mmu.writeIORegisterBit(IO_REGISTER::REG_INTERRUPT_FLAG, INTERRUPT_FLAG::TIMER, true);
+                }
+                else
+                {
+                    mmu.write(IO_REGISTER::REG_TIMA, timerValue);
+                }   
+                timerCycleCount -= currentCyclesPerTick;
+            }                 
+            oldRegDivider = regDivider;       
         }        
     }
 

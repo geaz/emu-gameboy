@@ -52,7 +52,7 @@ namespace GGB::Enums
 
     enum TIMER_FLAG
     {
-        TIMER_STOP = 4,         // Bit 2 - Timer Stop
+        TIMER_START = 4,        // Bit 2 - Timer Stop
                                 //      0: Stop Timer
                                 //      1: Start Timer
         CLOCK_SELECT_HIGH = 2,  // Bits 1+0 - Input Clock Select 

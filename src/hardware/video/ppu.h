@@ -14,6 +14,7 @@ namespace GGB
     {
         const uint8_t GAMEBOY_LCD_WIDTH = 160;
         const uint8_t GAMEBOY_LCD_HEIGHT = 144;
+        const uint32_t FRAME_CYCLES = 70368;
     }
 
     namespace Hardware 

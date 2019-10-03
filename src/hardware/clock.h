@@ -2,21 +2,31 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
- #include <cstdint>
+#include <cstdint>
+#include <chrono>
+#include "cpu.h"
+#include "video/ppu.h"
 
-class Clock
+namespace GGB::Hardware
 {
-    public:
-        Clock(uint32_t frequency);
+    class Clock
+    {
+        public:
+            Clock();
 
-        uint32_t getCatchUpCycles();
+            void start();
+            bool shouldSleep();
 
-        uint32_t frequency;
+            bool started = false;
 
-    private:
-        uint64_t getNowMs();
+        private:         
+            std::chrono::time_point<std::chrono::high_resolution_clock> startPoint;
 
-        uint64_t lastCycle = -1;
-};
+            // We take the VBlank to syncronize the clock
+            // The gameboy refreshes the screen ~60 times per seconds (CPU_CYCLES/FRAME_CYCLES)
+            // One Frame takes ~16.775.709‬ nano seconds
+            const int64_t ONE_FRAME_DURATION_NSEC = 1000000000 / (GGB::Constants::CPU_CYCLES / GGB::Constants::FRAME_CYCLES);
+    };
+}
 
 #endif

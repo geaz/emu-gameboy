@@ -19,6 +19,7 @@ namespace GGB::Hardware
             Mmu& mmu;
 
             uint32_t dividerCycleCount = 0, timerCycleCount = 0;
+            uint16_t oldRegDivider;
 
             const uint16_t DIV_CYCLES = 4194304 / 16384; // CPU FREQUENCE / DIV FREQUENCY
             const uint32_t CPU_FREQUENCY = 4194304;

@@ -2,13 +2,17 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include "clock.h"
 #include "memory/register.h"
 #include "memory/mmu.h"
 #include "../instructions/instruction_set.h"
 
 namespace GGB
 {
+    namespace Constants
+    {
+        const uint32_t CPU_CYCLES = 4194304;
+    }
+
     namespace Enums
     {
         enum class CPU_STATE { STEP, PAUSED, RUNNING, INTERRUPT, ERROR };
@@ -52,7 +56,6 @@ namespace GGB
                 Instructions::ParsedInstruction currentInstruction;
 
                 Mmu& mmu;
-                Clock clock = Clock(4194304); // Hz
                 bool interruptMasterFlag = false, halted = false;
 
             private:

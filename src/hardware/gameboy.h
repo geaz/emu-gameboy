@@ -5,6 +5,7 @@
 #include "cpu.h"
 #include "timer.h"
 #include "input.h"
+#include "clock.h"
 #include "cartridge.h"
 #include "video/ppu.h"
 #include "memory/mmu.h"
@@ -24,6 +25,7 @@ namespace GGB
             Hardware::Ppu ppu;
             Hardware::Input input;
             Hardware::Timer timer;
+            Hardware::Clock clock;
     };
 }
 

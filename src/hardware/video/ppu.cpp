@@ -177,8 +177,8 @@ namespace GGB::Hardware
         if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::WINDOW_ENABLE, true)) return;
 
         uint8_t lcdY = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true);
-        uint8_t windowY = mmu.readIORegister(Enums::IO_REGISTER::REG_WINDOW_Y, true);
-        uint8_t windowX = mmu.readIORegister(Enums::IO_REGISTER::REG_WINDOW_X, true) - 7;
+        int16_t windowY = mmu.readIORegister(Enums::IO_REGISTER::REG_WINDOW_Y, true);
+        int16_t windowX = mmu.readIORegister(Enums::IO_REGISTER::REG_WINDOW_X, true) - 7;
 
         if(lcdY >= windowY)
         {

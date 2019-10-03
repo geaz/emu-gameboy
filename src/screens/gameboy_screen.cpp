@@ -59,7 +59,7 @@ namespace GGB
                 case GLFW_KEY_X:
                     gameBoy.input.toggleButton(JOYPAD::A, action == GLFW_PRESS);
                     break;
-                case GLFW_KEY_Y:
+                case GLFW_KEY_Z:
                     gameBoy.input.toggleButton(JOYPAD::B, action == GLFW_PRESS);
                     break;
                 case GLFW_KEY_ENTER:

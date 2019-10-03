@@ -19,17 +19,11 @@ namespace GGB::Hardware::Video
             sprite.posY = posY;
             sprite.posX = posX;
             sprite.bigSprite = bigSprite;
+            sprite.tileNr = bigSprite ? tileNr & 0xFE : tileNr;
             sprite.flipX = attributes & FLIP_X;
             sprite.flipY = attributes & FLIP_Y;
             sprite.bgPrio = attributes & OBJ_BG_PRIO;
             sprite.palette1Selected = attributes & PALETTE_NR;
-
-            if(bigSprite)
-            {
-                sprite.upperTileNr = ((tileNr & 0xFF00) >> 4) & 0xFE;
-                sprite.upperTileNr = ((tileNr & 0xFF00) >> 4) | 0x01;
-            }
-            else sprite.lowerTileNr = tileNr;
 
             data[i] = sprite;
         }

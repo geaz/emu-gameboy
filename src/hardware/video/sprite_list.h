@@ -11,8 +11,7 @@ namespace GGB::Hardware::Video
         uint16_t memAdress;
         uint8_t posY; 
         uint8_t posX; 
-        uint8_t upperTileNr; 
-        uint8_t lowerTileNr; 
+        uint8_t tileNr; 
         bool palette1Selected; 
         bool flipX; 
         bool flipY; 

@@ -8,6 +8,7 @@
 namespace GGB::Hardware::Video
 {
     struct Tile {
+        uint8_t nr;
         uint8_t data[8][8];
     };
 
@@ -22,12 +23,12 @@ namespace GGB::Hardware::Video
         public:
             TileList(Mmu& mmu);
             
-            Tile loadBackgroundTile(const uint8_t number) const;
-            Tile loadSpriteTile(const uint8_t number) const;
-            Tile loadWindowTile(const uint8_t number) const;
+            Tile loadBackgroundTile(const uint8_t tileNr) const;
+            Tile loadSpriteTile(const uint8_t tileNr) const;
+            Tile loadWindowTile(const uint8_t tileNr) const;
 
         private:
-            Tile loadTileFromMem(const TILE_DATA_POSITION start, const int16_t number) const;
+            Tile loadTileFromMem(const TILE_DATA_POSITION start, const uint8_t tileNr, const int16_t tileMemStart) const;
 
             Mmu& mmu;  
             Tile data0Cache[256], data1Cache[256];

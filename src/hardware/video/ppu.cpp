@@ -211,14 +211,14 @@ namespace GGB::Hardware
     {
         if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::OBJ_ENABLE, true)) return;
 
+        spriteList.loadSprites();
         obj0Palette = colorPalettes.getOBP0Palette();
         obj1Palette = colorPalettes.getOBP1Palette();
 
-        Video::Sprite visibleSprites[Video::TOTAL_SPRITES];
-        spriteList.loadSprites();
-
         uint8_t lcdY = mmu.readIORegister(Enums::IO_REGISTER::REG_LCD_Y, true);
+
         int vCounter = 0;
+        Video::Sprite visibleSprites[Video::TOTAL_SPRITES];
         for(int i = 0; i < Video::TOTAL_SPRITES; i++)
         {
             Video::Sprite currentSprite = spriteList.data[i];
@@ -226,8 +226,8 @@ namespace GGB::Hardware
             // Pos Y : Specifies the sprites vertical position on the screen (minus 16).
             // An offscreen value (for example, Y=0 or Y>=160) hides the sprite.
             if(lcdY >= currentSprite.posY - 16 
-                && (  (currentSprite.bigSprite && lcdY <= currentSprite.posY)
-                || (!currentSprite.bigSprite && lcdY <= currentSprite.posY - 8)))
+                && (  (currentSprite.bigSprite && lcdY < currentSprite.posY)
+                || (!currentSprite.bigSprite && lcdY < currentSprite.posY - 8)))
             {
                 visibleSprites[vCounter] = currentSprite;
                 vCounter ++;
@@ -241,20 +241,24 @@ namespace GGB::Hardware
         {
             Video::Sprite currentSprite = visibleSprites[i];
             Video::Tile currentTile = currentSprite.bigSprite && lcdY >= currentSprite.posY - 8
-                ? tileList.loadSpriteTile(currentSprite.upperTileNr)
-                : tileList.loadSpriteTile(currentSprite.lowerTileNr);    
+                ? tileList.loadSpriteTile(currentSprite.tileNr + 1)
+                : tileList.loadSpriteTile(currentSprite.tileNr);    
 
             for(int j = 0; j < 8; j++)
             {                
+                // If the numbers are not equal we loaded the 
+                // second tile of the  8x16 sprite.
+                uint8_t yCorrection = currentSprite.tileNr == currentTile.nr ? 16 : 8; 
+
                 uint8_t xCord = currentSprite.flipX ? (7 - j) : j;
                 uint8_t yCord = currentSprite.flipY 
-                    ? abs(lcdY - (currentSprite.posY - 16 + 8))
-                    : lcdY - (currentSprite.posY - 16);
+                    ? abs(lcdY - (currentSprite.posY - yCorrection + 8))
+                    : lcdY - (currentSprite.posY - yCorrection);
                 
                 uint8_t pixelData = currentTile.data[yCord][xCord];
                 Enums::GB_SHADE color = currentSprite.palette1Selected
-                    ? obj0Palette.colors[pixelData]
-                    : obj1Palette.colors[pixelData];      
+                    ? obj1Palette.colors[pixelData]
+                    : obj0Palette.colors[pixelData];      
 
                 // If the sprite has bgPrio and the background color is not WHITE, skip rendering of pixel
                 // also skip it, if it is a transparent pixel (pixelData = 0) - this way we don't override previous rendered priority sprites

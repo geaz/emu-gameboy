@@ -1,13 +1,12 @@
 #include <stdexcept>
 #include <cstring>
 #include "mmu.h"
+#include "../video/tile_list.h"
 
 namespace GGB::Hardware
 {
     Mmu::Mmu(Cartridge& cartridge) : cartridge(cartridge) 
-    { 
-        memset(memory, 0, sizeof(uint8_t) * Constants::MEM_SIZE);
-    }
+    { }
 
     uint8_t Mmu::read(const uint16_t address, const bool ppuAccess) const 
     {     

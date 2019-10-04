@@ -24,7 +24,7 @@ Primary aims were:
 - get a common understanding of emulation and the interaction of the components
 - create a **interpreter mode** CPU and a **JIT mode** CPU, to learn about JIT
 
-Further more I wanted to get the CPU to do its work correctly. But I did not want to get it as accurate as possible.
+Further more I wanted to get the CPU to do its work correctly, but I did not want to get it as accurate as possible.
 Thats why this emulator uses a rather simple cycle count method to keep the components in sync (Components syned after each instruction).
 Which should be enough for most cases. There are more accurate methods like described [here](https://gekkio.fi/blog/2015/mooneye-gb-a-gameboy-emulator-written-in-rust/). 
 

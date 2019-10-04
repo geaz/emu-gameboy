@@ -614,7 +614,7 @@ namespace GGB::Hardware::Instructions
         // Mnemonic: SUB d8, Length: 2
         // Cycles: 8, (Z N H C): Z 1 H C
         Sub::SubToRegister(cpu, cpu->a, cpu->currentInstruction.parsedBytes.low);
-        return 4;
+        return 8;
     }
 
     /************** Sbc *******************/

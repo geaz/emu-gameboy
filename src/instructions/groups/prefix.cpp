@@ -545,7 +545,7 @@ namespace GGB::Hardware::Instructions
         cpu->setFlag(CPU_FLAG::C_CARRY, false);
 
         cpu->mmu.write(cpu->hl.read(), swapped);
-        return 8;
+        return 16;
     }
 
     uint8_t Swap::Swap37(Cpu* cpu)
@@ -692,9 +692,9 @@ namespace GGB::Hardware::Instructions
     uint8_t Bit::Bit46(Cpu* cpu)
     {
         // Mnemonic: BIT 0,(HL), Length: 2
-        // Cycles: 16, (Z N H C): Z 0 1 -
+        // Cycles: 12, (Z N H C): Z 0 1 -
         Bit::BitCheckAndSetFlags(cpu, 0, cpu->mmu.read(cpu->hl.read()));
-        return 16;
+        return 12;
     }
 
     uint8_t Bit::Bit47(Cpu* cpu)
@@ -756,9 +756,9 @@ namespace GGB::Hardware::Instructions
     uint8_t Bit::Bit4E(Cpu* cpu)
     {
         // Mnemonic: BIT 1,(HL), Length: 2
-        // Cycles: 16, (Z N H C): Z 0 1 -
+        // Cycles: 12, (Z N H C): Z 0 1 -
         Bit::BitCheckAndSetFlags(cpu, 1, cpu->mmu.read(cpu->hl.read()));
-        return 16;
+        return 12;
     }
 
     uint8_t Bit::Bit4F(Cpu* cpu)
@@ -820,9 +820,9 @@ namespace GGB::Hardware::Instructions
     uint8_t Bit::Bit56(Cpu* cpu)
     {
         // Mnemonic: BIT 2,(HL), Length: 2
-        // Cycles: 16, (Z N H C): Z 0 1 -
+        // Cycles: 12, (Z N H C): Z 0 1 -
         Bit::BitCheckAndSetFlags(cpu, 2, cpu->mmu.read(cpu->hl.read()));
-        return 16;
+        return 12;
     }
 
     uint8_t Bit::Bit57(Cpu* cpu)
@@ -884,9 +884,9 @@ namespace GGB::Hardware::Instructions
     uint8_t Bit::Bit5E(Cpu* cpu)
     {
         // Mnemonic: BIT 3,(HL), Length: 2
-        // Cycles: 16, (Z N H C): Z 0 1 -
+        // Cycles: 12, (Z N H C): Z 0 1 -
         Bit::BitCheckAndSetFlags(cpu, 3, cpu->mmu.read(cpu->hl.read()));
-        return 16;
+        return 12;
     }
 
     uint8_t Bit::Bit5F(Cpu* cpu)
@@ -948,9 +948,9 @@ namespace GGB::Hardware::Instructions
     uint8_t Bit::Bit66(Cpu* cpu)
     {
         // Mnemonic: BIT 4,(HL), Length: 2
-        // Cycles: 16, (Z N H C): Z 0 1 -
+        // Cycles: 12, (Z N H C): Z 0 1 -
         Bit::BitCheckAndSetFlags(cpu, 4, cpu->mmu.read(cpu->hl.read()));
-        return 8;
+        return 12;
     }
 
     uint8_t Bit::Bit67(Cpu* cpu)
@@ -1012,9 +1012,9 @@ namespace GGB::Hardware::Instructions
     uint8_t Bit::Bit6E(Cpu* cpu)
     {
         // Mnemonic: BIT 5,(HL), Length: 2
-        // Cycles: 16, (Z N H C): Z 0 1 -
+        // Cycles: 12, (Z N H C): Z 0 1 -
         Bit::BitCheckAndSetFlags(cpu, 5, cpu->mmu.read(cpu->hl.read()));
-        return 8;
+        return 12;
     }
 
     uint8_t Bit::Bit6F(Cpu* cpu)
@@ -1076,9 +1076,9 @@ namespace GGB::Hardware::Instructions
     uint8_t Bit::Bit76(Cpu* cpu)
     {
         // Mnemonic: BIT 6,(HL), Length: 2
-        // Cycles: 16, (Z N H C): Z 0 1 -
+        // Cycles: 12, (Z N H C): Z 0 1 -
         Bit::BitCheckAndSetFlags(cpu, 6, cpu->mmu.read(cpu->hl.read()));
-        return 16;
+        return 12;
     }
 
     uint8_t Bit::Bit77(Cpu* cpu)
@@ -1140,9 +1140,9 @@ namespace GGB::Hardware::Instructions
     uint8_t Bit::Bit7E(Cpu* cpu)
     {
         // Mnemonic: BIT 7,(HL), Length: 2
-        // Cycles: 16, (Z N H C): Z 0 1 -
+        // Cycles: 12, (Z N H C): Z 0 1 -
         Bit::BitCheckAndSetFlags(cpu, 7, cpu->mmu.read(cpu->hl.read()));
-        return 16;
+        return 12;
     }
 
     uint8_t Bit::Bit7F(Cpu* cpu)

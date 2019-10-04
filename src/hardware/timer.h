@@ -14,15 +14,13 @@ namespace GGB::Hardware
             void cycle(uint8_t cycles);
 
         private:
+            void handleTima(uint8_t cycles, uint16_t internalClock);
             uint32_t getTimerFrequency() const;
+            void handleOverflow();
 
             Mmu& mmu;
-
-            uint32_t dividerCycleCount = 0, timerCycleCount = 0;
-            uint16_t oldRegDivider;
-
-            const uint16_t DIV_CYCLES = 4194304 / 16384; // CPU FREQUENCE / DIV FREQUENCY
-            const uint32_t CPU_FREQUENCY = 4194304;
+            uint32_t oldFrequency = 1024;
+            bool pendingOverflow = false;
     };
 }
 

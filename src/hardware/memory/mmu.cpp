@@ -4,7 +4,10 @@
 
 namespace GGB::Hardware
 {
-    Mmu::Mmu(Cartridge& cartridge) : cartridge(cartridge) { }
+    Mmu::Mmu(Cartridge& cartridge) : cartridge(cartridge) 
+    { 
+        memset(memory, 0, sizeof(uint8_t) * Constants::MEM_SIZE);
+    }
 
     uint8_t Mmu::read(const uint16_t address, const bool ppuAccess) const 
     {     
@@ -44,8 +47,12 @@ namespace GGB::Hardware
         using Enums::IO_REGISTER;
         // If writing to LDCY I/O register, reset it
         if(address == IO_REGISTER::REG_LCD_Y) memory[address] = 0;
-        // If writing to the Timer Divider, reset it
-        else if(address == IO_REGISTER::REG_DIVIDER) memory[address] = 0;
+        // If writing to the Timer Divider, it also reset the internal clock!
+        else if(address == IO_REGISTER::REG_DIVIDER) 
+        {
+            memory[IO_REGISTER::REG_INTERNAL_CLOCK_LOW] = 0;
+            memory[address] = 0;
+        }
         // If written to DMA start a DMA transfer to OAM
         else if(address == IO_REGISTER::REG_DMA) executeDmaTransfer(value);    
         // If writing to the pad register for setting bit 4 & 5
@@ -115,10 +122,5 @@ namespace GGB::Hardware
         writeIORegisterBit(IO_REGISTER::REG_LCD_STATUS, LCD_STATUS_FLAG::MODE_HIGH, (lcdMode >> 1) & 0x1);
         writeIORegisterBit(IO_REGISTER::REG_LCD_STATUS, LCD_STATUS_FLAG::MODE_LOW, lcdMode & 0x1);
         currentPpuMode = lcdMode;
-    }
-
-    uint32_t Mmu::getSize() const 
-    { 
-        return memorySize; 
     }
 }

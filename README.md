@@ -1,6 +1,6 @@
 # GGB - A Game Boy emulator written in C++ (WIP)
 
-## Compatibility / Aims
+## Compatibility
 
 *It is not intended to provide a full compatibility for all available cartridges.*
 *Or to implement every single quirk of the Game Boy Hardware.*
@@ -12,19 +12,37 @@ Use other great emulators for this purpose. For example:
 - [BGB](http://bgb.bircd.org/)
 - [Visualboy Advance](https://github.com/visualboyadvance-m/visualboyadvance-m)
 
+## Screenshots
+
+| Blargg CPU Test   |      Tetris      |  Tennis |
+|-------------------|------------------|---------|
+| ![cpu_instrs](pics/blargg-cpu_instrs.png) |  ![cpu_instrs](pics/Tetris.gif) | ![cpu_instrs](pics/Tennis.gif) |
+
+## Aims
+
 Primary aims were:
 - get a common understanding of emulation and the interaction of the components
 - create a **interpreter mode** CPU and a **JIT mode** CPU, to learn about JIT
 
 Further more I wanted to get the CPU to do its work correctly. But I did not want to get it as accurate as possible.
 Thats why this emulator uses a rather simple cycle count method to keep the components in sync (Components syned after each instruction).
-Which should be enough for most cases. There are more accurate methods like described [here](https://gekkio.fi/blog/2015/mooneye-gb-a-gameboy-emulator-written-in-rust/).
+Which should be enough for most cases. There are more accurate methods like described [here](https://gekkio.fi/blog/2015/mooneye-gb-a-gameboy-emulator-written-in-rust/). 
 
-| Blargg CPU Test   |      Tetris      |  Tennis |
-|-------------------|------------------|---------|
-| ![cpu_instrs](pics/blargg-cpu_instrs.png) |  ![cpu_instrs](pics/Tetris.gif) | ![cpu_instrs](pics/Tennis.gif) |
+I also tried to get the timer implemenation to behave like the real hardware.
+I did not implement every quirk, but it uses for example the *correct* internal clock in memory to increase the TIMA and
+also postpones the TMA reload until the next cycle (0x00 in TIMA for one cycle before it reloads TMA).
 
+## Controls
 
+SPACE = Select  
+ENTER = Start  
+Z = B  
+X = A  
+DIRECTIONS = Arrow Keys  
+
+P = Pause/Play  
+N = Next instruction  
+D = Open Debugger
 
 ## Opcode Generator
 
@@ -35,7 +53,9 @@ By using this script I got great frame classes to work in.
 
 The top *instruction_set* class contains two maps including all the different opcodes.  
 
-**WARNING:** The Pastraiser OpCode Table has a few bugs. 0xE2 and 0xF2 are only one byte long! The Carry Flag indicator for the Right Shifting operations seem to be wrong, too.
+**WARNING:** 
+
+*The Pastraiser OpCode Table has a few bugs. 0xE2 and 0xF2 are only one byte long! The Carry Flag indicator for the Right Shifting operations seem to be wrong, too. CBxBit 16 Bit operations are only 12 cycles, not 16! Just use [this](https://izik1.github.io/gbops/) more accurate table by izik1, if you need it!*
 
 ![instruction_set](pics/gen-instruction-set.png)
 

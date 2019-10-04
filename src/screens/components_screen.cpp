@@ -22,7 +22,7 @@ namespace GGB
         ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None);
         if(ImGui::BeginTabItem("Memory"))
         {
-            drawMemoryMap("Memory", memoryToolTips, mmu.getSize(), 
+            drawMemoryMap("Memory", memoryToolTips, Constants::MEM_SIZE, 
                 [this] (uint32_t address) -> uint8_t { return mmu.read(address, true); });
             ImGui::EndTabItem();
         }

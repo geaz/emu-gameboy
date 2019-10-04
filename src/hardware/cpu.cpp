@@ -11,7 +11,6 @@ namespace GGB::Hardware
     uint8_t Cpu::cycle() 
     {   
         using GGB::Enums::CPU_STATE;
-        if(handleInterrupts()) nextInstruction = parseNextInstruction();
 
         uint8_t opCycles = 0;
         if(!halted)
@@ -21,6 +20,7 @@ namespace GGB::Hardware
             opCycles = currentInstruction.definition.executeInterpreter(this);
             nextInstruction = parseNextInstruction();
         }    
+        if(handleInterrupts()) nextInstruction = parseNextInstruction();
 
         if(state == CPU_STATE::STEP) state = CPU_STATE::PAUSED;
         return opCycles;

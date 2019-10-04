@@ -53,17 +53,14 @@ namespace GGB::Hardware
             if(lcdy == lcdyc)
             {
                 mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::COINCIDENCE_FLAG, true); 
-                // Interrupt, if it is enabled
                 if(mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::C_INTERRUPT_ENABLED, true))
                 {
                     mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_INTERRUPT_FLAG, Enums::INTERRUPT_FLAG::LCD, true);
                 }
             }  
             else
-            {                
                 mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_LCD_STATUS, Enums::LCD_STATUS_FLAG::COINCIDENCE_FLAG, false);
-            }
-
+            
             mmu.writeLcdMode(Enums::LCD_MODE::TRANSFER);
             cycleCount -= CYCLES_PER_OAMSEARCH;
         }    

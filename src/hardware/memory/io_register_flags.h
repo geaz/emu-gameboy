@@ -9,11 +9,17 @@ namespace GGB::Enums
         REG_PAD = 0xFF00,
         REG_SERIAL_TRANSFER = 0xFF01,
         REG_SERIAL_CONTROL = 0xFF02,
+        REG_INTERNAL_CLOCK_LOW = 0xFF03,
         REG_DIVIDER = 0xFF04,
         REG_TIMA = 0xFF05,
         REG_TMA = 0xFF06,
         REG_TAC = 0xFF07,
         REG_INTERRUPT_FLAG = 0xFF0F,
+        CHANNEL_3_ON = 0xFF1A,
+        CHANNEL_3_LENGTH = 0xFF1B,
+        CHANNEL_3_LEVEL = 0xFF1C,
+        CHANNEL_3_FREQ_LOW = 0xFF1D,
+        CHANNEL_3_FREQ_HIGH = 0xFF1E,
         REG_LCD_CONTROL = 0xFF40,
         REG_LCD_STATUS = 0xFF41,    
         REG_SCROLL_Y = 0xFF42,
@@ -30,6 +36,11 @@ namespace GGB::Enums
         REG_WINDOW_Y = 0xFF4A,
         REG_WINDOW_X = 0xFF4B,
         REG_INTERRUPT_ENABLE = 0xFFFF
+    };
+
+    enum APU_FLAG
+    {
+        CHANNEL_3_ON = 128 // Bit 7 - Sound Channel 3 Off  (0=Stop, 1=Playback)  (Read/Write)
     };
 
     enum JOYPAD_FLAG

@@ -49,21 +49,20 @@ namespace GGB::Hardware
         if(mmu.readIORegisterBit(IO_REGISTER::REG_TAC, TIMER_FLAG::TIMER_START))
         {
             uint16_t previousClock = internalClock - cycles;
-            uint16_t bitToSelect = Constants::CPU_CYCLES / currentFrequency;
-            bool previousPulse = previousClock & bitToSelect;
+            uint16_t bitToSelect = (Constants::CPU_CYCLES / currentFrequency) >> 1;
 
             for(int clock = previousClock + 1; clock <= internalClock; clock++)
             {
                 // Handle pending overflows, triggered by previous loops
                 handleOverflow();
                 bool currentPulse = clock & bitToSelect;
-                if(currentPulse != previousPulse)
+                if(lastVisiblePulse && !currentPulse)
                 {                    
-                    previousPulse = currentPulse;
                     uint8_t timerValue = mmu.readIORegister(IO_REGISTER::REG_TIMA) + 1;
                     pendingOverflow = timerValue == 0x00;
                     mmu.write(IO_REGISTER::REG_TIMA, timerValue);          
                 }
+                lastVisiblePulse = currentPulse;
             }                   
         }  
     }

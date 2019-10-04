@@ -40,7 +40,7 @@ namespace GGB::Enums
 
     enum APU_FLAG
     {
-        CHANNEL_3_ON = 128 // Bit 7 - Sound Channel 3 Off  (0=Stop, 1=Playback)  (Read/Write)
+        CHANNEL_3_ON_FLAG = 128 // Bit 7 - Sound Channel 3 Off  (0=Stop, 1=Playback)  (Read/Write)
     };
 
     enum JOYPAD_FLAG

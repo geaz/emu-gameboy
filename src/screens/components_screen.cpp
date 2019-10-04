@@ -28,8 +28,8 @@ namespace GGB
         }
         if(ImGui::BeginTabItem("Cartridge"))
         {
-            char* supported = cartridge.supported ? "True" : "False";
-            ImGui::InputText("Supported", supported, 6, ImGuiInputTextFlags_ReadOnly);
+            std::string supported = cartridge.supported ? "True" : "False";
+            ImGui::InputText("Supported", &supported[0], 6, ImGuiInputTextFlags_ReadOnly);
             drawMemoryMap("Cartridge", cartridgeToolTips, cartridge.cartridgeSize, 
                 [this] (uint32_t address) -> uint8_t { return cartridge.read(address); });
             ImGui::EndTabItem();

@@ -10,7 +10,7 @@ namespace GGB
 {
     GameBoyScreen::GameBoyScreen(GameBoy& gameBoy) : 
         gameBoy(gameBoy),
-        textureShader("shaders\\texture.vshader", "shaders\\texture.fshader")
+        textureShader("shaders/texture.vshader", "shaders/texture.fshader")
     {    
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

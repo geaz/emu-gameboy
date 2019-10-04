@@ -20,6 +20,7 @@ namespace GGB::Hardware
 
             Mmu& mmu;
             uint32_t oldFrequency = 1024;
+            bool lastVisiblePulse = false;
             bool pendingOverflow = false;
     };
 }

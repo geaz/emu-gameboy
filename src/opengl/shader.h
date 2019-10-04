@@ -12,6 +12,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <filesystem>
 
 namespace OpenGL
 {
@@ -31,8 +32,9 @@ namespace OpenGL
                 fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
                 try 
                 {
-                    vShaderFile.open(vertexPath);
-                    fShaderFile.open(fragmentPath);
+                    std::filesystem::path currentFolder = std::filesystem::current_path();
+                    vShaderFile.open(currentFolder / vertexPath);
+                    fShaderFile.open(currentFolder / fragmentPath);
                     std::stringstream vShaderStream, fShaderStream;
                     
                     vShaderStream << vShaderFile.rdbuf();

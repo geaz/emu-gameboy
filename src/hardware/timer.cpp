@@ -38,19 +38,24 @@ namespace GGB::Hardware
     {
         using Enums::IO_REGISTER, Enums::INTERRUPT_FLAG, Enums::TIMER_FLAG;
 
-        // Reset the timer, if the frequency changed
-        uint32_t currentFrequency = getTimerFrequency();
-        if(oldFrequency != currentFrequency)
+        if(!mmu.readIORegisterBit(IO_REGISTER::REG_TAC, TIMER_FLAG::TIMER_START))
+            timaStarted = false;
+        else if(mmu.readIORegisterBit(IO_REGISTER::REG_TAC, TIMER_FLAG::TIMER_START))
         {
-            mmu.write(IO_REGISTER::REG_TIMA, 0);
-            oldFrequency = currentFrequency;
-        }
-
-        if(mmu.readIORegisterBit(IO_REGISTER::REG_TAC, TIMER_FLAG::TIMER_START))
-        {
-            uint16_t previousClock = internalClock - cycles;
-            uint16_t bitToSelect = (Constants::CPU_CYCLES / currentFrequency) >> 1;
-
+            // If the timer just stared, we will save the clock count at start
+            // This way we don't increment the timer to early, because the internal
+            // clock may be not zero at this time.
+            uint32_t previousClock = internalClock - cycles;
+            if(!timaStarted)
+            {
+                timaStarted = true;
+                timaStartClock = internalClock;
+                // The timer just started in the processed t-cycles
+                // So just handle the last t-cycle
+                previousClock = internalClock - 1;
+            }
+                    
+            uint16_t bitToSelect = (Constants::CPU_CYCLES / getTimerFrequency()) >> 1;
             for(int clock = previousClock + 1; clock <= internalClock; clock++)
             {
                 // Handle pending overflows, triggered by previous loops
@@ -63,7 +68,7 @@ namespace GGB::Hardware
                     mmu.write(IO_REGISTER::REG_TIMA, timerValue);          
                 }
                 lastVisiblePulse = currentPulse;
-            }                   
+            }               
         }  
     }
     

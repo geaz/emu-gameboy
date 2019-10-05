@@ -20,6 +20,8 @@ namespace GGB::Hardware
 
             Mmu& mmu;
             uint32_t oldFrequency = 1024;
+            uint16_t timaStartClock = 0;
+            bool timaStarted = false;
             bool lastVisiblePulse = false;
             bool pendingOverflow = false;
     };

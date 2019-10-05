@@ -33,8 +33,8 @@ Thats why this emulator uses a rather simple cycle count method to keep the comp
 Which should be enough for most cases. There are more accurate methods like described [here](https://gekkio.fi/blog/2015/mooneye-gb-a-gameboy-emulator-written-in-rust/). 
 
 I also tried to get the timer implemenation to behave like the real hardware.
-I did not implement every quirk, but it uses for example the *correct* internal clock in memory to increase the TIMA and
-also postpones the TMA reload until the next cycle (0x00 in TIMA for one cycle before it reloads TMA).
+Most of the behaviours described in [The Cycle-Accurate Game Boy Docs](https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf) are working, passing most of [Mooneyes Timer Tests](https://github.com/Gekkio/mooneye-gb/tree/master/tests/acceptance/timer).
+In contrast to other implementations, I let the timer use the *correct* internal clock in memory to increase the TIMA and DIV.
 
 ## Controls
 
@@ -89,10 +89,11 @@ struct Instruction
 ## Ressources
 
 - 8080 Manual (see *docs folder* - really great to understand how a cpu works)
-- [The Cycle-Accurate Game Boy Docs]https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf) (Back up in the *docs* folder)
+- [The Cycle-Accurate Game Boy Docs](https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf) (Back up in the *docs* folder)
 - [Pandocs](http://bgb.bircd.org/pandocs.htm) (Backup of the Site in the *docs folder*)
 - [Opcodes](http://www.devrs.com/gb/files/opcodes.html)
 - [Opcodes Table](http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html)
+- [Opcodes Table (the better one)](https://izik1.github.io/gbops/)
 - [Memory Map](http://gameboy.mongenel.com/dmg/asmmemmap.html)
 - [Game Boy - CPU Manual](https://realboyemulator.files.wordpress.com/2013/01/gbcpuman.pdf) (Backup of the Site in the *docs folder*)
 - [Ultimate Game Boy Talk](https://www.youtube.com/watch?v=HyzD8pNlpwI)

@@ -25,6 +25,9 @@ namespace GGB::Hardware::Video
             sprite.bgPrio = attributes & OBJ_BG_PRIO;
             sprite.palette1Selected = attributes & PALETTE_NR;
 
+            if(sprite.flipY && sprite.bigSprite)
+                sprite.tileNr++;
+
             data[i] = sprite;
         }
     }

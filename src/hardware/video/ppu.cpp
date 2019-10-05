@@ -244,6 +244,9 @@ namespace GGB::Hardware
             Video::Tile currentTile = currentSprite.bigSprite && lcdY >= currentSprite.posY - 8
                 ? tileList.loadSpriteTile(currentSprite.tileNr + 1)
                 : tileList.loadSpriteTile(currentSprite.tileNr);    
+            currentTile = currentSprite.flipY && currentSprite.bigSprite && lcdY >= currentSprite.posY - 8
+                ? tileList.loadSpriteTile(currentSprite.tileNr - 1)
+                : currentTile;
 
             for(int j = 0; j < 8; j++)
             {                
@@ -253,7 +256,7 @@ namespace GGB::Hardware
 
                 uint8_t xCord = currentSprite.flipX ? (7 - j) : j;
                 uint8_t yCord = currentSprite.flipY 
-                    ? abs(lcdY - (currentSprite.posY - yCorrection + 8))
+                    ? abs(lcdY - (currentSprite.posY - yCorrection + 7))
                     : lcdY - (currentSprite.posY - yCorrection);
                 
                 uint8_t pixelData = currentTile.data[yCord][xCord];

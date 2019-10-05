@@ -14,9 +14,13 @@ Use other great emulators for this purpose. For example:
 
 ## Screenshots
 
-| Blargg CPU Test   |      Tetris      |  Tennis |
+| Zelda   |      Tetris      |  Tennis |
 |-------------------|------------------|---------|
-| ![cpu_instrs](pics/blargg-cpu_instrs.png) |  ![cpu_instrs](pics/Tetris.gif) | ![cpu_instrs](pics/Tennis.gif) |
+| ![Zelda](pics/Zelda.gif) |  ![Tetris](pics/Tetris.gif) | ![Tennis](pics/Tennis.gif) |
+
+| Blargg CPU Test   |      Blargg Instr Timing       |
+|-------------------|--------------------------------|
+| ![cpu_instrs](pics/blargg-cpu_instrs.png) |  ![instr_timing](pics/blargg-instr_timing.png) |
 
 ## Aims
 

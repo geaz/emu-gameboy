@@ -14,7 +14,7 @@ namespace GGB::Hardware::Video
 
     Tile TileList::loadWindowTile(const uint8_t tileNr) const
     {
-        return loadTileFromMem(TILE_DATA_POSITION::TILE_DATA_1, tileNr, (tileNr * 16)); 
+        return loadTileFromMem(TILE_DATA_POSITION::TILE_DATA_0, tileNr, ((static_cast<int8_t>(tileNr) + 128) * 16)); 
     }
 
     Tile TileList::loadSpriteTile(const uint8_t tileNr) const

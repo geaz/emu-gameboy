@@ -32,7 +32,7 @@ Further more I wanted to get the CPU to do its work correctly, but I did not wan
 Thats why this emulator uses a rather simple cycle count method to keep the components in sync (Components syned after each instruction).
 Which should be enough for most cases. There are more accurate methods like described [here](https://gekkio.fi/blog/2015/mooneye-gb-a-gameboy-emulator-written-in-rust/). 
 
-I also tried to get the timer implemenation to behave like the real hardware.
+I also tried to get the timer implementation to behave like the real hardware.
 Most of the behaviours described in [The Cycle-Accurate Game Boy Docs](https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf) are working, passing most of [Mooneyes Timer Tests](https://github.com/Gekkio/mooneye-gb/tree/master/tests/acceptance/timer).
 In contrast to other implementations, I let the timer use the *correct* internal clock in memory to increase the TIMA and DIV.
 

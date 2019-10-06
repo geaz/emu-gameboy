@@ -27,7 +27,7 @@ namespace OpenGL
             std::vector<Screen*> screenVec;
     };
     
-    // Init Window Pointer for OpenGL callbacks
+    // Window Pointer for OpenGL callbacks
     extern Window* WindowPointer;
 }
 

@@ -212,7 +212,7 @@ namespace GGB::Hardware
     {
         if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::OBJ_ENABLE, true)) return;
 
-        spriteList.loadSprites();
+        spriteList.updateSpriteInfo();
         obj0Palette = colorPalettes.getOBP0Palette();
         obj1Palette = colorPalettes.getOBP1Palette();
 

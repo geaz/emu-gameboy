@@ -40,7 +40,7 @@ namespace GGB::Hardware::Video
         public:
             SpriteList(Mmu& mmu);
 
-            void loadSprites();
+            void updateSpriteInfo();
 
             Sprite data[40]; 
 

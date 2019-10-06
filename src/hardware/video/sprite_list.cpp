@@ -4,7 +4,7 @@ namespace GGB::Hardware::Video
 {
     SpriteList::SpriteList(Mmu& mmu) : mmu(mmu) { }
 
-    void SpriteList::loadSprites()
+    void SpriteList::updateSpriteInfo()
     {    
         bool bigSprite = mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, Enums::LCD_CONTROL_FLAG::OBJ_SIZE, true);
         for(int i = 0; i < TOTAL_SPRITES; i++)

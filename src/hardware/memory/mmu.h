@@ -24,9 +24,9 @@ namespace GGB
                 void rawWrite(const uint16_t address, const uint8_t value);
                 void executeDmaTransfer(const uint8_t value);
 
-                uint8_t readIORegister(const Enums::IO_REGISTER reg, const bool ppuAccess = false) const;
-                bool readIORegisterBit(const Enums::IO_REGISTER reg, const uint8_t flag, const bool ppuAccess = false) const;
-                void writeIORegisterBit(const Enums::IO_REGISTER reg, const uint8_t flag, const bool value);
+                uint8_t readIORegister(const uint16_t reg, const bool ppuAccess = false) const;
+                bool readIORegisterBit(const uint16_t reg, const uint8_t flag, const bool ppuAccess = false) const;
+                void writeIORegisterBit(const uint16_t reg, const uint8_t flag, const bool value);
 
                 Enums::LCD_MODE readLcdMode() const;
                 void writeLcdMode(const Enums::LCD_MODE lcdMode);

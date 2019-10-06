@@ -10,8 +10,7 @@ namespace GGB
 {
     bool ShowComponentsScreen = false;
 
-    ComponentsScreen::ComponentsScreen(Hardware::Mmu& mmu, Hardware::Cartridge& cartridge) 
-        : mmu(mmu), cartridge(cartridge) { }
+    ComponentsScreen::ComponentsScreen(Debugger& debugger) : debugger(debugger) { }
 
     void ComponentsScreen::update()
     { 
@@ -23,15 +22,20 @@ namespace GGB
         if(ImGui::BeginTabItem("Memory"))
         {
             drawMemoryMap("Memory", memoryToolTips, Constants::MEM_SIZE, 
-                [this] (uint32_t address) -> uint8_t { return mmu.read(address, true); });
+                [this] (uint32_t address) -> uint8_t { return debugger.mmu.read(address, true); });
             ImGui::EndTabItem();
         }
         if(ImGui::BeginTabItem("Cartridge"))
         {
-            std::string supported = cartridge.supported ? "True" : "False";
+            std::string supported = debugger.cartridge.supported ? "True" : "False";
             ImGui::InputText("Supported", &supported[0], 6, ImGuiInputTextFlags_ReadOnly);
-            drawMemoryMap("Cartridge", cartridgeToolTips, cartridge.cartridgeSize, 
-                [this] (uint32_t address) -> uint8_t { return cartridge.read(address); });
+            drawMemoryMap("Cartridge", cartridgeToolTips, debugger.cartridge.cartridgeSize, 
+                [this] (uint32_t address) -> uint8_t { return debugger.cartridge.read(address); });
+            ImGui::EndTabItem();
+        }
+        if(ImGui::BeginTabItem("Audio"))
+        {           
+            ImGui::PlotLines("Channel 3 (Wave)", debugger.channel3Samples, IM_ARRAYSIZE(debugger.channel3Samples), NULL, NULL, -1.0f, 1.0f, ImVec2(0,80));
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();

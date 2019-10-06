@@ -24,12 +24,12 @@ int main(int argc, char** args) {
         GGB::Constants::GAMEBOY_LCD_WIDTH * 2, 
         GGB::Constants::GAMEBOY_LCD_HEIGHT * 2);
         
-    GGB::DebugScreen debugScreen(gameBoy.cpu);
+    GGB::DebugScreen debugScreen(gameBoy.debugger);
+    GGB::ComponentsScreen componentsScreen(gameBoy.debugger); 
     GGB::GameBoyScreen gameBoyScreen(gameBoy);   
-    GGB::ComponentsScreen componentsScreen(gameBoy.mmu, cartridge); 
 
-    window.addScreen(&componentsScreen);
     window.addScreen(&debugScreen);
+    window.addScreen(&componentsScreen);
     window.addScreen(&gameBoyScreen);
     window.startLoop();
 }

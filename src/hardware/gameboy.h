@@ -9,6 +9,8 @@
 #include "cartridge.h"
 #include "video/ppu.h"
 #include "memory/mmu.h"
+#include "audio/apu.h"
+#include "../debugger.h"
 
 namespace GGB
 {
@@ -20,12 +22,14 @@ namespace GGB
             void process();
 
             Hardware::Cartridge& cartridge;
+            Hardware::Apu apu;
             Hardware::Mmu mmu;
             Hardware::Cpu cpu;
             Hardware::Ppu ppu;
             Hardware::Input input;
             Hardware::Timer timer;
             Hardware::Clock clock;
+            Debugger debugger;
     };
 }
 

@@ -3,10 +3,11 @@
 #define COMPONENTSSCREEN_H
 
 #include <map>
+#include <deque>
 #include <functional>
 
 #include "../opengl/screen.h"
-#include "../hardware/memory/mmu.h"
+#include "../debugger.h"
 
 namespace GGB
 {    
@@ -21,12 +22,9 @@ namespace GGB
     class ComponentsScreen : public OpenGL::Screen
     {   
         public:
-            ComponentsScreen(Hardware::Mmu& mmu, Hardware::Cartridge& cartridge);
+            ComponentsScreen(Debugger& debugger);
 
             void update() override;
-
-            Hardware::Mmu& mmu;
-            Hardware::Cartridge& cartridge;
 
         private:
             void drawMemoryMap(
@@ -34,6 +32,8 @@ namespace GGB
                 const std::map<uint16_t, std::string> toolTipMap,
                 const uint32_t memorySize,
                 std::function<uint8_t (uint32_t)> memoryReadFunc);
+            
+            Debugger& debugger;
 
             std::map<uint16_t, std::string> memoryToolTips = {
                 { 0x0000, "Cartridge Bank 0 Start" },

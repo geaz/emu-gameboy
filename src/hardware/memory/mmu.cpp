@@ -86,17 +86,17 @@ namespace GGB::Hardware
         }
     }
 
-    bool Mmu::readIORegisterBit(const Enums::IO_REGISTER reg, const uint8_t flag, const bool ppuAccess) const 
+    bool Mmu::readIORegisterBit(const uint16_t reg, const uint8_t flag, const bool ppuAccess) const 
     { 
         return read(reg, ppuAccess) & flag; 
     }
 
-    uint8_t Mmu::readIORegister(const Enums::IO_REGISTER reg, const bool ppuAccess) const 
+    uint8_t Mmu::readIORegister(const uint16_t reg, const bool ppuAccess) const 
     {
         return read(reg, ppuAccess); 
     }
 
-    void Mmu::writeIORegisterBit(const Enums::IO_REGISTER reg, const uint8_t flag, const bool value) 
+    void Mmu::writeIORegisterBit(const uint16_t reg, const uint8_t flag, const bool value) 
     { 
         if(value) memory[reg] |= flag; 
         else memory[reg] &= ~flag; 

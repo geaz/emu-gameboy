@@ -27,14 +27,14 @@ namespace GGB
      **/
     void GameBoy::process()
     {
-        using Enums::CPU_STATE;
+        using Enum::CpuState;
         
         if(clock.started) while(clock.shouldSleep()) { };
 
-        int64_t cycles = GGB::Constants::FRAME_CYCLES;
-        while(cycles > 0 && (cpu.state == CPU_STATE::RUNNING || cpu.state == CPU_STATE::STEP))
+        int64_t cycles = Const::CyclesFrame;
+        while(cycles > 0 && (cpu.state == CpuState::RUNNING || cpu.state == CpuState::STEP))
         {
-            if(!clock.started && cpu.state == CPU_STATE::RUNNING) clock.start();
+            if(!clock.started && cpu.state == CpuState::RUNNING) clock.start();
             int opCycles = cpu.cycle();
 
             // If the CPU is halted, it won't process any operations

@@ -1,5 +1,4 @@
 #include "color_palettes.h"
-#include "../memory/io_register_flags.h"
 
 namespace GGB::Hardware::Video
 {
@@ -7,29 +6,29 @@ namespace GGB::Hardware::Video
 
     ColorPalette ColorPalettes::getBWPalette()
     {
-        uint8_t colorData = mmu.readIORegister(Enums::IO_REGISTER::REG_BG_PALETTE, true);
+        uint8_t colorData = mmu.read(Const::AddrRegBgPalette, true);
         return getPalette(colorData, false);
     }
 
     ColorPalette ColorPalettes::getOBP0Palette()
     {
-        uint8_t colorData = mmu.readIORegister(Enums::IO_REGISTER::REG_OB_PALETTE_0, true);
+        uint8_t colorData = mmu.read(Const::AddrRegOBPalette0, true);
         return getPalette(colorData, true);
     }
 
     ColorPalette ColorPalettes::getOBP1Palette()
     {
-        uint8_t colorData = mmu.readIORegister(Enums::IO_REGISTER::REG_OB_PALETTE_1, true);
+        uint8_t colorData = mmu.read(Const::AddrRegOBPalette1, true);
         return getPalette(colorData, true);
     }
 
     ColorPalette ColorPalettes::getPalette(const uint8_t colorData, const bool lowerIsTransparent)
     {
         ColorPalette palette;
-        palette.colors[0] = lowerIsTransparent ? Enums::GB_SHADE::TRANSPARENT : (Enums::GB_SHADE) (colorData & 0x3);    
-        palette.colors[1] = (Enums::GB_SHADE) ((colorData & 0xC) >> 2);    
-        palette.colors[2] = (Enums::GB_SHADE) ((colorData & 0x30) >> 4);
-        palette.colors[3] = (Enums::GB_SHADE) ((colorData & 0xC0) >> 6);
+        palette.colors[0] = lowerIsTransparent ? Enum::ColorShade::TRANSPARENT : (Enum::ColorShade) (colorData & 0x3);    
+        palette.colors[1] = (Enum::ColorShade) ((colorData & 0xC) >> 2);    
+        palette.colors[2] = (Enum::ColorShade) ((colorData & 0x30) >> 4);
+        palette.colors[3] = (Enum::ColorShade) ((colorData & 0xC0) >> 6);
         
         return palette;
     }

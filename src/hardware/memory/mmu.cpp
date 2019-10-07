@@ -5,8 +5,7 @@
 
 namespace GGB::Hardware
 {
-    Mmu::Mmu(Cartridge& cartridge) : cartridge(cartridge) 
-    { }
+    Mmu::Mmu(Cartridge& cartridge) : cartridge(cartridge) { }
 
     uint8_t Mmu::read(const uint16_t address, const bool ppuAccess) const 
     {     
@@ -16,9 +15,9 @@ namespace GGB::Hardware
         // for the debugging tools and the PPU to read memory during each state
         if(!ppuAccess)
         {
-            if(currentPpuMode == Enums::LCD_MODE::TRANSFER && address >= 0x8000 && address <= 0x9FFF)
+            if(currentPpuMode == Enum::LcdMode::Transfer && address >= 0x8000 && address <= 0x9FFF)
                 return 0xFF;
-            else if((currentPpuMode == Enums::LCD_MODE::TRANSFER || currentPpuMode == Enums::LCD_MODE::OAM)
+            else if((currentPpuMode == Enum::LcdMode::Transfer || currentPpuMode == Enum::LcdMode::Oam)
                     && address >= 0xFE00 && address <= 0xFE9F)
                 return 0xFF;
         }    
@@ -35,31 +34,29 @@ namespace GGB::Hardware
 
     void Mmu::write(const uint16_t address, const uint8_t value) 
     {
-        using Enums::IO_REGISTER;
         // If writing to LDCY I/O register, reset it
-        if(address == IO_REGISTER::REG_LCD_Y) memory[address] = 0;
+        if(address == Const::AddrRegLcdY) memory[address] = 0;
         // If writing to the Timer Divider, it also reset the internal clock!
-        else if(address == IO_REGISTER::REG_DIVIDER) 
+        else if(address == Const::AddrRegDivider)
         {
-            memory[IO_REGISTER::REG_INTERNAL_CLOCK_LOW] = 0;
+            memory[Const::AddrRegInternalClockLow] = 0;
             memory[address] = 0;
         }
         // If written to DMA start a DMA transfer to OAM
-        else if(address == IO_REGISTER::REG_DMA) executeDmaTransfer(value);    
+        else if(address == Const::AddrRegDma) executeDmaTransfer(value);    
         // If writing to the pad register for setting bit 4 & 5
         // Preserver Lower Bits (= Button pressed atm)
         // 0x30 = 0011 0000
-        else if(address == IO_REGISTER::REG_PAD) 
-            memory[IO_REGISTER::REG_PAD] = (value & 0x30) | (memory[IO_REGISTER::REG_PAD] & 0xCF);
+        else if(address == Const::AddrRegInput) 
+            memory[Const::AddrRegInput] = (value & 0x30) | (memory[Const::AddrRegInput] & 0xCF);
         // If writing to the lcd status register
         // Preserver Lower two Bits (= current lcd mode (read only))
         // 0x03 = 0000 0011
         // 0x7C = 0111 1100
-        else if(address == IO_REGISTER::REG_LCD_STATUS) 
-            memory[IO_REGISTER::REG_LCD_STATUS] = (value & 0x7C) | (memory[IO_REGISTER::REG_LCD_STATUS] & 0x03);
+        else if(address == Const::AddrRegLcdStatus) 
+            memory[Const::AddrRegLcdStatus] = (value & 0x7C) | (memory[Const::AddrRegLcdStatus] & 0x03);
         // If writing into this range, change the rom bank in the cartridge
-        else if(address >= (uint16_t)Enums::CARTRIDGE_FLAG::SWITCH_BANK_TRIGGER_START
-        && address <= (uint16_t)Enums::CARTRIDGE_FLAG::SWITCH_BANK_TRIGGER_END) 
+        else if(address >= Const::AddrCartSwitchTriggerStart && address <= Const::AddrCartSwitchTriggerEnd) 
             cartridge.selectRomBank(value);
         else memory[address] = value; 
     }
@@ -73,7 +70,7 @@ namespace GGB::Hardware
     {
         // DMA has a higher priority than PPU modes
         // Thats why we do rawWrites/rawReads here.
-        memory[Enums::IO_REGISTER::REG_DMA] = value;
+        memory[Const::AddrRegDma] = value;
         uint16_t startAddress = value << 8;
 
         for (int i = 0x0; i <= 0x9F; i++) 
@@ -91,27 +88,22 @@ namespace GGB::Hardware
         return read(reg, ppuAccess) & flag; 
     }
 
-    uint8_t Mmu::readIORegister(const uint16_t reg, const bool ppuAccess) const 
-    {
-        return read(reg, ppuAccess); 
-    }
-
     void Mmu::writeIORegisterBit(const uint16_t reg, const uint8_t flag, const bool value) 
     { 
         if(value) memory[reg] |= flag; 
         else memory[reg] &= ~flag; 
     }
 
-    Enums::LCD_MODE Mmu::readLcdMode() const
+    Enum::LcdMode Mmu::readLcdMode() const
     {
         return currentPpuMode;
     }
 
-    void Mmu::writeLcdMode(const Enums::LCD_MODE lcdMode)
+    void Mmu::writeLcdMode(const Enum::LcdMode lcdMode)
     {
-        using Enums::IO_REGISTER, Enums::LCD_STATUS_FLAG;
-        writeIORegisterBit(IO_REGISTER::REG_LCD_STATUS, LCD_STATUS_FLAG::MODE_HIGH, (lcdMode >> 1) & 0x1);
-        writeIORegisterBit(IO_REGISTER::REG_LCD_STATUS, LCD_STATUS_FLAG::MODE_LOW, lcdMode & 0x1);
+        uint8_t lcdModeValue = static_cast<uint8_t>(lcdMode);
+        writeIORegisterBit(Const::AddrRegLcdStatus, Const::FlagLcdStatusModeHight, (lcdModeValue >> 1) & 0x1);
+        writeIORegisterBit(Const::AddrRegLcdStatus, Const::FlagLcdStatusModeLow, lcdModeValue & 0x1);
         currentPpuMode = lcdMode;
     }
 }

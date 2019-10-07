@@ -2,10 +2,10 @@
 #include "branch.h"
 #include "../../hardware/cpu.h"
 
-using GGB::Enums::CPU_FLAG;
-
 namespace GGB::Hardware::Instructions
 {
+    using GGB::Enum::CpuFlag;
+
     uint8_t Jr::Jr18(Cpu* cpu)
     {
         // Mnemonic: JR r8, Length: 2
@@ -18,7 +18,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: JR NZ,r8, Length: 2
         // Cycles: 12/8, (Z N H C): - - - -
-        bool zeroFlag = cpu->getFlag(CPU_FLAG::Z_ZERO);
+        bool zeroFlag = cpu->f.readBit((uint8_t)CpuFlag::Z_ZERO);
         if(!zeroFlag) cpu->pc += static_cast<int8_t>(cpu->currentInstruction.parsedBytes.low);    
         return !zeroFlag ? 12 : 8;
     }
@@ -27,7 +27,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: JR Z,r8, Length: 2
         // Cycles: 12/8, (Z N H C): - - - -
-        bool zeroFlag = cpu->getFlag(CPU_FLAG::Z_ZERO);
+        bool zeroFlag = cpu->f.readBit((uint8_t)CpuFlag::Z_ZERO);
         if(zeroFlag) cpu->pc += static_cast<int8_t>(cpu->currentInstruction.parsedBytes.low);
         return zeroFlag ? 12 : 8;
     }
@@ -36,7 +36,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: JR NC,r8, Length: 2
         // Cycles: 12/8, (Z N H C): - - - -
-        bool carryFlag = cpu->getFlag(CPU_FLAG::C_CARRY);
+        bool carryFlag = cpu->f.readBit((uint8_t)CpuFlag::C_CARRY);
         if(!carryFlag) cpu->pc += static_cast<int8_t>(cpu->currentInstruction.parsedBytes.low);
         return !carryFlag ? 12 : 8;
     }
@@ -45,7 +45,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: JR C,r8, Length: 2
         // Cycles: 12/8, (Z N H C): - - - -
-        bool carryFlag = cpu->getFlag(CPU_FLAG::C_CARRY);
+        bool carryFlag = cpu->f.readBit((uint8_t)CpuFlag::C_CARRY);
         if(carryFlag) cpu->pc += static_cast<int8_t>(cpu->currentInstruction.parsedBytes.low);
         return carryFlag ? 12 : 8;
     }
@@ -54,7 +54,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: RET NZ, Length: 1
         // Cycles: 20/8, (Z N H C): - - - -
-        bool zeroFlag = cpu->getFlag(CPU_FLAG::Z_ZERO);
+        bool zeroFlag = cpu->f.readBit((uint8_t)CpuFlag::Z_ZERO);
         if(!zeroFlag) cpu->pc = cpu->popStack();
         return !zeroFlag ? 20 : 8;
     }
@@ -63,7 +63,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: RET Z, Length: 1
         // Cycles: 20/8, (Z N H C): - - - -
-        bool zeroFlag = cpu->getFlag(CPU_FLAG::Z_ZERO);
+        bool zeroFlag = cpu->f.readBit((uint8_t)CpuFlag::Z_ZERO);
         if(zeroFlag) cpu->pc = cpu->popStack();
         return zeroFlag ? 20 : 8;
     }
@@ -80,7 +80,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: RET NC, Length: 1
         // Cycles: 20/8, (Z N H C): - - - -
-        bool carryFlag = cpu->getFlag(CPU_FLAG::C_CARRY);
+        bool carryFlag = cpu->f.readBit((uint8_t)CpuFlag::C_CARRY);
         if(!carryFlag) cpu->pc = cpu->popStack();
         return !carryFlag ? 20 : 8;
     }
@@ -89,7 +89,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: RET C, Length: 1
         // Cycles: 20/8, (Z N H C): - - - -
-        bool carryFlag = cpu->getFlag(CPU_FLAG::C_CARRY);
+        bool carryFlag = cpu->f.readBit((uint8_t)CpuFlag::C_CARRY);
         if(carryFlag) cpu->pc = cpu->popStack();
         return carryFlag ? 20 : 8;
     }
@@ -98,7 +98,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: JP NZ,a16, Length: 3
         // Cycles: 16/12, (Z N H C): - - - -
-        bool zeroFlag = cpu->getFlag(CPU_FLAG::Z_ZERO);
+        bool zeroFlag = cpu->f.readBit((uint8_t)CpuFlag::Z_ZERO);
         if(!zeroFlag) cpu->pc = cpu->currentInstruction.parsedBytes.b16;
         return !zeroFlag ? 16 : 12;
     }
@@ -115,7 +115,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: JP Z,a16, Length: 3
         // Cycles: 16/12, (Z N H C): - - - -
-        bool zeroFlag = cpu->getFlag(CPU_FLAG::Z_ZERO);
+        bool zeroFlag = cpu->f.readBit((uint8_t)CpuFlag::Z_ZERO);
         if(zeroFlag) cpu->pc = cpu->currentInstruction.parsedBytes.b16;
         return zeroFlag ? 16 : 12;
     }
@@ -124,7 +124,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: JP NC,a16, Length: 3
         // Cycles: 16/12, (Z N H C): - - - -
-        bool carryFlag = cpu->getFlag(CPU_FLAG::C_CARRY);
+        bool carryFlag = cpu->f.readBit((uint8_t)CpuFlag::C_CARRY);
         if(!carryFlag) cpu->pc = cpu->currentInstruction.parsedBytes.b16;
         return !carryFlag ? 16 : 12;
     }
@@ -133,7 +133,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: JP C,a16, Length: 3
         // Cycles: 16/12, (Z N H C): - - - -
-        bool carryFlag = cpu->getFlag(CPU_FLAG::C_CARRY);
+        bool carryFlag = cpu->f.readBit((uint8_t)CpuFlag::C_CARRY);
         if(carryFlag) cpu->pc = cpu->currentInstruction.parsedBytes.b16;
         return carryFlag ? 16 : 12;
     }
@@ -150,7 +150,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: CALL NZ,a16, Length: 3
         // Cycles: 24/12, (Z N H C): - - - -
-        bool zeroFlag = cpu->getFlag(CPU_FLAG::Z_ZERO);
+        bool zeroFlag = cpu->f.readBit((uint8_t)CpuFlag::Z_ZERO);
         if(!zeroFlag) 
         {
             cpu->pushStack(cpu->pc.read()); 
@@ -163,7 +163,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: CALL Z,a16, Length: 3
         // Cycles: 24/12, (Z N H C): - - - -
-        bool zeroFlag = cpu->getFlag(CPU_FLAG::Z_ZERO);
+        bool zeroFlag = cpu->f.readBit((uint8_t)CpuFlag::Z_ZERO);
         if(zeroFlag)
         {
             cpu->pushStack(cpu->pc.read()); 
@@ -185,7 +185,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: CALL NC,a16, Length: 3
         // Cycles: 24/12, (Z N H C): - - - -
-        bool carryFlag = cpu->getFlag(CPU_FLAG::C_CARRY);
+        bool carryFlag = cpu->f.readBit((uint8_t)CpuFlag::C_CARRY);
         if(!carryFlag) 
         {
             cpu->pushStack(cpu->pc.read()); 
@@ -198,7 +198,7 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: CALL C,a16, Length: 3
         // Cycles: 24/12, (Z N H C): - - - -
-        bool carryFlag = cpu->getFlag(CPU_FLAG::C_CARRY);
+        bool carryFlag = cpu->f.readBit((uint8_t)CpuFlag::C_CARRY);
         if(carryFlag)
         {
             cpu->pushStack(cpu->pc.read()); 

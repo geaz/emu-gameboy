@@ -17,7 +17,7 @@ namespace GGB::Hardware
     {
         started = false;    
         auto now = std::chrono::high_resolution_clock::now();
-        auto chronoOne = std::chrono::nanoseconds(ONE_FRAME_DURATION_NSEC);
+        auto chronoOne = std::chrono::nanoseconds(Const::OneFrameDurationNSec);
         auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(now - startPoint);    
         auto shouldSleep = std::chrono::duration_cast<std::chrono::nanoseconds>(chronoOne - elapsed);
 

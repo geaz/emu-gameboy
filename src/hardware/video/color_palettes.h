@@ -6,23 +6,11 @@
 
 namespace GGB
 {
-    namespace Enums
-    {
-        enum GB_SHADE
-        {
-            WHITE = 0,
-            LIGHT_GRAY = 1,
-            DARK_GRAY = 2,
-            BLACK = 3,    
-            TRANSPARENT = 4
-        };
-    }
-
     namespace Hardware::Video
     {
         struct ColorPalette
         {
-            Enums::GB_SHADE colors[4];
+            Enum::ColorShade colors[4];
         };
 
         class ColorPalettes

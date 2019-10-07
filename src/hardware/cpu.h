@@ -8,17 +8,6 @@
 
 namespace GGB
 {
-    namespace Constants
-    {
-        const uint32_t CPU_CYCLES = 4194304;
-    }
-
-    namespace Enums
-    {
-        enum class CPU_STATE { STEP, PAUSED, RUNNING, INTERRUPT, ERROR };
-        enum class CPU_FLAG { Z_ZERO = 7, N_SUBSTRACT = 6, H_HALFCARRY = 5, C_CARRY = 4 };  
-    }
-
     namespace Hardware
     {
         class Cpu 
@@ -27,9 +16,6 @@ namespace GGB
                 Cpu(Mmu& mmu);
 
                 uint8_t cycle();
-
-                bool getFlag(Enums::CPU_FLAG flag);
-                void setFlag(Enums::CPU_FLAG flag, bool value);
 
                 void pushStack(uint16_t value);
                 uint16_t popStack();
@@ -51,7 +37,7 @@ namespace GGB
                 RegisterPair de = RegisterPair(d, e);
                 RegisterPair hl = RegisterPair(h, l);
 
-                Enums::CPU_STATE state = Enums::CPU_STATE::PAUSED;
+                Enum::CpuState state = Enum::CpuState::PAUSED;
                 Instructions::ParsedInstruction nextInstruction;
                 Instructions::ParsedInstruction currentInstruction;
 

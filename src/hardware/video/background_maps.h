@@ -20,12 +20,9 @@ namespace GGB::Hardware::Video
             BackgroundMap getWindowMap() const;
 
         private:
-            BackgroundMap getMap(Enums::LCD_CONTROL_FLAG controlFlag) const;
+            BackgroundMap getMap(const uint8_t controlFlag) const;
 
-            Mmu& mmu;
-
-            const uint16_t MAP_0_START = 0x9800;
-            const uint16_t MAP_1_START = 0x9C00;     
+            Mmu& mmu;    
     };
 }
 

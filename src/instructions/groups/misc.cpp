@@ -2,10 +2,10 @@
 #include "misc.h"
 #include "../../hardware/cpu.h"
 
-using GGB::Enums::CPU_FLAG;
-
 namespace GGB::Hardware::Instructions
 {
+    using GGB::Enum::CpuFlag;
+    
     uint8_t Nop::Nop00(Cpu* cpu)
     {
         // Mnemonic: NOP, Length: 1
@@ -18,7 +18,7 @@ namespace GGB::Hardware::Instructions
         // Mnemonic: RLCA, Length: 1
         // Cycles: 4, (Z N H C): 0 0 0 C
         cpu->a = Rlc::RotateLeftAndSetFlags(cpu, cpu->a.read());    
-        cpu->setFlag(CPU_FLAG::Z_ZERO, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, false);
         return 4;
     }
 
@@ -27,7 +27,7 @@ namespace GGB::Hardware::Instructions
         // Mnemonic: RRCA, Length: 1
         // Cycles: 4, (Z N H C): 0 0 0 C
         cpu->a = Rrc::RotateRightAndSetFlags(cpu, cpu->a.read());    
-        cpu->setFlag(CPU_FLAG::Z_ZERO, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, false);
         return 4;
     }
 
@@ -44,7 +44,7 @@ namespace GGB::Hardware::Instructions
         // Mnemonic: RLA, Length: 1
         // Cycles: 4, (Z N H C): 0 0 0 C
         cpu->a = Rl::RotateLeftThroughCarryAndSetFlags(cpu, cpu->a.read());    
-        cpu->setFlag(CPU_FLAG::Z_ZERO, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, false);
         return 4;
     }
 
@@ -53,7 +53,7 @@ namespace GGB::Hardware::Instructions
         // Mnemonic: RRA, Length: 1
         // Cycles: 4, (Z N H C): 0 0 0 C
         cpu->a = Rr::RotateRightThroughCarryAndSetFlags(cpu, cpu->a.read());    
-        cpu->setFlag(CPU_FLAG::Z_ZERO, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, false);
         return 4;
     }
 

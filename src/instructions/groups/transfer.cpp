@@ -2,10 +2,10 @@
 #include "transfer.h"
 #include "../../hardware/cpu.h"
 
-using GGB::Enums::CPU_FLAG;
-
 namespace GGB::Hardware::Instructions
 {
+    using GGB::Enum::CpuFlag;
+
     uint8_t Ld::Ld01(Cpu* cpu)
     {
         // Mnemonic: LD BC,d16, Length: 3
@@ -715,10 +715,10 @@ namespace GGB::Hardware::Instructions
         int32_t fullResult = cpu->sp.read() + signedValue;
         uint16_t result = static_cast<uint16_t>(fullResult);
 
-        cpu->setFlag(CPU_FLAG::Z_ZERO, false);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x10) == 0x10);
-        cpu->setFlag(CPU_FLAG::C_CARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x100) == 0x100);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x10) == 0x10);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x100) == 0x100);
 
         cpu->hl.write(result);
         return 12;

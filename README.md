@@ -95,5 +95,6 @@ struct Instruction
 - [Opcodes Table](http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html)
 - [Opcodes Table (the better one)](https://izik1.github.io/gbops/)
 - [Memory Map](http://gameboy.mongenel.com/dmg/asmmemmap.html)
+- [Game Boy - Sound Hardware](https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware)
 - [Game Boy - CPU Manual](https://realboyemulator.files.wordpress.com/2013/01/gbcpuman.pdf) (Backup of the Site in the *docs folder*)
 - [Ultimate Game Boy Talk](https://www.youtube.com/watch?v=HyzD8pNlpwI)

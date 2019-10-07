@@ -6,19 +6,19 @@ namespace GGB::Hardware::Video
 
     BackgroundMap BackgroundMaps::getBackgroundMap() const
     {
-        return getMap(Enums::LCD_CONTROL_FLAG::BG_TILE_MAP_SELECT);
+        return getMap(Const::FlagLcdControlBgMap);
     }
 
     BackgroundMap BackgroundMaps::getWindowMap() const
     {
-        return getMap(Enums::LCD_CONTROL_FLAG::WINDOW_TILE_MAP_SELECT);
+        return getMap(Const::FlagLcdControlWindowMap);
     }
 
-    BackgroundMap BackgroundMaps::getMap(Enums::LCD_CONTROL_FLAG controlFlag) const
+    BackgroundMap BackgroundMaps::getMap(const uint8_t controlFlag) const
     {
-        uint16_t startAddress = mmu.readIORegisterBit(Enums::IO_REGISTER::REG_LCD_CONTROL, controlFlag, true)
-            ? MAP_1_START
-            : MAP_0_START;
+        uint16_t startAddress = mmu.readIORegisterBit(Const::AddrRegLcdControl, controlFlag, true)
+            ? Const::AddrBgMap1
+            : Const::AddrBgMap0;
         
         BackgroundMap backgroundMap;
         for(int i = 0; i < 32 * 32; i++)

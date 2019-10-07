@@ -2,17 +2,17 @@
 #include "aritmetic.h"
 #include "../../hardware/cpu.h"
 
-using GGB::Enums::CPU_FLAG;
-
 namespace GGB::Hardware::Instructions
-{
+{    
+    using GGB::Enum::CpuFlag;
+
     /************** Inc *******************/
     void Inc::IncRegister(Cpu* cpu, Register<uint8_t>& reg)
     {
         reg++;
-        cpu->setFlag(CPU_FLAG::Z_ZERO, reg.read() == 0);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, (reg.read() & 0x0F) == 0x00);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, reg.read() == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, (reg.read() & 0x0F) == 0x00);
     }
 
     uint8_t Inc::Inc03(Cpu* cpu)
@@ -103,9 +103,9 @@ namespace GGB::Hardware::Instructions
         uint8_t result = cpu->mmu.read(address) + 1;
 
         cpu->mmu.write(address, result);
-        cpu->setFlag(CPU_FLAG::Z_ZERO, result == 0);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, (result & 0x0F) == 0x00);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, result == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, (result & 0x0F) == 0x00);
         return 12;
     }
 
@@ -122,9 +122,9 @@ namespace GGB::Hardware::Instructions
     void Dec::DecRegister(Cpu* cpu, Register<uint8_t>& reg)
     {
         reg--;
-        cpu->setFlag(CPU_FLAG::Z_ZERO, reg.read() == 0);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, true);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, (reg.read() & 0x0F) == 0x0F);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, reg.read() == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, true);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, (reg.read() & 0x0F) == 0x0F);
     }
 
     uint8_t Dec::Dec05(Cpu* cpu)
@@ -207,9 +207,9 @@ namespace GGB::Hardware::Instructions
         uint8_t result = cpu->mmu.read(address) - 1;
 
         cpu->mmu.write(address, result);
-        cpu->setFlag(CPU_FLAG::Z_ZERO, result == 0);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, true);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, (result & 0x0F) == 0x0F);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, result == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, true);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, (result & 0x0F) == 0x0F);
         return 12;
     }
 
@@ -236,9 +236,9 @@ namespace GGB::Hardware::Instructions
         uint32_t fullResult = storeIn.read() + value;
         uint16_t result = static_cast<uint16_t>(fullResult); 
 
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, (storeIn.read() ^ value ^ (fullResult & 0xFFFF)) & 0x1000);
-        cpu->setFlag(CPU_FLAG::C_CARRY, fullResult > 0xFFFF);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, (storeIn.read() ^ value ^ (fullResult & 0xFFFF)) & 0x1000);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, fullResult > 0xFFFF);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
 
         storeIn.write(result);
     }
@@ -250,10 +250,10 @@ namespace GGB::Hardware::Instructions
 
         // We only take the first 4 bits of each value and add them
         // If the result is bigger than 4 bits, we got a half carry!
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, (storeIn.read() & 0xF) + (value & 0xF) > 0xF);
-        cpu->setFlag(CPU_FLAG::C_CARRY, fullResult > 0xFF);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::Z_ZERO, result == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, (storeIn.read() & 0xF) + (value & 0xF) > 0xF);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, fullResult > 0xFF);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, result == 0);
 
         storeIn = result;
     }
@@ -370,10 +370,10 @@ namespace GGB::Hardware::Instructions
         int32_t fullResult = cpu->sp.read() + signedValue;
         uint16_t result = static_cast<uint16_t>(fullResult);
 
-        cpu->setFlag(CPU_FLAG::Z_ZERO, false);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x10) == 0x10);
-        cpu->setFlag(CPU_FLAG::C_CARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x100) == 0x100);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x10) == 0x10);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, ((cpu->sp.read() ^ signedValue ^ (fullResult & 0xFFFF)) & 0x100) == 0x100);
 
         cpu->sp = result;
         return 16;
@@ -384,32 +384,32 @@ namespace GGB::Hardware::Instructions
         // Mnemonic: DAA, Length: 1
         // Cycles: 4, (Z N H C): Z - 0 C
         int32_t result = cpu->a.read();
-        if(cpu->getFlag(CPU_FLAG::N_SUBSTRACT))
+        if(cpu->f.readBit((uint8_t)CpuFlag::N_SUBSTRACT))
         {
-            if(cpu->getFlag(CPU_FLAG::H_HALFCARRY))
+            if(cpu->f.readBit((uint8_t)CpuFlag::H_HALFCARRY))
             {
                 result -= 6;
             }
-            if(cpu->getFlag(CPU_FLAG::C_CARRY))
+            if(cpu->f.readBit((uint8_t)CpuFlag::C_CARRY))
             {
                 result -= 0x60;
             }
         }
         else
         {
-            if(cpu->getFlag(CPU_FLAG::H_HALFCARRY) || (cpu->a.read() & 0x0F) > 9)
+            if(cpu->f.readBit((uint8_t)CpuFlag::H_HALFCARRY) || (cpu->a.read() & 0x0F) > 9)
             {
                 result += 6;
             }
-            if(cpu->getFlag(CPU_FLAG::C_CARRY) || result > 0x9F)
+            if(cpu->f.readBit((uint8_t)CpuFlag::C_CARRY) || result > 0x9F)
             {
                 result += 0x60;
             }
         }
         cpu->a = static_cast<uint8_t>(result);
-        if(result > 0xFF) cpu->setFlag(CPU_FLAG::C_CARRY, true);
-        cpu->setFlag(CPU_FLAG::Z_ZERO, cpu->a.read() == 0);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, false);    
+        if(result > 0xFF) cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, true);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, cpu->a.read() == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, false);    
         return 4;
     }
 
@@ -418,8 +418,8 @@ namespace GGB::Hardware::Instructions
         // Mnemonic: CPL, Length: 1
         // Cycles: 4, (Z N H C): - 1 1 -
         cpu->a = ~cpu->a.read();
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, true);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, true);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, true);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, true);
         return 4;
     }
 
@@ -427,9 +427,9 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: SCF, Length: 1
         // Cycles: 4, (Z N H C): - 0 0 1
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, false);
-        cpu->setFlag(CPU_FLAG::C_CARRY, true);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, true);
         return 4;
     }
 
@@ -437,24 +437,24 @@ namespace GGB::Hardware::Instructions
     {
         // Mnemonic: CCF, Length: 1
         // Cycles: 4, (Z N H C): - 0 0 C
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, false);
-        cpu->setFlag(CPU_FLAG::C_CARRY, !cpu->getFlag(CPU_FLAG::C_CARRY));
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, !cpu->f.readBit((uint8_t)CpuFlag::C_CARRY));
         return 4;
     }
 
     /************** Adc *******************/
     void Adc::AdcToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value)
     {
-        uint16_t fullResult = storeIn.read() + value + cpu->getFlag(CPU_FLAG::C_CARRY);
+        uint16_t fullResult = storeIn.read() + value + cpu->f.readBit((uint8_t)CpuFlag::C_CARRY);
         uint8_t result = static_cast<uint8_t>(fullResult);
 
         // We only take the first 4 bits of each value and add them
         // If the result is bigger than 4 bits, we got a half carry!
-        cpu->setFlag(CPU_FLAG::Z_ZERO, result == 0);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, (storeIn.read() & 0xF) + (value & 0xF) + cpu->getFlag(CPU_FLAG::C_CARRY) > 0xF);
-        cpu->setFlag(CPU_FLAG::C_CARRY, fullResult > 0xFF);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, result == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, (storeIn.read() & 0xF) + (value & 0xF) + cpu->f.readBit((uint8_t)CpuFlag::C_CARRY) > 0xF);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, fullResult > 0xFF);
 
         storeIn = result;
     }
@@ -538,10 +538,10 @@ namespace GGB::Hardware::Instructions
 
         // We only take the first 4 bits of each value and sub them
         // If the result is smaller than 0, we got a half carry!
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, (storeIn.read() & 0xF) - (value & 0xF) < 0);
-        cpu->setFlag(CPU_FLAG::C_CARRY, storeIn.read() < value);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, true);
-        cpu->setFlag(CPU_FLAG::Z_ZERO, result == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, (storeIn.read() & 0xF) - (value & 0xF) < 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, storeIn.read() < value);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, true);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, result == 0);
 
         storeIn = result;
     }
@@ -620,13 +620,13 @@ namespace GGB::Hardware::Instructions
     /************** Sbc *******************/
     void Sbc::SbcToRegister(Cpu* cpu, Register<uint8_t>& storeIn, uint8_t value)
     {
-        int32_t fullResult = storeIn.read() - value - cpu->getFlag(CPU_FLAG::C_CARRY);
+        int32_t fullResult = storeIn.read() - value - cpu->f.readBit((uint8_t)CpuFlag::C_CARRY);
         uint8_t result = static_cast<uint8_t>(fullResult);
 
-        cpu->setFlag(CPU_FLAG::Z_ZERO, result == 0);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, true);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, (storeIn.read() & 0xF) - (value & 0xF) - cpu->getFlag(CPU_FLAG::C_CARRY) < 0);
-        cpu->setFlag(CPU_FLAG::C_CARRY, fullResult < 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, result == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, true);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, (storeIn.read() & 0xF) - (value & 0xF) - cpu->f.readBit((uint8_t)CpuFlag::C_CARRY) < 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, fullResult < 0);
 
         storeIn = result;
     }
@@ -708,10 +708,10 @@ namespace GGB::Hardware::Instructions
     {
         cpu->a = cpu->a.read() & value;
 
-        cpu->setFlag(CPU_FLAG::Z_ZERO, cpu->a.read() == 0);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, true);
-        cpu->setFlag(CPU_FLAG::C_CARRY, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, cpu->a.read() == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, true);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, false);
     }
 
     uint8_t And::AndA0(Cpu* cpu)
@@ -791,10 +791,10 @@ namespace GGB::Hardware::Instructions
     {
         cpu->a = cpu->a.read() ^ value;
 
-        cpu->setFlag(CPU_FLAG::Z_ZERO, cpu->a.read() == 0);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, false);
-        cpu->setFlag(CPU_FLAG::C_CARRY, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, cpu->a.read() == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, false);
     }
 
     uint8_t Xor::XorA8(Cpu* cpu)
@@ -874,10 +874,10 @@ namespace GGB::Hardware::Instructions
     {
         cpu->a = cpu->a.read() | value;
 
-        cpu->setFlag(CPU_FLAG::Z_ZERO, cpu->a.read() == 0);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, false);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, false);
-        cpu->setFlag(CPU_FLAG::C_CARRY, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, cpu->a.read() == 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, false);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, false);
     }
 
     uint8_t Or::OrB0(Cpu* cpu)
@@ -955,10 +955,10 @@ namespace GGB::Hardware::Instructions
     /************** CP *******************/
     void Cp::CpAcc(Cpu* cpu, uint8_t value)
     {
-        cpu->setFlag(CPU_FLAG::Z_ZERO, cpu->a.read() == value);
-        cpu->setFlag(CPU_FLAG::N_SUBSTRACT, true);
-        cpu->setFlag(CPU_FLAG::H_HALFCARRY, (cpu->a.read() & 0xF) - (value & 0xF) < 0);
-        cpu->setFlag(CPU_FLAG::C_CARRY, cpu->a.read() < value);
+        cpu->f.writeBit((uint8_t)CpuFlag::Z_ZERO, cpu->a.read() == value);
+        cpu->f.writeBit((uint8_t)CpuFlag::N_SUBSTRACT, true);
+        cpu->f.writeBit((uint8_t)CpuFlag::H_HALFCARRY, (cpu->a.read() & 0xF) - (value & 0xF) < 0);
+        cpu->f.writeBit((uint8_t)CpuFlag::C_CARRY, cpu->a.read() < value);
     }
 
     uint8_t Cp::CpB8(Cpu* cpu)

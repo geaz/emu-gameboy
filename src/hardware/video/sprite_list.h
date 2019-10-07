@@ -24,17 +24,6 @@ namespace GGB::Hardware::Video
         }    
     };
 
-    enum SpriteNumbers { TOTAL_SPRITES = 40, MAX_SPRITES_Y = 10 };
-    enum SpriteByte { POSITION_Y = 0, POSITION_X = 1, TILE_NR = 2, ATTRIBUTES = 3 };
-    enum SpriteAttributeFlag
-    {
-        OBJ_BG_PRIO = 128,  // Bit7   OBJ-to-BG Priority (0=OBJ Above BG, 1=OBJ Behind BG color 1-3)
-                            // (Used for both BG and Window. BG color 0 is always behind OBJ)
-        FLIP_Y = 64,        // Bit6   Y flip          (0=Normal, 1=Vertically mirrored)
-        FLIP_X = 32,        // Bit5   X flip          (0=Normal, 1=Horizontally mirrored)
-        PALETTE_NR = 16     // Bit4   Palette number  **Non CGB Mode Only** (0=OBP0, 1=OBP1)
-    };
-
     class SpriteList
     {
         public:

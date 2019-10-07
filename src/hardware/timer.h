@@ -7,7 +7,7 @@
 namespace GGB::Hardware
 {
     class Timer
-    {
+    {        
         public:
             Timer(Mmu& mmu);
 

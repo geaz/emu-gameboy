@@ -1,5 +1,4 @@
 #include "input.h"
-#include "memory/io_register_flags.h"
 
 namespace GGB::Hardware
 {
@@ -10,27 +9,28 @@ namespace GGB::Hardware
         bool changed = false;
         uint8_t newPadState;
         
-        if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_PAD, Enums::JOYPAD_FLAG::BUTTONS_SET))
+        if(!mmu.readIORegisterBit(Const::AddrRegInput, Const::FlagPadButtonsSet))
         {
             newPadState = padState & 0x0F;
-            changed = (mmu.readIORegister(Enums::IO_REGISTER::REG_PAD) & 0x0F) ^ newPadState;
+            changed = (mmu.read(Const::AddrRegInput) & 0x0F) ^ newPadState;
         }
-        else if(!mmu.readIORegisterBit(Enums::IO_REGISTER::REG_PAD, Enums::JOYPAD_FLAG::DIRECTION_SET))
+        else if(!mmu.readIORegisterBit(Const::AddrRegInput, Const::FlagPadDirectionSet))
         {
             newPadState = ((padState & 0xF0) >> 4);
-            changed = (mmu.readIORegister(Enums::IO_REGISTER::REG_PAD) & 0x0F) ^ newPadState;
+            changed = (mmu.read(Const::AddrRegInput) & 0x0F) ^ newPadState;
         }
 
         if(changed)
         {
-            mmu.rawWrite(Enums::IO_REGISTER::REG_PAD, (mmu.readIORegister(Enums::IO_REGISTER::REG_PAD) & 0xF0) | newPadState);
-            mmu.writeIORegisterBit(Enums::IO_REGISTER::REG_INTERRUPT_FLAG, Enums::INTERRUPT_FLAG::INPUT, true);
+            mmu.rawWrite(Const::AddrRegInput, (mmu.read(Const::AddrRegInput) & 0xF0) | newPadState);
+            mmu.writeIORegisterBit(Const::AddrRegInterruptFlag, Const::FlagInterruptInput, true);
         }
     }
 
-    void Input::toggleButton(const Enums::JOYPAD button, const bool pressed)
+    void Input::toggleButton(const Enum::PadButton button, const bool pressed)
     {
-        if(pressed) padState &= ~button;
-        else padState |= button;
+        uint8_t buttonValue = static_cast<uint8_t>(button);
+        if(pressed) padState &= ~buttonValue;
+        else padState |= buttonValue;
     }
 }

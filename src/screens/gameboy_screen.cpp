@@ -38,35 +38,34 @@ namespace GGB
 
     void GameBoyScreen::handleKeys(const int key, const int scancode, const int action, const int mods) 
     {
-        using Enums::JOYPAD;
         if(key == GLFW_KEY_D && action == GLFW_PRESS) GGB::ShowDebugScreen = !GGB::ShowDebugScreen;
         if(action == GLFW_PRESS || action == GLFW_RELEASE)
         {
             switch(key)
             {
                 case GLFW_KEY_UP:
-                    gameBoy.input.toggleButton(JOYPAD::UP, action == GLFW_PRESS);
+                    gameBoy.input.toggleButton(Enum::PadButton::UP, action == GLFW_PRESS);
                     break;
                 case GLFW_KEY_DOWN:
-                    gameBoy.input.toggleButton(JOYPAD::DOWN, action == GLFW_PRESS);
+                    gameBoy.input.toggleButton(Enum::PadButton::DOWN, action == GLFW_PRESS);
                     break;
                 case GLFW_KEY_LEFT:
-                    gameBoy.input.toggleButton(JOYPAD::LEFT, action == GLFW_PRESS);
+                    gameBoy.input.toggleButton(Enum::PadButton::LEFT, action == GLFW_PRESS);
                     break;
                 case GLFW_KEY_RIGHT:
-                    gameBoy.input.toggleButton(JOYPAD::RIGHT, action == GLFW_PRESS);
+                    gameBoy.input.toggleButton(Enum::PadButton::RIGHT, action == GLFW_PRESS);
                     break;
                 case GLFW_KEY_X:
-                    gameBoy.input.toggleButton(JOYPAD::A, action == GLFW_PRESS);
+                    gameBoy.input.toggleButton(Enum::PadButton::A, action == GLFW_PRESS);
                     break;
                 case GLFW_KEY_Z:
-                    gameBoy.input.toggleButton(JOYPAD::B, action == GLFW_PRESS);
+                    gameBoy.input.toggleButton(Enum::PadButton::B, action == GLFW_PRESS);
                     break;
                 case GLFW_KEY_ENTER:
-                    gameBoy.input.toggleButton(JOYPAD::START, action == GLFW_PRESS);
+                    gameBoy.input.toggleButton(Enum::PadButton::START, action == GLFW_PRESS);
                     break;
                 case GLFW_KEY_SPACE:
-                    gameBoy.input.toggleButton(JOYPAD::SELECT, action == GLFW_PRESS);
+                    gameBoy.input.toggleButton(Enum::PadButton::SELECT, action == GLFW_PRESS);
                     break;
             }
         }
@@ -85,20 +84,20 @@ namespace GGB
         {
             for(int x = 0; x < 160; x++)
             {
-                Enums::GB_SHADE shadeData = gameBoy.ppu.backgroundData[y][x];
+                Enum::ColorShade shadeData = gameBoy.ppu.backgroundData[y][x];
                 switch(shadeData)
                 {
-                    case Enums::GB_SHADE::LIGHT_GRAY:
+                    case Enum::ColorShade::LIGHT_GRAY:
                         data[160*y + x] = glColorLightGray;
                         break;
-                    case Enums::GB_SHADE::DARK_GRAY:
+                    case Enum::ColorShade::DARK_GRAY:
                         data[160*y + x] = glColorDarkGray;
                         break;
-                    case Enums::GB_SHADE::BLACK:
+                    case Enum::ColorShade::BLACK:
                         data[160*y + x] = glColorBlack;
                         break;
                     default:
-                    case Enums::GB_SHADE::WHITE:
+                    case Enum::ColorShade::WHITE:
                         data[160*y + x] = glColorWhite;
                         break;
                 }
@@ -116,22 +115,22 @@ namespace GGB
         {
             for(int x = 0; x < 160; x++)
             {
-                Enums::GB_SHADE shadeData = gameBoy.ppu.spriteData[y][x];
+                Enum::ColorShade shadeData = gameBoy.ppu.spriteData[y][x];
                 switch(shadeData)
                 {
-                    case Enums::GB_SHADE::WHITE:
+                    case Enum::ColorShade::WHITE:
                         data[160*y + x] = glColorWhite;
                         break;
-                    case Enums::GB_SHADE::LIGHT_GRAY:
+                    case Enum::ColorShade::LIGHT_GRAY:
                         data[160*y + x] = glColorLightGray;
                         break;
-                    case Enums::GB_SHADE::DARK_GRAY:
+                    case Enum::ColorShade::DARK_GRAY:
                         data[160*y + x] = glColorDarkGray;
                         break;
-                    case Enums::GB_SHADE::BLACK:
+                    case Enum::ColorShade::BLACK:
                         data[160*y + x] = glColorBlack;
                         break;
-                    case Enums::GB_SHADE::TRANSPARENT:
+                    case Enum::ColorShade::TRANSPARENT:
                         data[160*y + x] = glColorTransparent;
                         break;
                 }

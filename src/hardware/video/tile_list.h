@@ -12,12 +12,6 @@ namespace GGB::Hardware::Video
         uint8_t data[8][8];
     };
 
-    enum class TILE_DATA_POSITION
-    {
-        TILE_DATA_0 = 0x8800,
-        TILE_DATA_1 = 0x8000
-    };
-
     class TileList
     {
         public:
@@ -28,7 +22,7 @@ namespace GGB::Hardware::Video
             Tile loadWindowTile(const uint8_t tileNr) const;
 
         private:
-            Tile loadTileFromMem(const TILE_DATA_POSITION start, const uint8_t tileNr, const int16_t tileMemStart) const;
+            Tile loadTileFromMem(const uint16_t startAddr, const uint8_t tileNr, const int16_t tileMemStart) const;
 
             Mmu& mmu;  
             Tile data0Cache[256], data1Cache[256];

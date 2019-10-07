@@ -9,20 +9,18 @@ namespace GGB::Hardware
 
     void Timer::cycle(uint8_t cycles)
     {    
-        using Enums::IO_REGISTER, Enums::INTERRUPT_FLAG, Enums::TIMER_FLAG;        
-
         // Read internal clock from memory
         // The upper 8 bits of the interal clock are the Timer Divider
         // Because we add the cycles to the complete internal clock, we don't
         // have to handle the divider register serperatly. It will get incremented
         // at the correct rate, if we just increment the internal clock.
-        uint16_t internalClock = (mmu.readIORegister(IO_REGISTER::REG_DIVIDER) << 8) 
-            | mmu.readIORegister(IO_REGISTER::REG_INTERNAL_CLOCK_LOW);
+        uint16_t internalClock = (mmu.read(Const::AddrRegDivider) << 8) 
+            | mmu.read(Const::AddrRegInternalClockLow);
         internalClock += cycles;
 
         // Write new value to internal clock
-        mmu.rawWrite(IO_REGISTER::REG_DIVIDER, (internalClock & 0xFF00) >> 8);
-        mmu.rawWrite(IO_REGISTER::REG_INTERNAL_CLOCK_LOW, internalClock & 0x00FF);
+        mmu.rawWrite(Const::AddrRegDivider, (internalClock & 0xFF00) >> 8);
+        mmu.rawWrite(Const::AddrRegInternalClockLow, internalClock & 0x00FF);
 
         handleTima(cycles, internalClock);
     }
@@ -36,11 +34,9 @@ namespace GGB::Hardware
     */
     void Timer::handleTima(uint8_t cycles, uint16_t internalClock)
     {
-        using Enums::IO_REGISTER, Enums::INTERRUPT_FLAG, Enums::TIMER_FLAG;
-
-        if(!mmu.readIORegisterBit(IO_REGISTER::REG_TAC, TIMER_FLAG::TIMER_START))
+        if(!mmu.readIORegisterBit(Const::AddrRegTAC, Const::FlagTimerStart))
             timaStarted = false;
-        else if(mmu.readIORegisterBit(IO_REGISTER::REG_TAC, TIMER_FLAG::TIMER_START))
+        else if(mmu.readIORegisterBit(Const::AddrRegTAC, Const::FlagTimerStart))
         {
             // If the timer just stared, we will save the clock count at start
             // This way we don't increment the timer to early, because the internal
@@ -55,7 +51,7 @@ namespace GGB::Hardware
                 previousClock = internalClock - 1;
             }
                     
-            uint16_t bitToSelect = (Constants::CPU_CYCLES / getTimerFrequency()) >> 1;
+            uint16_t bitToSelect = (Const::CyclesCpu / getTimerFrequency()) >> 1;
             for(int clock = previousClock + 1; clock <= internalClock; clock++)
             {
                 // Handle pending overflows, triggered by previous loops
@@ -63,9 +59,9 @@ namespace GGB::Hardware
                 bool currentPulse = clock & bitToSelect;
                 if(lastVisiblePulse && !currentPulse)
                 {                    
-                    uint8_t timerValue = mmu.readIORegister(IO_REGISTER::REG_TIMA) + 1;
+                    uint8_t timerValue = mmu.read(Const::AddrRegTIMA) + 1;
                     pendingOverflow = timerValue == 0x00;
-                    mmu.write(IO_REGISTER::REG_TIMA, timerValue);          
+                    mmu.write(Const::AddrRegTIMA, timerValue);          
                 }
                 lastVisiblePulse = currentPulse;
             }               
@@ -75,8 +71,8 @@ namespace GGB::Hardware
     uint32_t Timer::getTimerFrequency() const
     {
         uint32_t frequency = 0;
-        uint8_t regTac = mmu.readIORegister(Enums::IO_REGISTER::REG_TAC);
-        uint8_t setFrequency = (regTac & Enums::TIMER_FLAG::CLOCK_SELECT_HIGH) | (regTac & Enums::TIMER_FLAG::CLOCK_SELECT_LOW);
+        uint8_t regTac = mmu.read(Const::AddrRegTAC);
+        uint8_t setFrequency = (regTac & Const::FlagTimerClockModeHigh) | (regTac & Const::FlagTimerClockModeLow);
         switch(setFrequency)
         {
             case 0:
@@ -97,12 +93,11 @@ namespace GGB::Hardware
 
     void Timer::handleOverflow()
     {
-        using Enums::IO_REGISTER, Enums::INTERRUPT_FLAG, Enums::TIMER_FLAG;
         if(pendingOverflow)
         {
             pendingOverflow = false;
-            mmu.write(IO_REGISTER::REG_TIMA, mmu.readIORegister(IO_REGISTER::REG_TMA));
-            mmu.writeIORegisterBit(IO_REGISTER::REG_INTERRUPT_FLAG, INTERRUPT_FLAG::TIMER, true);
+            mmu.write(Const::AddrRegTIMA, mmu.read(Const::AddrRegTMA));
+            mmu.writeIORegisterBit(Const::AddrRegInterruptFlag, Const::FlagInterruptTimer, true);
         }
     }
 }

@@ -21,8 +21,8 @@ int main(int argc, char** args) {
     GGB::GameBoy gameBoy(cartridge);
 
     OpenGL::Window window("GGB", 
-        GGB::Constants::GAMEBOY_LCD_WIDTH * 2, 
-        GGB::Constants::GAMEBOY_LCD_HEIGHT * 2);
+        GGB::Const::LcdWidth * 2, 
+        GGB::Const::LcdHeight * 2);
         
     GGB::DebugScreen debugScreen(gameBoy.debugger);
     GGB::ComponentsScreen componentsScreen(gameBoy.debugger); 

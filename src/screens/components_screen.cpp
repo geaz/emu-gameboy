@@ -21,7 +21,7 @@ namespace GGB
         ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None);
         if(ImGui::BeginTabItem("Memory"))
         {
-            drawMemoryMap("Memory", memoryToolTips, Constants::MEM_SIZE, 
+            drawMemoryMap("Memory", memoryToolTips, Const::MemorySize, 
                 [this] (uint32_t address) -> uint8_t { return debugger.mmu.read(address, true); });
             ImGui::EndTabItem();
         }
@@ -35,7 +35,7 @@ namespace GGB
         }
         if(ImGui::BeginTabItem("Audio"))
         {           
-            ImGui::PlotLines("Channel 3 (Wave)", debugger.channel3Samples, IM_ARRAYSIZE(debugger.channel3Samples), NULL, NULL, -1.0f, 1.0f, ImVec2(0,80));
+            ImGui::PlotLines("Channel 3 (Wave)", debugger.channel3Samples, IM_ARRAYSIZE(debugger.channel3Samples), NULL, NULL, 0.0f, 1.0f, ImVec2(0,80));
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();

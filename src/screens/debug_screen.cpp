@@ -20,15 +20,15 @@ namespace GGB
 
     void DebugScreen::handleKeys(const int key, const int scancode, const int action, const int mods) 
     {
-        using Enums::CPU_STATE;
-        if(key == GLFW_KEY_N && (action == GLFW_PRESS || action == GLFW_REPEAT)) debugger.cpu.state = CPU_STATE::STEP;
-        if(key == GLFW_KEY_P && action == GLFW_PRESS) debugger.cpu.state = debugger.cpu.state == CPU_STATE::PAUSED ? CPU_STATE::RUNNING : CPU_STATE::PAUSED;
+        using Enum::CpuState;
+        if(key == GLFW_KEY_N && (action == GLFW_PRESS || action == GLFW_REPEAT)) debugger.cpu.state = CpuState::STEP;
+        if(key == GLFW_KEY_P && action == GLFW_PRESS) debugger.cpu.state = debugger.cpu.state == CpuState::PAUSED ? CpuState::RUNNING : CpuState::PAUSED;
     }
 
     void DebugScreen::update()
     { 
-        using Enums::CPU_STATE;
-        using Enums::CPU_FLAG;
+        using Enum::CpuState;
+        using Enum::CpuFlag;
 
         if(!GGB::ShowDebugScreen) return;
         ImGui::Begin("Debugger", &GGB::ShowDebugScreen, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar); 
@@ -48,10 +48,10 @@ namespace GGB
 
         ImGui::Text("CPU:");
         ImGui::SameLine(); 
-        if(debugger.cpu.state == CPU_STATE::RUNNING) ImGui::TextColored(ImVec4(0.00f, 0.42f, 1.00f, 1.00f), "RUNNING");
-        else if(debugger.cpu.state == CPU_STATE::PAUSED) ImGui::TextColored(ImVec4(1.00f, 0.48f, 0.00f, 1.00f), "PAUSED");
-        else if(debugger.cpu.state == CPU_STATE::INTERRUPT) ImGui::TextColored(ImVec4(1.00f, 0.00f, 0.97f, 1.00f), "INTERRUPT");
-        else if(debugger.cpu.state == CPU_STATE::ERROR) ImGui::TextColored(ImVec4(1.00f, 0.00f, 0.00f, 1.00f), "ERROR");
+        if(debugger.cpu.state == CpuState::RUNNING) ImGui::TextColored(ImVec4(0.00f, 0.42f, 1.00f, 1.00f), "RUNNING");
+        else if(debugger.cpu.state == CpuState::PAUSED) ImGui::TextColored(ImVec4(1.00f, 0.48f, 0.00f, 1.00f), "PAUSED");
+        else if(debugger.cpu.state == CpuState::INTERRUPT) ImGui::TextColored(ImVec4(1.00f, 0.00f, 0.97f, 1.00f), "INTERRUPT");
+        else if(debugger.cpu.state == CpuState::ERROR) ImGui::TextColored(ImVec4(1.00f, 0.00f, 0.00f, 1.00f), "ERROR");
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
         ImGui::Text("Next Instruction:");
@@ -80,17 +80,17 @@ namespace GGB
         ImGui::Text(rowLabel.str().c_str());
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
-        if(debugger.cpu.state == CPU_STATE::PAUSED)
+        if(debugger.cpu.state == CpuState::PAUSED)
         {
-            if(ImGui::Button("Play")) debugger.cpu.state = CPU_STATE::RUNNING;
+            if(ImGui::Button("Play")) debugger.cpu.state = CpuState::RUNNING;
             ImGui::SameLine(); 
-            if(ImGui::Button("Next")) debugger.cpu.state = CPU_STATE::STEP;
+            if(ImGui::Button("Next")) debugger.cpu.state = CpuState::STEP;
         }
-        else if(debugger.cpu.state == CPU_STATE::RUNNING || debugger.cpu.state == CPU_STATE::INTERRUPT)
+        else if(debugger.cpu.state == CpuState::RUNNING || debugger.cpu.state == CpuState::INTERRUPT)
         {
-            if(ImGui::Button("Pause")) debugger.cpu.state = CPU_STATE::PAUSED;
+            if(ImGui::Button("Pause")) debugger.cpu.state = CpuState::PAUSED;
         }
-        else if(debugger.cpu.state == CPU_STATE::ERROR)
+        else if(debugger.cpu.state == CpuState::ERROR)
         {
             ImGui::Button("Reset");
         }
@@ -101,10 +101,10 @@ namespace GGB
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
         ImGui::PushItemWidth(-15);
-        int fz = (int)debugger.cpu.getFlag(CPU_FLAG::Z_ZERO);
-        int fn = (int)debugger.cpu.getFlag(CPU_FLAG::N_SUBSTRACT);
-        int fh = (int)debugger.cpu.getFlag(CPU_FLAG::H_HALFCARRY);
-        int fc = (int)debugger.cpu.getFlag(CPU_FLAG::C_CARRY);
+        int fz = (int)debugger.cpu.f.readBit((uint8_t)CpuFlag::Z_ZERO);
+        int fn = (int)debugger.cpu.f.readBit((uint8_t)CpuFlag::N_SUBSTRACT);
+        int fh = (int)debugger.cpu.f.readBit((uint8_t)CpuFlag::H_HALFCARRY);
+        int fc = (int)debugger.cpu.f.readBit((uint8_t)CpuFlag::C_CARRY);
 
         ImGui::Columns(4, "flags0", false);
         ImGui::InputInt("Z", &fz, NULL, NULL, ImGuiInputTextFlags_ReadOnly); ImGui::NextColumn();

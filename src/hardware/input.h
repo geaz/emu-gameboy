@@ -3,24 +3,10 @@
 #define INPUT_H
 
 #include "memory/mmu.h"
+#include "../ggb_enums.h"
 
 namespace GGB
 {
-    namespace Enums
-    {
-        enum JOYPAD
-        {
-            DOWN = 128,
-            UP = 64,
-            LEFT = 32,
-            RIGHT = 16,
-            START = 8,
-            SELECT = 4,
-            B = 2,
-            A = 1,
-        };
-    }   
-
     namespace Hardware
     {
         class Input
@@ -29,7 +15,7 @@ namespace GGB
                 Input(Mmu& mmu);
 
                 void cycle();        
-                void toggleButton(const Enums::JOYPAD button, const bool pressed);
+                void toggleButton(const Enum::PadButton button, const bool pressed);
 
             private:
                 Mmu& mmu;

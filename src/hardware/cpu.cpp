@@ -10,8 +10,6 @@ namespace GGB::Hardware
 
     uint8_t Cpu::cycle() 
     {   
-        using GGB::Enums::CPU_STATE;
-
         uint8_t opCycles = 0;
         if(!halted)
         {   
@@ -22,18 +20,8 @@ namespace GGB::Hardware
         }    
         if(handleInterrupts()) nextInstruction = parseNextInstruction();
 
-        if(state == CPU_STATE::STEP) state = CPU_STATE::PAUSED;
+        if(state == Enum::CpuState::STEP) state = Enum::CpuState::PAUSED;
         return opCycles;
-    }
-
-    bool Cpu::getFlag(Enums::CPU_FLAG flag)
-    {
-        return f.readBit((uint8_t)flag);
-    }
-
-    void Cpu::setFlag(Enums::CPU_FLAG flag, bool value)
-    {
-        return f.writeBit((uint8_t)flag, value);
     }
 
     void Cpu::pushStack(uint16_t value)
@@ -52,58 +40,56 @@ namespace GGB::Hardware
 
     bool Cpu::handleInterrupts()
     {
-        using Enums::IO_REGISTER, Enums::INTERRUPT_FLAG, Enums::INTERRUPT_VECTOR;
-
         bool handledInterrupt = false;
         uint16_t interruptVector = 0;
         uint8_t interruptFlag = 0;
 
-        bool vBlankInterrupt = mmu.readIORegisterBit(IO_REGISTER::REG_INTERRUPT_ENABLE, INTERRUPT_FLAG::V_BLANK)
-                            && mmu.readIORegisterBit(IO_REGISTER::REG_INTERRUPT_FLAG, INTERRUPT_FLAG::V_BLANK);
-        bool lcdInterrupt = mmu.readIORegisterBit(IO_REGISTER::REG_INTERRUPT_ENABLE, INTERRUPT_FLAG::LCD)
-                        && mmu.readIORegisterBit(IO_REGISTER::REG_INTERRUPT_FLAG, INTERRUPT_FLAG::LCD);
-        bool timerInterrupt = mmu.readIORegisterBit(IO_REGISTER::REG_INTERRUPT_ENABLE, INTERRUPT_FLAG::TIMER)
-                            && mmu.readIORegisterBit(IO_REGISTER::REG_INTERRUPT_FLAG, INTERRUPT_FLAG::TIMER);
-        bool serialInterrupt = mmu.readIORegisterBit(IO_REGISTER::REG_INTERRUPT_ENABLE, INTERRUPT_FLAG::SERIAL)
-                            && mmu.readIORegisterBit(IO_REGISTER::REG_INTERRUPT_FLAG, INTERRUPT_FLAG::SERIAL);
-        bool joypadInterrupt = mmu.readIORegisterBit(IO_REGISTER::REG_INTERRUPT_ENABLE, INTERRUPT_FLAG::INPUT)
-                            && mmu.readIORegisterBit(IO_REGISTER::REG_INTERRUPT_FLAG, INTERRUPT_FLAG::INPUT);
+        bool vBlankInterrupt = mmu.readIORegisterBit(Const::AddrRegInterruptEnabled, Const::FlagInterruptVBlank)
+                            && mmu.readIORegisterBit(Const::AddrRegInterruptFlag, Const::FlagInterruptVBlank);
+        bool lcdInterrupt = mmu.readIORegisterBit(Const::AddrRegInterruptEnabled, Const::FlagInterruptLcd)
+                        && mmu.readIORegisterBit(Const::AddrRegInterruptFlag, Const::FlagInterruptLcd);
+        bool timerInterrupt = mmu.readIORegisterBit(Const::AddrRegInterruptEnabled, Const::FlagInterruptTimer)
+                            && mmu.readIORegisterBit(Const::AddrRegInterruptFlag, Const::FlagInterruptTimer);
+        bool serialInterrupt = mmu.readIORegisterBit(Const::AddrRegInterruptEnabled, Const::FlagInterruptSerial)
+                            && mmu.readIORegisterBit(Const::AddrRegInterruptFlag, Const::FlagInterruptSerial);
+        bool joypadInterrupt = mmu.readIORegisterBit(Const::AddrRegInterruptEnabled, Const::FlagInterruptInput)
+                            && mmu.readIORegisterBit(Const::AddrRegInterruptFlag, Const::FlagInterruptInput);
 
         if(vBlankInterrupt)
         {
-            interruptVector = INTERRUPT_VECTOR::V_V_BLANK;
-            interruptFlag = INTERRUPT_FLAG::V_BLANK;
+            interruptVector = Const::AddrVectorVBlank;
+            interruptFlag = Const::FlagInterruptVBlank;
             halted = false;
         } 
         else if(lcdInterrupt)
         {
-            interruptVector = INTERRUPT_VECTOR::V_LCD;
-            interruptFlag = INTERRUPT_FLAG::LCD;
+            interruptVector = Const::AddrVectorLcd;
+            interruptFlag = Const::FlagInterruptLcd;
             halted = false;
         } 
         else if(timerInterrupt)
         {
-            interruptVector = INTERRUPT_VECTOR::V_TIMER;
-            interruptFlag = INTERRUPT_FLAG::TIMER;
+            interruptVector = Const::AddrVectorTimer;
+            interruptFlag = Const::FlagInterruptTimer;
             halted = false;
         }
         else if(serialInterrupt)
         {
-            interruptVector = INTERRUPT_VECTOR::V_SERIAL;
-            interruptFlag = INTERRUPT_FLAG::SERIAL;
+            interruptVector = Const::AddrVectorSerial;
+            interruptFlag = Const::FlagInterruptSerial;
             halted = false;
         }
         else if(joypadInterrupt)
         {
-            interruptVector = INTERRUPT_VECTOR::V_INPUT;
-            interruptFlag = INTERRUPT_FLAG::INPUT;
+            interruptVector = Const::AddrVectorInput;
+            interruptFlag = Const::FlagInterruptInput;
             halted = false;
         }
         
         if(interruptVector != 0 && interruptMasterFlag)
         {
             interruptMasterFlag = false;
-            mmu.writeIORegisterBit(IO_REGISTER::REG_INTERRUPT_FLAG, interruptFlag, false);
+            mmu.writeIORegisterBit(Const::AddrRegInterruptFlag, interruptFlag, false);
             pushStack(pc.read());
             pc = interruptVector;
             handledInterrupt = true;

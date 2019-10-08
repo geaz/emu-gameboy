@@ -32,11 +32,18 @@ namespace GGB::Hardware
         private:          
             void checkStart();  
             void checkRestartTrigger();
+            void cycleLength(uint8_t cycles);
+            void cycleEnvelope(uint8_t cycles);
+            void cycleSweep(uint8_t cycles);
+            void cycleChannels(uint8_t cycles);
+            void cycleSamples(uint8_t cycles);
 
             Mmu& mmu;
             std::ofstream outputFile;
             uint32_t cycleCount = 0;
             uint32_t cycleCountLength = 0;
+            uint32_t cycleCountEnvelope = 0;
+            uint32_t cycleCountSweep = 0;
             uint16_t sampleCounter = 0;
 
             MemoryWriteEvent lastRelevantMemoryEvent;

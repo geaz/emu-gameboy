@@ -27,6 +27,8 @@ namespace GGB::Const
     inline const uint16_t CyclesOam = 80;         // Mode 2 (OAM Search) 80 cycles per Scanline
     inline const uint16_t CyclesTransfer = 173;   // Mode 3 (Transfer LCD) 173 cycles per Scanline
     inline const uint16_t Cycles256Hz = CyclesCpu / 256;
+    inline const uint16_t Cycles128Hz = CyclesCpu / 128;
+    inline const uint32_t Cycles64Hz = CyclesCpu / 64;
     inline const uint16_t CyclesAudioSample = CyclesCpu / AudioSampleRate; 
     
     // We take the VBlank to syncronize the clock
@@ -54,11 +56,24 @@ namespace GGB::Const
     // APU Addresses
     inline const uint16_t AddrWaveRamStart = 0xFF30;
     inline const uint16_t AddrWaveRamStop = 0xFF3F;
+    inline const uint16_t AddrRegChannel1Sweep = 0xFF10;
+    inline const uint16_t AddrRegChannel1LengthDuty = 0xFF11;
+    inline const uint16_t AddrRegChannel1Envelope = 0xFF12;
+    inline const uint16_t AddrRegChannel1FreqLow8Bit = 0xFF13;
+    inline const uint16_t AddrRegChannel1Data = 0xFF14;    
+    inline const uint16_t AddrRegChannel2LengthDuty = 0xFF16;
+    inline const uint16_t AddrRegChannel2Envelope = 0xFF17;
+    inline const uint16_t AddrRegChannel2FreqLow8Bit = 0xFF18;
+    inline const uint16_t AddrRegChannel2Data = 0xFF19;
     inline const uint16_t AddrRegChannel3On = 0xFF1A;
     inline const uint16_t AddrRegChannel3Length = 0xFF1B;
     inline const uint16_t AddrRegChannel3Level = 0xFF1C;
     inline const uint16_t AddrRegChannel3FreqLow8Bit = 0xFF1D;
     inline const uint16_t AddrRegChannel3Data = 0xFF1E;
+    inline const uint16_t AddrRegChannel4Length = 0xFF20;
+    inline const uint16_t AddrRegChannel4Envelope = 0xFF21;
+    inline const uint16_t AddrRegChannel4Counter = 0xFF22;
+    inline const uint16_t AddrRegChannel4Data = 0xFF23;
     // Volume Left/Right
     inline const uint16_t AddrRegOutputControl = 0xFF24;
     //  Selection of Sound output terminal
@@ -138,14 +153,24 @@ namespace GGB::Const
     inline const uint8_t FlagSpriteAttrFlipX = 32;      // Bit5   X flip          (0=Normal, 1=Horizontally mirrored)                                                       
     inline const uint8_t FlagSpriteAttrPaletteNr = 16;  // Bit4   Palette number  **Non CGB Mode Only** (0=OBP0, 1=OBP1)    
 
-    inline const uint8_t FlagChannel3On = 128;          // Bit 7 - Sound Channel 3 Off  (0=Stop, 1=Playback)  (Read/Write)
-    inline const uint8_t FlagChannel3Output = 96;       // Bit 6-5 - Select output level (Read/Write)
-
+    inline const uint8_t FlagChannelSweepTime = 112;    
+    inline const uint8_t FlagChannelSweepDecrease = 8;  
+    inline const uint8_t FlagChannelSweepShift = 7;   
+    inline const uint8_t FlagChannelDuty = 192;
+    inline const uint8_t FlagChannelLengthData = 63;           
+    inline const uint8_t FlagChannelEnvelopeVolumeInt = 240;
+    inline const uint8_t FlagChannelEnvelopeDecrease = 8;
+    inline const uint8_t FlagChannelEnvelopeSweep = 7;      
     inline const uint8_t FlagChannelRestart = 128;    // Bit 7   - Initial (1=Restart Sound)     (Write Only)
     inline const uint8_t FlagChannelLengthStop = 64;  // Bit 6   - Counter/consecutive selection (Read/Write)
                                                       // (1=Stop output when length in NR31 expires)
     inline const uint8_t FlagChannelFreq = 7;         // Bit 2-0 - Frequency's higher 3 bits (x) (Write Only)
     inline const uint8_t FlagOutputVolume = 7;  
+    inline const uint8_t FlagChannel3On = 128;          // Bit 7 - Sound Channel 3 Off  (0=Stop, 1=Playback)  (Read/Write)
+    inline const uint8_t FlagChannel3Output = 96;       // Bit 6-5 - Select output level (Read/Write)
+    inline const uint8_t FlagChannel4ShiftFreq = 240;
+    inline const uint8_t FlagChannel4CounterStep = 8;
+    inline const uint8_t FlagChannel4DividingRatio = 7;      
 
     inline const uint8_t FlagChannel4ToOutput2 = 128; // Bit 7 - Output sound 4 to SO2 terminal
     inline const uint8_t FlagChannel3ToOutput2 = 64;  // Bit 6 - Output sound 3 to SO2 terminal

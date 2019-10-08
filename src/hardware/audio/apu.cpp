@@ -4,32 +4,82 @@
 
 namespace GGB::Hardware
 {
-    Apu::Apu(Mmu& mmu) : mmu(mmu), waveChannel(mmu)
+    Apu::Apu(Mmu& mmu) 
+        : mmu(mmu), waveChannel(mmu)
     {         
         outputFile.open ("test.txt");
-        for(int i = 0; i < Const::AudioBufferFrames; i++)
-        {
-            waveDataLeft[i] = 0;
-            waveDataRight[i] = 0;
-        }
+        memset(waveDataLeft, 0, Const::AudioBufferFrames);
+        memset(waveDataRight, 0, Const::AudioBufferFrames);
     }
 
     void Apu::cycle(uint8_t cycles)
     {
-        cycleCount += cycles;
-        cycleCountLength += cycles;
-        
         checkStart();
         checkRestartTrigger();
 
+        cycleLength(cycles);
+        cycleEnvelope(cycles);
+        cycleSweep(cycles);
+        cycleChannels(cycles);
+        cycleSamples(cycles);
+    }
+
+    void Apu::checkStart()
+    {
+        bool channel3On = mmu.readIORegisterBit(Const::AddrRegChannel3On, Const::FlagChannel3On) && debugWaveEnabled;
+        if(channel3On) waveChannel.start();
+        else waveChannel.stop();
+    }
+
+    void Apu::checkRestartTrigger()
+    {
+        if(mmu.lastWriteEvent.eventTime != lastRelevantMemoryEvent.eventTime)
+        {
+            MemoryWriteEvent writeEvent = mmu.lastWriteEvent;
+            if(writeEvent.address == Const::AddrRegChannel3Data && writeEvent.value & Const::FlagChannelRestart)
+            {
+                lastRelevantMemoryEvent = mmu.lastWriteEvent;
+                waveChannel.restart();
+            }
+        }
+    }
+
+    void Apu::cycleLength(uint8_t cycles)
+    {        
+        cycleCountLength += cycles;
         while(cycleCountLength >= Const::Cycles256Hz)
         {
             waveChannel.lengthTick();
             cycleCountLength -= Const::Cycles256Hz;
         }
+    }
 
+    void Apu::cycleEnvelope(uint8_t cycles)
+    {        
+        cycleCountEnvelope += cycles;
+        while(cycleCountEnvelope >= Const::Cycles64Hz)
+        {
+            cycleCountEnvelope -= Const::Cycles64Hz;
+        }
+    }
+
+    void Apu::cycleSweep(uint8_t cycles)
+    {        
+        cycleCountSweep += cycles;
+        while(cycleCountSweep >= Const::Cycles128Hz)
+        {
+            cycleCountSweep -= Const::Cycles128Hz;
+        }
+    }
+
+    void Apu::cycleChannels(uint8_t cycles)
+    {        
         waveChannel.cycle(cycles);
-        
+    }
+
+    void Apu::cycleSamples(uint8_t cycles)
+    {
+        cycleCount += cycles;
         while(cycleCount >= Const::CyclesAudioSample)
         {
             uint8_t volumeReg = mmu.read(Const::AddrRegOutputControl);
@@ -54,26 +104,6 @@ namespace GGB::Hardware
                 sampleCounter = 0;
             }
             cycleCount -= Const::CyclesAudioSample;
-        }
-    }
-
-    void Apu::checkStart()
-    {
-        bool channel3On = mmu.readIORegisterBit(Const::AddrRegChannel3On, Const::FlagChannel3On) && debugWaveEnabled;
-        if(channel3On) waveChannel.start();
-        else waveChannel.stop();
-    }
-
-    void Apu::checkRestartTrigger()
-    {
-        if(mmu.lastWriteEvent.eventTime != lastRelevantMemoryEvent.eventTime)
-        {
-            MemoryWriteEvent writeEvent = mmu.lastWriteEvent;
-            if(writeEvent.address == Const::AddrRegChannel3Data && writeEvent.value & Const::FlagChannelRestart)
-            {
-                lastRelevantMemoryEvent = mmu.lastWriteEvent;
-                waveChannel.restart();
-            }
         }
     }
 }

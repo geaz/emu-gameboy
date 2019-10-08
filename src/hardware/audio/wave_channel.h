@@ -4,8 +4,6 @@
 
 #include <cstdint>
 #include "../memory/mmu.h"
-#include "apu_enums.h"
-#include "apu_consts.h"
 
 namespace GGB::Hardware::Audio
 {
@@ -14,25 +12,29 @@ namespace GGB::Hardware::Audio
         public:
             WaveChannel(Mmu& mmu);
 
-            void cycle(uint8_t cycles);
-            void updateSample();
+            void start();
+            void stop();
+            void restart();
+            void cycle(uint8_t cycles);            
             void lengthTick();
 
-            uint8_t currentSample = 8;
+            uint8_t currentSample = 0;
 
         private:
-            void updateChannelInfo();
+            uint16_t getFrequency();
+            void updateSamples();
 
             Mmu& mmu;
-
-            uint8_t length = 0, lengthCounter = 0;
-            uint16_t frequency = 0;
-            bool isOn = false, lengthStop = false, restart = false;
-            Enums::OUTPUT_LEVEL outputLevel = Enums::OUTPUT_LEVEL::MUTE;
-
-            uint16_t cycleCount = 0;
-            uint32_t cyclesPerTick = 0;
+            
+            bool isEnabled = false;
+            bool isRunning = false;
+            bool lengthStop = false;
+            uint32_t length = 0;
             uint16_t sampleIndex = 0;
+            Enum::AudioLevel outputLevel = Enum::AudioLevel::MUTE;            
+
+            uint16_t cycleSampleUpdate = 0;
+            uint16_t cycleCount = 0;
     };
 }
 

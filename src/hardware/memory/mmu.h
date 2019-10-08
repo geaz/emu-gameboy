@@ -2,6 +2,7 @@
 #ifndef MMU_H
 #define MMU_H
 
+#include <chrono>
 #include "../cartridge.h"
 #include "../../ggb_enums.h"
 #include "../../ggb_constants.h"
@@ -10,6 +11,13 @@ namespace GGB
 {
     namespace Hardware
     {
+        struct MemoryWriteEvent
+        {
+            uint16_t address;
+            uint8_t value;
+            std::chrono::time_point<std::chrono::high_resolution_clock> eventTime;
+        };
+
         class Mmu
         {
             public:
@@ -25,6 +33,8 @@ namespace GGB
 
                 Enum::LcdMode readLcdMode() const;
                 void writeLcdMode(const Enum::LcdMode lcdMode);
+
+                MemoryWriteEvent lastWriteEvent;
 
             private:
                 Cartridge& cartridge;

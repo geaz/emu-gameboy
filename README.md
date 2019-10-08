@@ -27,6 +27,7 @@ Use other great emulators for this purpose. For example:
 Primary aims were:
 - get a common understanding of emulation and the interaction of the components
 - create a **interpreter mode** CPU and a **JIT mode** CPU, to learn about JIT
+- learn a bit about sound programming by implementing the APU
 
 Further more I wanted to get the CPU to do its work correctly, but I did not want to get it as accurate as possible.
 Thats why this emulator uses a rather simple cycle count method to keep the components in sync (Components syned after each instruction).
@@ -59,7 +60,7 @@ The top *instruction_set* class contains two maps including all the different op
 
 **WARNING:** 
 
-*The Pastraiser OpCode Table has a few bugs. 0xE2 and 0xF2 are only one byte long! The Carry Flag indicator for the Right Shifting operations seem to be wrong, too. CBxBit 16 Bit operations are only 12 cycles, not 16! Just use [this](https://izik1.github.io/gbops/) more accurate table by izik1, if you need it!*
+*The Pastraiser OpCode Table has a few bugs. 0xE2 and 0xF2 are only one byte long! The Carry Flag indicator for the Right Shifting operations seems to be wrong, too. CBxBit 16 Bit operations are only 12 cycles, not 16! Just use [this](https://izik1.github.io/gbops/) more accurate table by izik1, if you need it!*
 
 ![instruction_set](pics/gen-instruction-set.png)
 
@@ -81,10 +82,6 @@ struct Instruction
     //TODO OpcodeFunc? eecuteJit;   // Function Pointer to execute jit mode for given opcode
 };
 ```
-
-## TODOs
-- Implement Graphics    (WIP)
-- Implement JIT
 
 ## Ressources
 

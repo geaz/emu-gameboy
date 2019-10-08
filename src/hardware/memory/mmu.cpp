@@ -7,8 +7,8 @@ namespace GGB::Hardware
 {
     Mmu::Mmu(Cartridge& cartridge) : cartridge(cartridge) { }
 
-    uint8_t Mmu::read(const uint16_t address, const bool ppuAccess) const 
-    {     
+    uint8_t Mmu::read(const uint16_t address, const bool ppuAccess) const
+    {   
         // VRAM Access through the PPU. CPU is not allowed to access it directly.
         // PPU Mode has to be checked, wether the CPU is currently allowed to access it
         // ppuAccess is able to overwrite this behaviour. This way it is possible 
@@ -34,6 +34,8 @@ namespace GGB::Hardware
 
     void Mmu::write(const uint16_t address, const uint8_t value) 
     {
+        lastWriteEvent = { address, value, std::chrono::high_resolution_clock::now() };
+
         // If writing to LDCY I/O register, reset it
         if(address == Const::AddrRegLcdY) memory[address] = 0;
         // If writing to the Timer Divider, it also reset the internal clock!

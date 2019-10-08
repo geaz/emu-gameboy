@@ -17,7 +17,7 @@ namespace GGB::Const
     inline const uint8_t AudioOutputQuantity = 2;
     inline const uint32_t AudioSampleRate = 44100;
     inline const uint16_t AudioBufferFrames = 1024;
-    inline const uint8_t AudioWaveLengthDefault = 255; // Default value for Wave Channel (see https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware)
+    inline const uint16_t AudioWaveLength = 256; // Value for Wave Channel (see https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware)
 
     // Timing Consts
     inline const uint32_t CyclesCpu = 4194304;
@@ -58,9 +58,10 @@ namespace GGB::Const
     inline const uint16_t AddrRegChannel3Length = 0xFF1B;
     inline const uint16_t AddrRegChannel3Level = 0xFF1C;
     inline const uint16_t AddrRegChannel3FreqLow8Bit = 0xFF1D;
-    inline const uint16_t AddrRegChannel3FreqData = 0xFF1E;
+    inline const uint16_t AddrRegChannel3Data = 0xFF1E;
     inline const uint16_t AddrRegOutputControl = 0xFF24;
     inline const uint16_t AddrRegChannelControl = 0xFF25;
+    inline const uint16_t AddrRegSoundControl = 0xFF26;
 
     // Register Addresses
     inline const uint16_t AddrRegInput = 0xFF00;
@@ -161,6 +162,12 @@ namespace GGB::Const
     inline const uint8_t FlagChannel3ToOutput1 = 4;   // Bit 2 - Output sound 3 to SO1 terminal
     inline const uint8_t FlagChannel2ToOutput1 = 2;   // Bit 1 - Output sound 2 to SO1 terminal
     inline const uint8_t FlagChannel1ToOutput1 = 1;   // Bit 0 - Output sound 1 to SO1 terminal
+
+    inline const uint8_t FlagSoundAllOn = 128;  // Bit 7 - All sound on/off  (0: stop all sound circuits) (Read/Write)
+    inline const uint8_t FlagSound4On = 4;      // Bit 3 - Sound 4 ON flag (Read Only)
+    inline const uint8_t FlagSound3On = 2;      // Bit 2 - Sound 3 ON flag (Read Only)
+    inline const uint8_t FlagSound2On = 1;      // Bit 1 - Sound 2 ON flag (Read Only)
+    inline const uint8_t FlagSound1On = 0;      // Bit 0 - Sound 1 ON flag (Read Only)
 
     // Byte Positions
     inline const uint8_t ByteSpriteAttributes = 3;

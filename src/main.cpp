@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "dac.h"
 #include "opengl/window.h"
 #include "hardware/gameboy.h"
 #include "hardware/cartridge.h"
@@ -27,6 +28,8 @@ int main(int argc, char** args) {
     GGB::DebugScreen debugScreen(gameBoy.debugger);
     GGB::ComponentsScreen componentsScreen(gameBoy.debugger); 
     GGB::GameBoyScreen gameBoyScreen(gameBoy);   
+
+    GGB::Dac dac(gameBoy.apu);
 
     window.addScreen(&debugScreen);
     window.addScreen(&componentsScreen);

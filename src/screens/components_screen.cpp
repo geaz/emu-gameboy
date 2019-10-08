@@ -35,7 +35,10 @@ namespace GGB
         }
         if(ImGui::BeginTabItem("Audio"))
         {           
-            ImGui::PlotLines("Channel 3 (Wave)", debugger.channel3Samples, IM_ARRAYSIZE(debugger.channel3Samples), NULL, NULL, 0.0f, 1.0f, ImVec2(0,80));
+            ImGui::Checkbox("Channel 3 (Wave)", &debugger.apu.debugWaveEnabled);
+            ImGui::PushItemWidth(-25);
+            ImGui::PlotLines("", debugger.wave3Right, IM_ARRAYSIZE(debugger.wave3Right), NULL, NULL, -1.0f, 1.0f, ImVec2(0,80));
+            ImGui::PopItemWidth();
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();

@@ -34,9 +34,7 @@ namespace GGB::Hardware::Audio
         sampleIndex = 0;
 
         uint8_t levelReg = mmu.read(Const::AddrRegChannel3Level);
-        outputLevel = (Enum::AudioLevel)
-            (((levelReg & Const::FlagChannel3OutputHigh) >> 5)
-            |((levelReg & Const::FlagChannel3OutputLow) >> 5));
+        outputLevel = (Enum::AudioLevel) ((levelReg & Const::FlagChannel3Output) >> 5);
     }
 
     void WaveChannel::cycle(uint8_t cycles)
@@ -62,10 +60,7 @@ namespace GGB::Hardware::Audio
     {
         uint8_t frequencyData = mmu.read(Const::AddrRegChannel3Data);
         uint16_t frequency = mmu.read(Const::AddrRegChannel3FreqLow8Bit);
-        frequency |= 
-            ((frequencyData & Const::FlagChannelFreqHigh)
-            |(frequencyData & Const::FlagChannelFreqMid)
-            |(frequencyData & Const::FlagChannelFreqLow)) << 8;
+        frequency |= (frequencyData & Const::FlagChannelFreq) << 8;
         return frequency;
     }
 
@@ -80,7 +75,7 @@ namespace GGB::Hardware::Audio
         currentSample = newSample;        
         if(outputLevel != Enum::AudioLevel::MUTE)
             currentSample = currentSample >> (static_cast<uint8_t>(outputLevel) - 1);
-        if(!isEnabled || !isRunning)
+        if(!isEnabled || !isRunning || outputLevel == Enum::AudioLevel::MUTE)
             currentSample = 0;
     }
 }

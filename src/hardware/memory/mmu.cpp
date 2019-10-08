@@ -104,7 +104,7 @@ namespace GGB::Hardware
     void Mmu::writeLcdMode(const Enum::LcdMode lcdMode)
     {
         uint8_t lcdModeValue = static_cast<uint8_t>(lcdMode);
-        writeIORegisterBit(Const::AddrRegLcdStatus, Const::FlagLcdStatusModeHight, (lcdModeValue >> 1) & 0x1);
+        writeIORegisterBit(Const::AddrRegLcdStatus, Const::FlagLcdStatusModeHigh, (lcdModeValue >> 1) & 0x1);
         writeIORegisterBit(Const::AddrRegLcdStatus, Const::FlagLcdStatusModeLow, lcdModeValue & 0x1);
         currentPpuMode = lcdMode;
     }

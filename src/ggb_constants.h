@@ -59,8 +59,11 @@ namespace GGB::Const
     inline const uint16_t AddrRegChannel3Level = 0xFF1C;
     inline const uint16_t AddrRegChannel3FreqLow8Bit = 0xFF1D;
     inline const uint16_t AddrRegChannel3Data = 0xFF1E;
+    // Volume Left/Right
     inline const uint16_t AddrRegOutputControl = 0xFF24;
+    //  Selection of Sound output terminal
     inline const uint16_t AddrRegChannelControl = 0xFF25;
+    //  Sound on/off
     inline const uint16_t AddrRegSoundControl = 0xFF26;
 
     // Register Addresses
@@ -101,8 +104,7 @@ namespace GGB::Const
     inline const uint8_t FlagPadDirectionSet = 16;    
 
     inline const uint8_t FlagTimerStart = 4;
-    inline const uint8_t FlagTimerClockModeHigh = 2;
-    inline const uint8_t FlagTimerClockModeLow = 1;
+    inline const uint8_t FlagTimerClockMode = 3;
 
     inline const uint8_t FlagInterruptInput = 16;    
     inline const uint8_t FlagInterruptSerial = 8;
@@ -124,7 +126,7 @@ namespace GGB::Const
     inline const uint8_t FlagLcdStatusVBlankInterruptOn = 16;   // Bit 4 - Mode 1 V-Blank Interrupt     (1=Enable) (Read/Write)
     inline const uint8_t FlagLcdStatusHBlankInterruptOn = 8;    // Bit 3 - Mode 0 H-Blank Interrupt     (1=Enable) (Read/Write)
     inline const uint8_t FlagLcdStatusCoincidence = 4;          // Bit 2 - Coincidence Flag  (0:LYC<>LY, 1:LYC=LY) (Read Only)
-    inline const uint8_t FlagLcdStatusModeHight = 2;            //Bit 1-0 - Mode Flag       (Mode 0-3, see below) (Read Only)
+    inline const uint8_t FlagLcdStatusModeHigh = 2;             //Bit 1-0 - Mode Flag       (Mode 0-3, see below) (Read Only)
     inline const uint8_t FlagLcdStatusModeLow = 1;              //        00: During H-Blank
                                                                 //        01: During V-Blank
                                                                 //        10: During Searching OAM-RAM
@@ -137,22 +139,13 @@ namespace GGB::Const
     inline const uint8_t FlagSpriteAttrPaletteNr = 16;  // Bit4   Palette number  **Non CGB Mode Only** (0=OBP0, 1=OBP1)    
 
     inline const uint8_t FlagChannel3On = 128;          // Bit 7 - Sound Channel 3 Off  (0=Stop, 1=Playback)  (Read/Write)
-    inline const uint8_t FlagChannel3OutputHigh = 64;   // Bit 6-5 - Select output level (Read/Write)
-    inline const uint8_t FlagChannel3OutputLow = 32;
+    inline const uint8_t FlagChannel3Output = 96;       // Bit 6-5 - Select output level (Read/Write)
 
     inline const uint8_t FlagChannelRestart = 128;    // Bit 7   - Initial (1=Restart Sound)     (Write Only)
     inline const uint8_t FlagChannelLengthStop = 64;  // Bit 6   - Counter/consecutive selection (Read/Write)
                                                       // (1=Stop output when length in NR31 expires)
-    inline const uint8_t FlagChannelFreqHigh = 4;     // Bit 2-0 - Frequency's higher 3 bits (x) (Write Only)
-    inline const uint8_t FlagChannelFreqMid = 2;
-    inline const uint8_t FlagChannelFreqLow = 1;
-
-    inline const uint8_t FlagOutput2VolumeHigh = 64;
-    inline const uint8_t FlagOutput2VolumeMid = 32;
-    inline const uint8_t FlagOutput2VolumeLow = 16;
-    inline const uint8_t FlagOutput1VolumeHigh = 4;
-    inline const uint8_t FlagOutput1VolumeMid = 2;
-    inline const uint8_t FlagOutput1VolumeLow = 1;    
+    inline const uint8_t FlagChannelFreq = 7;         // Bit 2-0 - Frequency's higher 3 bits (x) (Write Only)
+    inline const uint8_t FlagOutputVolume = 7;  
 
     inline const uint8_t FlagChannel4ToOutput2 = 128; // Bit 7 - Output sound 4 to SO2 terminal
     inline const uint8_t FlagChannel3ToOutput2 = 64;  // Bit 6 - Output sound 3 to SO2 terminal

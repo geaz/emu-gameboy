@@ -25,8 +25,9 @@ namespace GGB
             Hardware::Cpu& cpu; 
             Hardware::Apu& apu;
 
-            float channel3Samples[100000];
-            
+            float waveLeft[Const::AudioBufferFrames];
+            float wave3Right[Const::AudioBufferFrames];
+
         private:            
             uint32_t channel3SampleCount = 0;
     };

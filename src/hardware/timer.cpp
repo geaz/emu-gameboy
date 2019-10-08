@@ -72,7 +72,7 @@ namespace GGB::Hardware
     {
         uint32_t frequency = 0;
         uint8_t regTac = mmu.read(Const::AddrRegTAC);
-        uint8_t setFrequency = (regTac & Const::FlagTimerClockModeHigh) | (regTac & Const::FlagTimerClockModeLow);
+        uint8_t setFrequency = regTac & Const::FlagTimerClockMode;
         switch(setFrequency)
         {
             case 0:

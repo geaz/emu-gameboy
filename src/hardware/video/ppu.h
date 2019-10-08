@@ -25,8 +25,6 @@ namespace GGB
 
                 Enum::ColorShade spriteData[144][160];
                 Enum::ColorShade backgroundData[144][160];
-                Enum::ColorShade spriteBuffer[144][160];
-                Enum::ColorShade backgroundBuffer[144][160];
 
             private:
                 void processOam();
@@ -44,8 +42,10 @@ namespace GGB
                 Video::SpriteList spriteList;   
                 Video::ColorPalettes colorPalettes;
                 Video::BackgroundMaps backgroundMaps;
-
                 Video::BackgroundMap currentBackgroundMap;
+                
+                Enum::ColorShade spriteBuffer[144][160];
+                Enum::ColorShade backgroundBuffer[144][160];
 
                 long cycleCount = 0;
         };

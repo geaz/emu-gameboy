@@ -24,15 +24,20 @@ namespace GGB::Hardware
 
             Audio::WaveChannel waveChannel;
 
-            uint16_t sampleCounter = 0;
+            bool debugWaveEnabled = true;
+
             uint8_t waveDataRight[Const::AudioBufferFrames];
             uint8_t waveDataLeft[Const::AudioBufferFrames];
 
-        private:            
+        private:          
+            void checkStart();  
+            void checkRestartTrigger();
+
             Mmu& mmu;
             std::ofstream outputFile;
             uint32_t cycleCount = 0;
             uint32_t cycleCountLength = 0;
+            uint16_t sampleCounter = 0;
 
             MemoryWriteEvent lastRelevantMemoryEvent;
 

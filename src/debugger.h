@@ -25,11 +25,21 @@ namespace GGB
             Hardware::Cpu& cpu; 
             Hardware::Apu& apu;
 
-            float waveLeft[Const::AudioBufferFrames];
-            float wave3Right[Const::AudioBufferFrames];
+            char breakPoint[4] = "";
 
-        private:            
-            uint32_t channel3SampleCount = 0;
+            float square1Left[Const::AudioBufferFrames];
+            float square1Right[Const::AudioBufferFrames];
+            float square2Left[Const::AudioBufferFrames];
+            float square2Right[Const::AudioBufferFrames];
+            float waveLeft[Const::AudioBufferFrames];
+            float waveRight[Const::AudioBufferFrames];
+            float noiseLeft[Const::AudioBufferFrames];
+            float noiseRight[Const::AudioBufferFrames];
+
+        private:          
+            void updateWaves();
+
+            uint32_t sampleCount = 0;
     };
 }
 

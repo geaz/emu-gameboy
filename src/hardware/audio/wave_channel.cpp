@@ -35,19 +35,8 @@ namespace GGB::Hardware::Audio
 
         uint8_t levelReg = mmu.read(Const::AddrRegChannel3Level);
         outputLevel = (Enum::AudioLevel) ((levelReg & Const::FlagChannel3Output) >> 5);
-    }
 
-    void WaveChannel::cycle(uint8_t cycles)
-    {   
-        cycleCount += cycles;
-        if(cycleCount >= cycleSampleUpdate)
-        {
-            sampleIndex++;
-            if(sampleIndex > 31) sampleIndex = 0;
-            
-            updateSamples();
-            cycleCount -= cycleSampleUpdate;
-        } 
+        updateSample();
     }
 
     void WaveChannel::lengthTick()
@@ -56,15 +45,28 @@ namespace GGB::Hardware::Audio
         else if(length > 0) length--;       
     }
 
-    uint16_t WaveChannel::getFrequency()
+    void WaveChannel::cycle(const uint8_t cycles)
+    {   
+        cycleCount += cycles;
+        if(cycleCount >= cycleSampleUpdate)
+        {
+            sampleIndex++;
+            if(sampleIndex > 31) sampleIndex = 0;
+            
+            updateSample();
+            cycleCount -= cycleSampleUpdate;
+        } 
+    }
+
+    uint16_t WaveChannel::getFrequency() const
     {
         uint8_t frequencyData = mmu.read(Const::AddrRegChannel3Data);
-        uint16_t frequency = mmu.read(Const::AddrRegChannel3FreqLow8Bit);
+        uint16_t frequency = mmu.read( Const::AddrRegChannel3FreqLow8Bit);
         frequency |= (frequencyData & Const::FlagChannelFreq) << 8;
         return frequency;
     }
 
-    void WaveChannel::updateSamples()
+    void WaveChannel::updateSample()
     {
         // Each byte in the Wave RAM holds two 2 4-bit samples
         uint8_t sampleByte = mmu.read(Const::AddrWaveRamStart + (sampleIndex / 2));

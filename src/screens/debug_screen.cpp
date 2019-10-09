@@ -32,7 +32,7 @@ namespace GGB
 
         if(!GGB::ShowDebugScreen) return;
         ImGui::Begin("Debugger", &GGB::ShowDebugScreen, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar); 
-        ImGui::SetWindowSize(ImVec2(275, 420), ImGuiCond_Always);
+        ImGui::SetWindowSize(ImVec2(275, 440), ImGuiCond_Always);
 
         if (ImGui::BeginMenuBar())
         {

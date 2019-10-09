@@ -1,5 +1,8 @@
 #include "debugger.h"
 
+#include "ggb_enums.h"
+#include "screens/string_helper.h"
+
 namespace GGB
 {
     Debugger::Debugger(Hardware::Cartridge& cartridge, Hardware::Mmu& mmu, 
@@ -8,7 +11,21 @@ namespace GGB
 
     void Debugger::cycle()
     {
-        wave3Right[channel3SampleCount++] = (float)(apu.waveChannel.currentSample - 8) / 8;
-        if(channel3SampleCount > 1000000) channel3SampleCount = 0; 
+        updateWaves();
+    }
+
+    void Debugger::updateWaves()
+    {
+        square1Left[sampleCount] = (float)(apu.square1DataLeft[sampleCount] - 8) / 8;
+        square1Right[sampleCount] = (float)(apu.square1DataRight[sampleCount] - 8) / 8;
+        square2Left[sampleCount] = (float)(apu.square2DataLeft[sampleCount] - 8) / 8;
+        square2Right[sampleCount] = (float)(apu.square2DataRight[sampleCount] - 8) / 8;
+        waveLeft[sampleCount] = (float)(apu.waveDataLeft[sampleCount] - 8) / 8;
+        waveRight[sampleCount] = (float)(apu.waveDataRight[sampleCount] - 8) / 8;
+        noiseLeft[sampleCount] = (float)(apu.noiseDataLeft[sampleCount] - 8) / 8;
+        noiseRight[sampleCount] = (float)(apu.noiseDataRight[sampleCount] - 8) / 8;
+
+        sampleCount++;
+        if(sampleCount == Const::AudioBufferFrames) sampleCount = 0;
     }
 }

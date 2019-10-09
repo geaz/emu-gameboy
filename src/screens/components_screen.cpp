@@ -16,7 +16,7 @@ namespace GGB
     { 
         if(!GGB::ShowComponentsScreen) return;
         ImGui::Begin("Components", &GGB::ShowComponentsScreen, ImGuiWindowFlags_NoResize); 
-        ImGui::SetWindowSize(ImVec2(470, 420), ImGuiCond_Always);
+        ImGui::SetWindowSize(ImVec2(470, 440), ImGuiCond_Always);
         
         ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None);
         if(ImGui::BeginTabItem("Memory"))
@@ -34,11 +34,31 @@ namespace GGB
             ImGui::EndTabItem();
         }
         if(ImGui::BeginTabItem("Audio"))
-        {           
-            ImGui::Checkbox("Channel 3 (Wave)", &debugger.apu.debugWaveEnabled);
-            ImGui::PushItemWidth(-25);
-            ImGui::PlotLines("", debugger.wave3Right, IM_ARRAYSIZE(debugger.wave3Right), NULL, NULL, -1.0f, 1.0f, ImVec2(0,80));
+        {      
+            ImGui::Checkbox("Channel 1 (Square - Env/Sweep)", &debugger.apu.debugSquare1Enabled);
+            ImGui::PushItemWidth(-50);
+            ImGui::PlotLines("Left", debugger.square1Left, IM_ARRAYSIZE(debugger.square1Left), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
+            ImGui::PlotLines("Right", debugger.square1Right, IM_ARRAYSIZE(debugger.square1Right), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
+            ImGui::PopItemWidth();   
+
+            ImGui::Checkbox("Channel 2 (Square - Env)", &debugger.apu.debugSquare2Enabled);
+            ImGui::PushItemWidth(-50);
+            ImGui::PlotLines("Left", debugger.square2Left, IM_ARRAYSIZE(debugger.square2Left), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
+            ImGui::PlotLines("Right", debugger.square2Right, IM_ARRAYSIZE(debugger.square2Right), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
             ImGui::PopItemWidth();
+
+            ImGui::Checkbox("Channel 3 (Wave)", &debugger.apu.debugWaveEnabled);
+            ImGui::PushItemWidth(-50);
+            ImGui::PlotLines("Left", debugger.waveLeft, IM_ARRAYSIZE(debugger.waveLeft), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
+            ImGui::PlotLines("Right", debugger.waveRight, IM_ARRAYSIZE(debugger.waveRight), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
+            ImGui::PopItemWidth();
+
+            ImGui::Checkbox("Channel 4 (Noise)", &debugger.apu.debugNoiseEnabled);
+            ImGui::PushItemWidth(-50);
+            ImGui::PlotLines("Left", debugger.noiseLeft, IM_ARRAYSIZE(debugger.noiseLeft), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
+            ImGui::PlotLines("Right", debugger.noiseRight, IM_ARRAYSIZE(debugger.noiseRight), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
+            ImGui::PopItemWidth();
+
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();

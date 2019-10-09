@@ -33,9 +33,32 @@ namespace GGB
     { 
         for(int i = 0; i < Const::AudioBufferFrames * Const::AudioOutputQuantity; i += Const::AudioOutputQuantity)
         {
-            // Convert the 4-bit samples (0-15) to floats ranging from -1.0 to 1.0
-            buffer[i] = (float)(apu.waveDataLeft[i / Const::AudioOutputQuantity] - 8) / 8;
-            buffer[i + 1] = (float)(apu.waveDataRight[i / Const::AudioOutputQuantity] - 8) / 8; 
+            buffer[i] = getSample(i / Const::AudioOutputQuantity, true);
+            buffer[i + 1] = getSample(i / Const::AudioOutputQuantity, false);
         }          
+    }
+
+    float Dac::getSample(const uint16_t sampleIndex, const bool left) const
+    {
+        auto sampleTransform = [](float sample) -> float {
+            return (sample - 8) / 8;
+        };
+
+        float sample = 0;
+        if(left)
+        {
+            sample = (sampleTransform(apu.square1DataLeft[sampleIndex])
+                + sampleTransform(apu.square2DataLeft[sampleIndex])
+                + sampleTransform(apu.waveDataLeft[sampleIndex])
+                + sampleTransform(apu.noiseDataLeft[sampleIndex])) / 4;
+        }
+        else
+        {
+            sample = (sampleTransform(apu.square1DataRight[sampleIndex])
+                + sampleTransform(apu.square2DataRight[sampleIndex])
+                + sampleTransform(apu.waveDataRight[sampleIndex])
+                + sampleTransform(apu.noiseDataLeft[sampleIndex])) / 4;
+        }
+        return sample;
     }
 }

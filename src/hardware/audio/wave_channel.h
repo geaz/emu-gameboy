@@ -15,26 +15,28 @@ namespace GGB::Hardware::Audio
             void start();
             void stop();
             void restart();
-            void cycle(uint8_t cycles);            
             void lengthTick();
+            void cycle(const uint8_t cycles);       
 
             uint8_t currentSample = 0;
 
         private:
-            uint16_t getFrequency();
-            void updateSamples();
-
+            uint16_t getFrequency() const;
+            void updateSample();
+    
             Mmu& mmu;
-            
-            bool isEnabled = false;
-            bool isRunning = false;
-            bool lengthStop = false;
-            uint32_t length = 0;
-            uint16_t sampleIndex = 0;
-            Enum::AudioLevel outputLevel = Enum::AudioLevel::MUTE;            
 
+            bool isEnabled = false;            
+            bool isRunning = false;
+
+            bool lengthStop = false;
+            uint8_t length = 0;
+
+            uint16_t sampleIndex = 0;
             uint16_t cycleSampleUpdate = 0;
             uint16_t cycleCount = 0;
+
+            Enum::AudioLevel outputLevel = Enum::AudioLevel::MUTE;            
     };
 }
 

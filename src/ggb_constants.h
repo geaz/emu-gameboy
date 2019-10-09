@@ -17,7 +17,16 @@ namespace GGB::Const
     inline const uint8_t AudioOutputQuantity = 2;
     inline const uint32_t AudioSampleRate = 44100;
     inline const uint16_t AudioBufferFrames = 1024;
+    inline const uint8_t AudioDefaultLength = 64; // Value for All Channels except Wave (see https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware)
     inline const uint16_t AudioWaveLength = 256; // Value for Wave Channel (see https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware)
+
+    inline const uint8_t AudioWavePatternArray[4][8] = {
+        { 0, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 0, 0, 0, 0, 1, 1, 1 },
+        { 0, 1, 1, 1, 1, 1, 1, 0 }
+    };
+    inline const uint8_t AudioDivisorArray[8] = { 8, 16, 32, 48, 64, 80, 96, 112 };
 
     // Timing Consts
     inline const uint32_t CyclesCpu = 4194304;
@@ -154,12 +163,12 @@ namespace GGB::Const
     inline const uint8_t FlagSpriteAttrPaletteNr = 16;  // Bit4   Palette number  **Non CGB Mode Only** (0=OBP0, 1=OBP1)    
 
     inline const uint8_t FlagChannelSweepTime = 112;    
-    inline const uint8_t FlagChannelSweepDecrease = 8;  
+    inline const uint8_t FlagChannelSweepIncrease = 8;  
     inline const uint8_t FlagChannelSweepShift = 7;   
     inline const uint8_t FlagChannelDuty = 192;
     inline const uint8_t FlagChannelLengthData = 63;           
     inline const uint8_t FlagChannelEnvelopeVolumeInt = 240;
-    inline const uint8_t FlagChannelEnvelopeDecrease = 8;
+    inline const uint8_t FlagChannelEnvelopeIncrease = 8;
     inline const uint8_t FlagChannelEnvelopeSweep = 7;      
     inline const uint8_t FlagChannelRestart = 128;    // Bit 7   - Initial (1=Restart Sound)     (Write Only)
     inline const uint8_t FlagChannelLengthStop = 64;  // Bit 6   - Counter/consecutive selection (Read/Write)
@@ -169,7 +178,7 @@ namespace GGB::Const
     inline const uint8_t FlagChannel3On = 128;          // Bit 7 - Sound Channel 3 Off  (0=Stop, 1=Playback)  (Read/Write)
     inline const uint8_t FlagChannel3Output = 96;       // Bit 6-5 - Select output level (Read/Write)
     inline const uint8_t FlagChannel4ShiftFreq = 240;
-    inline const uint8_t FlagChannel4CounterStep = 8;
+    inline const uint8_t FlagChannel4CounterWidthMode = 8;
     inline const uint8_t FlagChannel4DividingRatio = 7;      
 
     inline const uint8_t FlagChannel4ToOutput2 = 128; // Bit 7 - Output sound 4 to SO2 terminal

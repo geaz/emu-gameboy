@@ -14,6 +14,7 @@ namespace GGB
 
         private:            
             void populateStream(Enum::AudioChannel audioChannel, float* buffer);
+            float getSample(const uint16_t sampleIndex, const bool left) const;
 
             Hardware::Apu& apu;
             RtAudio dac;

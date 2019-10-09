@@ -11,32 +11,64 @@
 #include "../../ggb_enums.h"
 #include "../../ggb_constants.h"
 
+#include "square_channel.h"
 #include "wave_channel.h"
+#include "noise_channel.h"
 
 namespace GGB::Hardware
 {
+    const Audio::SquareChannelParameters square1Parameters = {
+        true,
+        Const::AddrRegChannel1Data,
+        Const::AddrRegChannel1FreqLow8Bit,
+        Const::AddrRegChannel1LengthDuty,
+        Const::AddrRegChannel1Envelope,
+        Const::AddrRegChannel1Sweep
+    };
+
+    const Audio::SquareChannelParameters square2Parameters = {
+        false,
+        Const::AddrRegChannel2Data,
+        Const::AddrRegChannel2FreqLow8Bit,
+        Const::AddrRegChannel2LengthDuty,
+        Const::AddrRegChannel2Envelope,
+        0
+    };
+    
     class Apu
     {
         public:
             Apu(Mmu& mmu);
         
-            void cycle(uint8_t cycles);
+            void cycle(const uint8_t cycles);
 
+            Audio::SquareChannel squareChannel1;
+            Audio::SquareChannel squareChannel2;
             Audio::WaveChannel waveChannel;
+            Audio::NoiseChannel noiseChannel;
 
+            bool debugSquare1Enabled = true;
+            bool debugSquare2Enabled = true;
             bool debugWaveEnabled = true;
+            bool debugNoiseEnabled = true;
 
-            uint8_t waveDataRight[Const::AudioBufferFrames];
-            uint8_t waveDataLeft[Const::AudioBufferFrames];
+            float square1DataRight[Const::AudioBufferFrames];
+            float square1DataLeft[Const::AudioBufferFrames];
+            float square2DataRight[Const::AudioBufferFrames];
+            float square2DataLeft[Const::AudioBufferFrames];
+            float waveDataRight[Const::AudioBufferFrames];
+            float waveDataLeft[Const::AudioBufferFrames];
+            float noiseDataRight[Const::AudioBufferFrames];
+            float noiseDataLeft[Const::AudioBufferFrames];
 
         private:          
-            void checkStart();  
+            void checkWaveStart();  
             void checkRestartTrigger();
-            void cycleLength(uint8_t cycles);
-            void cycleEnvelope(uint8_t cycles);
-            void cycleSweep(uint8_t cycles);
-            void cycleChannels(uint8_t cycles);
-            void cycleSamples(uint8_t cycles);
+            void cycleLength(const uint8_t cycles);
+            void cycleEnvelope(const uint8_t cycles);
+            void cycleSweep(const uint8_t cycles);
+            void cycleChannels(const uint8_t cycles);
+            void cycleSamples(const uint8_t cycles);
 
             Mmu& mmu;
             std::ofstream outputFile;
@@ -48,8 +80,14 @@ namespace GGB::Hardware
 
             MemoryWriteEvent lastRelevantMemoryEvent;
 
-            uint8_t waveBufferRight[Const::AudioBufferFrames];
-            uint8_t waveBufferLeft[Const::AudioBufferFrames];
+            float square1BufferRight[Const::AudioBufferFrames];
+            float square1BufferLeft[Const::AudioBufferFrames];
+            float square2BufferRight[Const::AudioBufferFrames];
+            float square2BufferLeft[Const::AudioBufferFrames];
+            float waveBufferRight[Const::AudioBufferFrames];
+            float waveBufferLeft[Const::AudioBufferFrames];
+            float noiseBufferRight[Const::AudioBufferFrames];
+            float noiseBufferLeft[Const::AudioBufferFrames];
     };
 }
 

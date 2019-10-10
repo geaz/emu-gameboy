@@ -9,27 +9,24 @@ namespace GGB::Hardware
 
     uint8_t Mmu::read(const uint16_t address, const bool ppuAccess) const
     {   
-        // VRAM Access through the PPU. CPU is not allowed to access it directly.
+        // Cartridge Bank 0
+        if(address <= 0x3FFF)
+            return cartridge.read(address);    
+        // Cartridge Bank 1..NN
+        // Bank 1 directly after Bank 0, thats why we only check the upper bounds
+        else if(address <= 0x7FFF)
+            return cartridge.read(address);
+        // VRAM Access simulated through the PPU. CPU is not allowed to access it directly.  
         // PPU Mode has to be checked, wether the CPU is currently allowed to access it
         // ppuAccess is able to overwrite this behaviour. This way it is possible 
         // for the debugging tools and the PPU to read memory during each state
-        if(!ppuAccess)
-        {
-            if(currentPpuMode == Enum::LcdMode::Transfer && address >= 0x8000 && address <= 0x9FFF)
-                return 0xFF;
-            else if((currentPpuMode == Enum::LcdMode::Transfer || currentPpuMode == Enum::LcdMode::Oam)
-                    && address >= 0xFE00 && address <= 0xFE9F)
-                return 0xFF;
-        }    
-
-        // Cartridge Bank 0
-        if(address >= 0x000 && address <= 0x3FFF)
-            return cartridge.read(address);    
-        // Cartridge Bank 1..NN
-        else if(address >= 0x4000 && address <= 0x7FFF)
-            return cartridge.read(address);    
+        // This Area is directly after the Bank 1, thats why we only check the upper bounds
+        else if(address <= 0x9FFF && !ppuAccess && currentPpuMode == Enum::LcdMode::Transfer)
+            return 0xFF;  
+        else if(address >= 0xFE00 && address <= 0xFE9F && !ppuAccess && (currentPpuMode == Enum::LcdMode::Transfer || currentPpuMode == Enum::LcdMode::Oam))
+            return 0xFF;  
         else
-            return memory[address];     
+            return memory[address];   
     }
 
     void Mmu::write(const uint16_t address, const uint8_t value) 

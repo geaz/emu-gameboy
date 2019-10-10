@@ -191,10 +191,10 @@ namespace GGB::Const
     inline const uint8_t FlagChannel1ToOutput1 = 1;   // Bit 0 - Output sound 1 to SO1 terminal
 
     inline const uint8_t FlagSoundAllOn = 128;  // Bit 7 - All sound on/off  (0: stop all sound circuits) (Read/Write)
-    inline const uint8_t FlagSound4On = 4;      // Bit 3 - Sound 4 ON flag (Read Only)
-    inline const uint8_t FlagSound3On = 2;      // Bit 2 - Sound 3 ON flag (Read Only)
-    inline const uint8_t FlagSound2On = 1;      // Bit 1 - Sound 2 ON flag (Read Only)
-    inline const uint8_t FlagSound1On = 0;      // Bit 0 - Sound 1 ON flag (Read Only)
+    inline const uint8_t FlagSound4On = 8;      // Bit 3 - Sound 4 ON flag (Read Only)
+    inline const uint8_t FlagSound3On = 4;      // Bit 2 - Sound 3 ON flag (Read Only)
+    inline const uint8_t FlagSound2On = 2;      // Bit 1 - Sound 2 ON flag (Read Only)
+    inline const uint8_t FlagSound1On = 1;      // Bit 0 - Sound 1 ON flag (Read Only)
 
     // Byte Positions
     inline const uint8_t ByteSpriteAttributes = 3;

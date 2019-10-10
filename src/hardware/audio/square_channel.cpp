@@ -8,6 +8,7 @@ namespace GGB::Hardware::Audio
     void SquareChannel::restart()
     {        
         isRunning = true;
+        mmu.writeIORegisterBit(Const::AddrRegSoundControl, channelParams.ChannelSoundControlFlag, true);
         
         if(length == 0)
             length = Const::AudioDefaultLength - (mmu.read(channelParams.ChannelLengthDutyAddr) & Const::FlagChannelLengthData);
@@ -35,8 +36,6 @@ namespace GGB::Hardware::Audio
             isSweepIncreasing = sweepData & Const::FlagChannelSweepIncrease;
             sweepShift = sweepData & Const::FlagChannelSweepShift;
         }
-        
-        updateSample();
     }
 
     void SquareChannel::cycle(const uint8_t cycles)
@@ -55,18 +54,24 @@ namespace GGB::Hardware::Audio
     void SquareChannel::lengthTick()
     {
         if(length > 0) length--;
-        if(length == 0 && lengthStop) isRunning = false;       
+        if(length == 0 && lengthStop)
+        {
+            isRunning = false;       
+            mmu.writeIORegisterBit(Const::AddrRegSoundControl, channelParams.ChannelSoundControlFlag, false);
+        }
     }
 
     void SquareChannel::envelopeTick()
     {
-        if(envelopeTicks != 0)
+        if(envelopeTicks == 0) return;
+        if(elapsedEnvelopeTicks != envelopeTicks) elapsedEnvelopeTicks ++;
+        if(elapsedEnvelopeTicks == envelopeTicks)
         {
-            envelopeTicks--;
             if(!isEnvelopeIncreasing && currentVolume != 0)
                 currentVolume--;
             else if(isEnvelopeIncreasing && currentVolume != 15)
                 currentVolume++;
+            elapsedEnvelopeTicks = 0;
         }
     }
 
@@ -80,8 +85,8 @@ namespace GGB::Hardware::Audio
                 int8_t sweepCorrection = isSweepIncreasing ? 1 : -1;
                 cycleSampleUpdate += (cycleSampleUpdate >> sweepShift) * sweepCorrection;
                 cycleCount = 0;
-                if(cycleSampleUpdate > 2047) isRunning = false;
             }
+            if(elaspsedSweepTime == sweepTime || cycleSampleUpdate > 2047) isRunning = false;
         }        
     }
 

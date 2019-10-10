@@ -22,6 +22,7 @@ namespace GGB::Hardware::Audio
     void WaveChannel::restart()
     {        
         isRunning = true;
+        mmu.writeIORegisterBit(Const::AddrRegSoundControl, Const::FlagSound3On, true);
         
         if(length == 0)
             length = Const::AudioWaveLength -  mmu.read(Const::AddrRegChannel3Length);
@@ -41,8 +42,12 @@ namespace GGB::Hardware::Audio
 
     void WaveChannel::lengthTick()
     {
-        if(length == 0 && lengthStop) isRunning = false;
-        else if(length > 0) length--;       
+        if(length > 0) length--;
+        if(length == 0 && lengthStop)
+        {
+            isRunning = false;       
+            mmu.writeIORegisterBit(Const::AddrRegSoundControl, Const::FlagSound3On, false);
+        }       
     }
 
     void WaveChannel::cycle(const uint8_t cycles)

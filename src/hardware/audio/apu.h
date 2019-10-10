@@ -19,6 +19,7 @@ namespace GGB::Hardware
 {
     const Audio::SquareChannelParameters square1Parameters = {
         true,
+        Const::FlagSound1On,
         Const::AddrRegChannel1Data,
         Const::AddrRegChannel1FreqLow8Bit,
         Const::AddrRegChannel1LengthDuty,
@@ -28,6 +29,7 @@ namespace GGB::Hardware
 
     const Audio::SquareChannelParameters square2Parameters = {
         false,
+        Const::FlagSound2On,
         Const::AddrRegChannel2Data,
         Const::AddrRegChannel2FreqLow8Bit,
         Const::AddrRegChannel2LengthDuty,

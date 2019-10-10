@@ -9,6 +9,7 @@ namespace GGB::Hardware::Audio
     struct SquareChannelParameters
     {
         bool hasSweep;
+        uint8_t ChannelSoundControlFlag;
         uint16_t ChannelDataAddr;
         uint16_t ChannelFreqLowAddr;
         uint16_t ChannelLengthDutyAddr;
@@ -46,6 +47,7 @@ namespace GGB::Hardware::Audio
                 bool isSweepIncreasing = false;
 
                 uint8_t envelopeTicks = 0;
+                uint8_t elapsedEnvelopeTicks = 0;
                 uint8_t currentVolume = 0;
                 uint8_t initialEnvelopeVolume = 0;
                 bool isEnvelopeIncreasing = false;

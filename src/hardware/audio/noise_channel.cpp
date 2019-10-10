@@ -7,6 +7,7 @@ namespace GGB::Hardware::Audio
     void NoiseChannel::restart()
     {        
         isRunning = true;
+        mmu.writeIORegisterBit(Const::AddrRegSoundControl, Const::FlagSound4On, true);
         
         if(length == 0)
             length = Const::AudioDefaultLength - (mmu.read(Const::AddrRegChannel4Length) & Const::FlagChannelLengthData);
@@ -40,8 +41,12 @@ namespace GGB::Hardware::Audio
 
     void NoiseChannel::lengthTick()
     {
-        if(length == 0 && lengthStop) isRunning = false;
-        else if(length > 0) length--;       
+        if(length > 0) length--;
+        if(length == 0 && lengthStop)
+        {
+            isRunning = false;       
+            mmu.writeIORegisterBit(Const::AddrRegSoundControl, Const::FlagSound4On, false);
+        }    
     }
 
     void NoiseChannel::envelopeTick()

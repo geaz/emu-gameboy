@@ -54,8 +54,8 @@ namespace GGB::Hardware::Audio
 
     void SquareChannel::lengthTick()
     {
-        if(length == 0 && lengthStop) isRunning = false;
-        else if(length > 0) length--;       
+        if(length > 0) length--;
+        if(length == 0 && lengthStop) isRunning = false;       
     }
 
     void SquareChannel::envelopeTick()
@@ -63,8 +63,10 @@ namespace GGB::Hardware::Audio
         if(envelopeTicks != 0)
         {
             envelopeTicks--;
-            if(currentVolume != 0 && currentVolume != 15)
-                currentVolume += isEnvelopeIncreasing ? 1 : -1;
+            if(!isEnvelopeIncreasing && currentVolume != 0)
+                currentVolume--;
+            else if(isEnvelopeIncreasing && currentVolume != 15)
+                currentVolume++;
         }
     }
 
@@ -78,8 +80,8 @@ namespace GGB::Hardware::Audio
                 int8_t sweepCorrection = isSweepIncreasing ? 1 : -1;
                 cycleSampleUpdate += (cycleSampleUpdate >> sweepShift) * sweepCorrection;
                 cycleCount = 0;
+                if(cycleSampleUpdate > 2047) isRunning = false;
             }
-            else isRunning = false;
         }        
     }
 

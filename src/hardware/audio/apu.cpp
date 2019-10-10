@@ -114,30 +114,30 @@ namespace GGB::Hardware
         while(cycleCount >= Const::CyclesAudioSample)
         {
             uint8_t volumeReg = mmu.read(Const::AddrRegOutputControl);
-            float volumeLeft = (float)(volumeReg & Const::FlagOutputVolume) / 7;
-            float volumeRight = (float)((volumeReg >> 4) & Const::FlagOutputVolume) / 7;
+            uint8_t volumeLeft = 8 - (volumeReg & Const::FlagOutputVolume);
+            uint8_t volumeRight = 8 - ((volumeReg >> 4) & Const::FlagOutputVolume);
             
             uint8_t square1OutputLeft = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel1ToOutput1) && debugSquare1Enabled;
             uint8_t square1OutputRight = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel1ToOutput2) && debugSquare1Enabled;
-            square1BufferLeft[sampleCounter] = square1OutputLeft ? squareChannel1.currentSample * volumeLeft : 0;
-            square1BufferRight[sampleCounter] = square1OutputRight ? squareChannel1.currentSample * volumeRight : 0;
+            square1BufferLeft[sampleCounter] = square1OutputLeft ? squareChannel1.currentSample / volumeLeft : 0;
+            square1BufferRight[sampleCounter] = square1OutputRight ? squareChannel1.currentSample / volumeRight : 0;
 
             uint8_t square2OutputLeft = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel2ToOutput1) && debugSquare2Enabled;
             uint8_t square2OutputRight = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel2ToOutput2) && debugSquare2Enabled;
-            square2BufferLeft[sampleCounter] = square2OutputLeft ? squareChannel2.currentSample * volumeLeft : 0;
-            square2BufferRight[sampleCounter] = square2OutputRight ? squareChannel2.currentSample * volumeRight : 0;
+            square2BufferLeft[sampleCounter] = square2OutputLeft ? squareChannel2.currentSample / volumeLeft : 0;
+            square2BufferRight[sampleCounter] = square2OutputRight ? squareChannel2.currentSample / volumeRight : 0;
 
             uint8_t waveOutputLeft = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel3ToOutput1) && debugWaveEnabled;
             uint8_t waveOutputRight = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel3ToOutput2) && debugWaveEnabled;
-            waveBufferLeft[sampleCounter] = waveOutputLeft ? waveChannel.currentSample * volumeLeft : 0;
-            waveBufferRight[sampleCounter] = waveOutputRight ? waveChannel.currentSample * volumeRight : 0;
+            waveBufferLeft[sampleCounter] = waveOutputLeft ? waveChannel.currentSample / volumeLeft : 0;
+            waveBufferRight[sampleCounter] = waveOutputRight ? waveChannel.currentSample / volumeRight : 0;
 
             uint8_t noiseOutputLeft = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel4ToOutput1) && debugWaveEnabled;
             uint8_t noiseOutputRight = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel4ToOutput2) && debugWaveEnabled;
-            noiseBufferLeft[sampleCounter] = noiseOutputLeft ? noiseChannel.currentSample * volumeLeft : 0;
-            noiseBufferRight[sampleCounter] = noiseOutputRight ? noiseChannel.currentSample * volumeRight : 0;
+            noiseBufferLeft[sampleCounter] = noiseOutputLeft ? noiseChannel.currentSample / volumeLeft : 0;
+            noiseBufferRight[sampleCounter] = noiseOutputRight ? noiseChannel.currentSample / volumeRight : 0;
 
-          //outputFile << std::to_string((float)(square2BufferLeft[sampleCounter] - 8) / 8) << " " << std::to_string((float)(square2BufferRight[sampleCounter] - 8) / 8) << " ";  
+         // outputFile << std::to_string(square2BufferLeft[sampleCounter]) << " " << std::to_string(square2BufferRight[sampleCounter]) << " ";  
             
             sampleCounter++;
 

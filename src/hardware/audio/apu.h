@@ -52,14 +52,14 @@ namespace GGB::Hardware
             bool debugWaveEnabled = true;
             bool debugNoiseEnabled = true;
 
-            float square1DataRight[Const::AudioBufferFrames];
-            float square1DataLeft[Const::AudioBufferFrames];
-            float square2DataRight[Const::AudioBufferFrames];
-            float square2DataLeft[Const::AudioBufferFrames];
-            float waveDataRight[Const::AudioBufferFrames];
-            float waveDataLeft[Const::AudioBufferFrames];
-            float noiseDataRight[Const::AudioBufferFrames];
-            float noiseDataLeft[Const::AudioBufferFrames];
+            uint8_t square1DataRight[Const::AudioBufferFrames];
+            uint8_t square1DataLeft[Const::AudioBufferFrames];
+            uint8_t square2DataRight[Const::AudioBufferFrames];
+            uint8_t square2DataLeft[Const::AudioBufferFrames];
+            uint8_t waveDataRight[Const::AudioBufferFrames];
+            uint8_t waveDataLeft[Const::AudioBufferFrames];
+            uint8_t noiseDataRight[Const::AudioBufferFrames];
+            uint8_t noiseDataLeft[Const::AudioBufferFrames];
 
         private:          
             void checkWaveStart();  
@@ -80,14 +80,14 @@ namespace GGB::Hardware
 
             MemoryWriteEvent lastRelevantMemoryEvent;
 
-            float square1BufferRight[Const::AudioBufferFrames];
-            float square1BufferLeft[Const::AudioBufferFrames];
-            float square2BufferRight[Const::AudioBufferFrames];
-            float square2BufferLeft[Const::AudioBufferFrames];
-            float waveBufferRight[Const::AudioBufferFrames];
-            float waveBufferLeft[Const::AudioBufferFrames];
-            float noiseBufferRight[Const::AudioBufferFrames];
-            float noiseBufferLeft[Const::AudioBufferFrames];
+            uint8_t square1BufferRight[Const::AudioBufferFrames];
+            uint8_t square1BufferLeft[Const::AudioBufferFrames];
+            uint8_t square2BufferRight[Const::AudioBufferFrames];
+            uint8_t square2BufferLeft[Const::AudioBufferFrames];
+            uint8_t waveBufferRight[Const::AudioBufferFrames];
+            uint8_t waveBufferLeft[Const::AudioBufferFrames];
+            uint8_t noiseBufferRight[Const::AudioBufferFrames];
+            uint8_t noiseBufferLeft[Const::AudioBufferFrames];
     };
 }
 

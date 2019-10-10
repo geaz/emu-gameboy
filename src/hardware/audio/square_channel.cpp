@@ -18,7 +18,7 @@ namespace GGB::Hardware::Audio
         initialEnvelopeVolume = (envelopeData & Const::FlagChannelEnvelopeVolumeInt) >> 4;
         isEnvelopeIncreasing = envelopeData & Const::FlagChannelEnvelopeIncrease;
         envelopeTicks = envelopeData & Const::FlagChannelEnvelopeSweep;
-        envelopeVolumeCorrection = 0;
+        currentVolume = initialEnvelopeVolume;
 
         // Nothing magical just the way the hardware calculates the channel frequency
         // see: https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware
@@ -60,11 +60,12 @@ namespace GGB::Hardware::Audio
 
     void SquareChannel::envelopeTick()
     {
-        if(envelopeTicks != 0) envelopeTicks--;
-        if(envelopeTicks != 0) 
-        {               
-            envelopeVolumeCorrection += isEnvelopeIncreasing ? 1 : -1;
-        } 
+        if(envelopeTicks != 0)
+        {
+            envelopeTicks--;
+            if(currentVolume != 0 && currentVolume != 15)
+                currentVolume += isEnvelopeIncreasing ? 1 : -1;
+        }
     }
 
     void SquareChannel::sweepTick()
@@ -93,7 +94,7 @@ namespace GGB::Hardware::Audio
     void SquareChannel::updateSample()
     {
         uint8_t dutyValue = Const::AudioWavePatternArray[selectedDuty][sampleIndex];
-        currentSample = dutyValue * (initialEnvelopeVolume + envelopeVolumeCorrection);
+        currentSample = dutyValue * currentVolume;
 
         if(!isRunning) currentSample = 0;
     }

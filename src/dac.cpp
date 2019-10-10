@@ -40,8 +40,8 @@ namespace GGB
 
     float Dac::getSample(const uint16_t sampleIndex, const bool left) const
     {
-        auto sampleTransform = [](float sample) -> float {
-            return (sample - 8) / 8;
+        auto sampleTransform = [](uint8_t sample) -> float {
+            return (float)(sample - 8) / 8;
         };
 
         float sample = 0;

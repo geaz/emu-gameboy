@@ -46,8 +46,8 @@ namespace GGB::Hardware::Audio
                 bool isSweepIncreasing = false;
 
                 uint8_t envelopeTicks = 0;
+                uint8_t currentVolume = 0;
                 uint8_t initialEnvelopeVolume = 0;
-                int8_t envelopeVolumeCorrection = 0;
                 bool isEnvelopeIncreasing = false;
 
                 uint8_t selectedDuty = 0;    

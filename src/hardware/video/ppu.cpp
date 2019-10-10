@@ -218,7 +218,7 @@ namespace GGB::Hardware
 
         uint8_t lcdY = mmu.read(Const::AddrRegLcdY, true);
 
-        int vCounter = 0;
+        uint8_t vCounter = 0;
         Video::Sprite visibleSprites[Const::TotalSprites];
         for(int i = 0; i < Const::TotalSprites; i++)
         {
@@ -247,17 +247,17 @@ namespace GGB::Hardware
             currentTile = currentSprite.flipY && currentSprite.bigSprite && lcdY >= currentSprite.posY - 8
                 ? tileList.loadSpriteTile(currentSprite.tileNr - 1)
                 : currentTile;
-
-            for(int j = 0; j < 8; j++)
-            {                
-                // If the numbers are not equal we loaded the 
-                // second tile of the  8x16 sprite.
-                uint8_t yCorrection = currentSprite.tileNr == currentTile.nr ? 16 : 8; 
-
-                uint8_t xCord = currentSprite.flipX ? (7 - j) : j;
-                uint8_t yCord = currentSprite.flipY 
+            
+            // If the numbers are not equal we loaded the 
+            // second tile of the  8x16 sprite.
+            uint8_t yCorrection = currentSprite.tileNr == currentTile.nr ? 16 : 8; 
+            uint8_t yCord = currentSprite.flipY 
                     ? abs(lcdY - (currentSprite.posY - yCorrection + 7))
                     : lcdY - (currentSprite.posY - yCorrection);
+
+            for(int j = 0; j < 8; j++)
+            {
+                uint8_t xCord = currentSprite.flipX ? (7 - j) : j;
                 
                 uint8_t pixelData = currentTile.data[yCord][xCord];
                 Enum::ColorShade color = currentSprite.palette1Selected

@@ -26,7 +26,6 @@ Use other great emulators for this purpose. For example:
 
 Primary aims were:
 - get a common understanding of emulation and the interaction of the components
-- create a **interpreter mode** CPU and a **JIT mode** CPU, to learn about JIT
 - learn a bit about sound programming by implementing the APU
 
 Further more I wanted to get the CPU to do its work correctly, but I did not want to get it as accurate as possible.
@@ -79,7 +78,6 @@ struct Instruction
     uint8_t length;                 // Byte Length of the Instruction
     char* mnemonic;                 // Mnemonic of the Instruction
     OpcodeFunc executeInterpreter;  // Function Pointer to execute interpreter mode for given opcode
-    //TODO OpcodeFunc? eecuteJit;   // Function Pointer to execute jit mode for given opcode
 };
 ```
 

@@ -18,7 +18,6 @@ namespace GGB::Hardware::Instructions
         uint8_t length;                 // Byte Length of the Instruction
         char* mnemonic;                 // Mnemonic of the Instruction
         OpcodeFunc executeInterpreter;  // Function Pointer to execute interpreter mode for given opcode
-        //TODO OpcodeFunc? eecuteJit;   // Function Pointer to execute jit mode for given opcode
     };
 
     struct ParsedBytes

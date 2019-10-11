@@ -11,11 +11,14 @@ namespace GGB::Hardware
         waveChannel(mmu),
         noiseChannel(mmu)
     {         
-        outputFile.open ("test.txt");
-        memset(square2DataLeft, 0, Const::AudioBufferFrames);
-        memset(square2DataRight, 0, Const::AudioBufferFrames);
-        memset(waveDataLeft, 0, Const::AudioBufferFrames);
-        memset(waveDataRight, 0, Const::AudioBufferFrames);
+        memset(square1BufferLeft, 0, Const::AudioBufferFrames);
+        memset(square1BufferRight, 0, Const::AudioBufferFrames);
+        memset(square2BufferLeft, 0, Const::AudioBufferFrames);
+        memset(square2BufferRight, 0, Const::AudioBufferFrames);
+        memset(waveBufferLeft, 0, Const::AudioBufferFrames);
+        memset(waveBufferRight, 0, Const::AudioBufferFrames);
+        memset(noiseBufferLeft, 0, Const::AudioBufferFrames);
+        memset(noiseBufferRight, 0, Const::AudioBufferFrames);
     }
 
     void Apu::cycle(const uint8_t cycles)
@@ -136,8 +139,6 @@ namespace GGB::Hardware
             uint8_t noiseOutputRight = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel4ToOutput2) && debugWaveEnabled;
             noiseBufferLeft[sampleCounter] = noiseOutputLeft ? noiseChannel.currentSample / volumeLeft : 0;
             noiseBufferRight[sampleCounter] = noiseOutputRight ? noiseChannel.currentSample / volumeRight : 0;
-
-         // outputFile << std::to_string(square2BufferLeft[sampleCounter]) << " " << std::to_string(square2BufferRight[sampleCounter]) << " ";  
             
             sampleCounter++;
 

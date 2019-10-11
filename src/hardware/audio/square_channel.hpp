@@ -3,6 +3,8 @@
 #define SQUARECHANNEL_H
 
 #include "../memory/mmu.hpp"
+#include "components/length_component.hpp"
+#include "components/envelope_component.hpp"
 
 namespace GGB::Hardware::Audio
 {
@@ -36,21 +38,15 @@ namespace GGB::Hardware::Audio
 
                 Mmu& mmu;
                 SquareChannelParameters channelParams;
+                LengthComponent lengthComponent;
+                EnvelopeComponent envelopeComponent;
 
                 bool isRunning = false;
-                bool lengthStop = false;
-                uint8_t length = 0;
             
                 uint8_t sweepShift = 0;
                 uint8_t sweepTime = 0;
                 uint8_t elaspsedSweepTime = 0;
                 bool isSweepIncreasing = false;
-
-                uint8_t envelopeTicks = 0;
-                uint8_t elapsedEnvelopeTicks = 0;
-                uint8_t currentVolume = 0;
-                uint8_t initialEnvelopeVolume = 0;
-                bool isEnvelopeIncreasing = false;
 
                 uint8_t selectedDuty = 0;    
                 uint16_t sampleIndex = 0;

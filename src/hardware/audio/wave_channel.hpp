@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include "../memory/mmu.hpp"
+#include "components/length_component.hpp"
 
 namespace GGB::Hardware::Audio
 {
@@ -25,12 +26,10 @@ namespace GGB::Hardware::Audio
             void updateSample();
     
             Mmu& mmu;
+            LengthComponent lengthComponent;
 
             bool isEnabled = false;            
             bool isRunning = false;
-
-            bool lengthStop = false;
-            uint8_t length = 0;
 
             uint16_t sampleIndex = 0;
             uint16_t cycleSampleUpdate = 0;

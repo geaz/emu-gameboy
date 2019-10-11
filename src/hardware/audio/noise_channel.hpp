@@ -3,6 +3,8 @@
 #define NOISECHANNEL_H
 
 #include "../memory/mmu.hpp"
+#include "components/length_component.hpp"
+#include "components/envelope_component.hpp"
 
 namespace GGB::Hardware::Audio
 {
@@ -22,15 +24,10 @@ namespace GGB::Hardware::Audio
                 void updateSample();
 
                 Mmu& mmu;
+                LengthComponent lengthComponent;
+                EnvelopeComponent envelopeComponent;
 
                 bool isRunning = false;
-                bool lengthStop = false;
-                uint8_t length = 0;
-
-                uint8_t envelopeTicks = 0;
-                uint8_t initialEnvelopeVolume = 0;
-                int8_t envelopeVolumeCorrection = 0;
-                bool isEnvelopeIncreasing = false;
   
                 bool isWidth7Bit = false;
                 uint8_t divisor = 0;

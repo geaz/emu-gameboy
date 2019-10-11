@@ -24,9 +24,9 @@ namespace GGB::Hardware::Audio
         isRunning = true;
         mmu.writeIORegisterBit(Const::AddrRegSoundControl, Const::FlagSound3On, true);
         
-        if(length == 0)
-            length = Const::AudioWaveLength -  mmu.read(Const::AddrRegChannel3Length);
-        lengthStop = mmu.readIORegisterBit(Const::AddrRegChannel3Data, Const::FlagChannelLengthStop);
+        uint16_t length = Const::AudioWaveLength -  mmu.read(Const::AddrRegChannel3Length);
+        bool lengthStop =  mmu.readIORegisterBit(Const::AddrRegChannel3Data, Const::FlagChannelLengthStop);
+        lengthComponent.setLength(length, lengthStop);
 
         // Nothing magical just the way the hardware calculates the channel frequency
         // see: https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware
@@ -42,12 +42,9 @@ namespace GGB::Hardware::Audio
 
     void WaveChannel::lengthTick()
     {
-        if(length > 0) length--;
-        if(length == 0 && lengthStop)
-        {
-            isRunning = false;       
-            mmu.writeIORegisterBit(Const::AddrRegSoundControl, Const::FlagSound3On, false);
-        }       
+        isRunning = lengthComponent.tick();
+        if(!isRunning)
+            mmu.writeIORegisterBit(Const::AddrRegSoundControl, Const::FlagSound3On, false);   
     }
 
     void WaveChannel::cycle(const uint8_t cycles)

@@ -9,17 +9,18 @@ namespace GGB::Hardware::Audio
     {        
         isRunning = true;
         mmu.writeIORegisterBit(Const::AddrRegSoundControl, channelParams.ChannelSoundControlFlag, true);
-        
-        if(length == 0)
-            length = Const::AudioDefaultLength - (mmu.read(channelParams.ChannelLengthDutyAddr) & Const::FlagChannelLengthData);
-        lengthStop = mmu.readIORegisterBit(channelParams.ChannelDataAddr, Const::FlagChannelLengthStop);
+
         selectedDuty = (mmu.read(channelParams.ChannelLengthDutyAddr) & Const::FlagChannelDuty) >> 6;
+        
+        uint16_t length =  Const::AudioDefaultLength - (mmu.read(channelParams.ChannelLengthDutyAddr) & Const::FlagChannelLengthData);
+        bool lengthStop = mmu.readIORegisterBit(channelParams.ChannelDataAddr, Const::FlagChannelLengthStop);
+        lengthComponent.setLength(length, lengthStop);
 
         uint8_t envelopeData = mmu.read(channelParams.ChannelEvenlopeAddr);
-        initialEnvelopeVolume = (envelopeData & Const::FlagChannelEnvelopeVolumeInt) >> 4;
-        isEnvelopeIncreasing = envelopeData & Const::FlagChannelEnvelopeIncrease;
-        envelopeTicks = envelopeData & Const::FlagChannelEnvelopeSweep;
-        currentVolume = initialEnvelopeVolume;
+        uint8_t envelopeTicks = envelopeData & Const::FlagChannelEnvelopeSweep;
+        uint8_t envelopeVolume = (envelopeData & Const::FlagChannelEnvelopeVolumeInt) >> 4;
+        bool increasing = envelopeData & Const::FlagChannelEnvelopeIncrease;
+        envelopeComponent.setEnvelope(envelopeTicks, envelopeVolume, increasing);        
 
         // Nothing magical just the way the hardware calculates the channel frequency
         // see: https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware
@@ -53,26 +54,14 @@ namespace GGB::Hardware::Audio
 
     void SquareChannel::lengthTick()
     {
-        if(length > 0) length--;
-        if(length == 0 && lengthStop)
-        {
-            isRunning = false;       
+        isRunning = lengthComponent.tick();
+        if(!isRunning)
             mmu.writeIORegisterBit(Const::AddrRegSoundControl, channelParams.ChannelSoundControlFlag, false);
-        }
     }
 
     void SquareChannel::envelopeTick()
     {
-        if(envelopeTicks == 0) return;
-        if(elapsedEnvelopeTicks != envelopeTicks) elapsedEnvelopeTicks ++;
-        if(elapsedEnvelopeTicks == envelopeTicks)
-        {
-            if(!isEnvelopeIncreasing && currentVolume != 0)
-                currentVolume--;
-            else if(isEnvelopeIncreasing && currentVolume != 15)
-                currentVolume++;
-            elapsedEnvelopeTicks = 0;
-        }
+        envelopeComponent.tick();
     }
 
     void SquareChannel::sweepTick()
@@ -101,7 +90,7 @@ namespace GGB::Hardware::Audio
     void SquareChannel::updateSample()
     {
         uint8_t dutyValue = Const::AudioWavePatternArray[selectedDuty][sampleIndex];
-        currentSample = dutyValue * currentVolume;
+        currentSample = dutyValue * envelopeComponent.getVolume();
 
         if(!isRunning) currentSample = 0;
     }

@@ -2,10 +2,6 @@
 #ifndef APU_H
 #define APU_H
 
-#include <ostream>
-#include <iostream>
-#include <fstream>
-
 #include "../clock.hpp"
 #include "../memory/mmu.hpp"
 #include "../../ggb_enums.hpp"
@@ -73,7 +69,6 @@ namespace GGB::Hardware
             void cycleSamples(const uint8_t cycles);
 
             Mmu& mmu;
-            std::ofstream outputFile;
             uint32_t cycleCount = 0;
             uint32_t cycleCountLength = 0;
             uint32_t cycleCountEnvelope = 0;

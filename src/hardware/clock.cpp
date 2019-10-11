@@ -1,4 +1,4 @@
-#include "clock.h"
+#include "clock.hpp"
 
 namespace GGB::Hardware
 {

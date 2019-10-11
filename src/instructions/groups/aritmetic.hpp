@@ -2,7 +2,7 @@
 #ifndef ARITMETIC_H
 #define ARITMETIC_H
 
-#include "../../hardware/memory/register.h"
+#include "../../hardware/memory/register.hpp"
 
 namespace GGB::Hardware { class Cpu; };
 namespace GGB::Hardware::Instructions

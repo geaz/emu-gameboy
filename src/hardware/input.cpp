@@ -1,4 +1,4 @@
-#include "input.h"
+#include "input.hpp"
 
 namespace GGB::Hardware
 {

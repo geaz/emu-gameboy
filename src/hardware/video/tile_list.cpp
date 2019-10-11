@@ -1,4 +1,4 @@
-#include "tile_list.h"
+#include "tile_list.hpp"
 
 namespace GGB::Hardware::Video
 {

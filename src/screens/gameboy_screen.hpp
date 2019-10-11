@@ -2,9 +2,9 @@
 #ifndef GAMEBOYSCREEN_H
 #define GAMEBOYSCREEN_H
 
-#include "../opengl/screen.h"
-#include "../opengl/resource_manager.h"
-#include "../hardware/gameboy.h"
+#include "../opengl/screen.hpp"
+#include "../opengl/resource_manager.hpp"
+#include "../hardware/gameboy.hpp"
 
 namespace GGB
 {

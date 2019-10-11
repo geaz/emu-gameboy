@@ -1,7 +1,7 @@
 #include <chrono>
-#include "timer.h"
-#include "cpu.h"
-#include "memory/mmu.h"
+#include "timer.hpp"
+#include "cpu.hpp"
+#include "memory/mmu.hpp"
 
 namespace GGB::Hardware
 {

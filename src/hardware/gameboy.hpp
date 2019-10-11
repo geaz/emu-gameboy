@@ -2,15 +2,15 @@
 #ifndef GAMEBOY_H
 #define GAMEBOY_H
 
-#include "cpu.h"
-#include "timer.h"
-#include "input.h"
-#include "clock.h"
-#include "cartridge.h"
-#include "video/ppu.h"
-#include "memory/mmu.h"
-#include "audio/apu.h"
-#include "../debugger.h"
+#include "cpu.hpp"
+#include "timer.hpp"
+#include "input.hpp"
+#include "clock.hpp"
+#include "cartridge.hpp"
+#include "video/ppu.hpp"
+#include "memory/mmu.hpp"
+#include "audio/apu.hpp"
+#include "../debugger.hpp"
 
 namespace GGB
 {

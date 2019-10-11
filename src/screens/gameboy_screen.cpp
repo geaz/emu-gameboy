@@ -3,8 +3,8 @@
 #include <gtc/matrix_transform.hpp>
 #include <imgui.h>
 
-#include "gameboy_screen.h"
-#include "debug_screen.h"
+#include "gameboy_screen.hpp"
+#include "debug_screen.hpp"
 
 namespace GGB
 {

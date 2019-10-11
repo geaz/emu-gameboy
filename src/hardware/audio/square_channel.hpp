@@ -2,7 +2,7 @@
 #ifndef SQUARECHANNEL_H
 #define SQUARECHANNEL_H
 
-#include "../memory/mmu.h"
+#include "../memory/mmu.hpp"
 
 namespace GGB::Hardware::Audio
 {

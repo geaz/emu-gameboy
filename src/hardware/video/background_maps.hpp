@@ -2,8 +2,8 @@
 #ifndef BACKGROUNDMAPS_H
 #define BACKGROUNDMAPS_H
 
-#include "color_palettes.h"
-#include "../memory/mmu.h"
+#include "color_palettes.hpp"
+#include "../memory/mmu.hpp"
 
 namespace GGB::Hardware::Video
 {

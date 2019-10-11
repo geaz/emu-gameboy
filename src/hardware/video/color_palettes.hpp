@@ -2,7 +2,7 @@
 #ifndef COLORPALETTES_H
 #define COLORPALETTES_H
 
-#include "../memory/mmu.h"
+#include "../memory/mmu.hpp"
 
 namespace GGB
 {

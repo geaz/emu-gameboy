@@ -6,8 +6,8 @@
 #include <deque>
 #include <functional>
 
-#include "../opengl/screen.h"
-#include "../debugger.h"
+#include "../opengl/screen.hpp"
+#include "../debugger.hpp"
 
 namespace GGB
 {    

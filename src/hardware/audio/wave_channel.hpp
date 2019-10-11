@@ -3,7 +3,7 @@
 #define WAVECHANNEL_H
 
 #include <cstdint>
-#include "../memory/mmu.h"
+#include "../memory/mmu.hpp"
 
 namespace GGB::Hardware::Audio
 {

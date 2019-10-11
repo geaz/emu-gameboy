@@ -6,14 +6,14 @@
 #include <iostream>
 #include <fstream>
 
-#include "../clock.h"
-#include "../memory/mmu.h"
-#include "../../ggb_enums.h"
-#include "../../ggb_constants.h"
+#include "../clock.hpp"
+#include "../memory/mmu.hpp"
+#include "../../ggb_enums.hpp"
+#include "../../ggb_constants.hpp"
 
-#include "square_channel.h"
-#include "wave_channel.h"
-#include "noise_channel.h"
+#include "square_channel.hpp"
+#include "wave_channel.hpp"
+#include "noise_channel.hpp"
 
 namespace GGB::Hardware
 {

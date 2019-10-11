@@ -4,8 +4,8 @@
 
 #include <cstdint>
 #include <chrono>
-#include "cpu.h"
-#include "video/ppu.h"
+#include "cpu.hpp"
+#include "video/ppu.hpp"
 
 namespace GGB::Hardware
 {

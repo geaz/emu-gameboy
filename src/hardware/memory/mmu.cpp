@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <cstring>
-#include "mmu.h"
-#include "../video/tile_list.h"
+#include "mmu.hpp"
+#include "../video/tile_list.hpp"
 
 namespace GGB::Hardware
 {

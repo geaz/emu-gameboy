@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "${group_name}.h"
-#include "../../hardware/cpu.h"
+#include "${group_name}.hpp"
+#include "../../hardware/cpu.hpp"
 
 ${group_class_items}

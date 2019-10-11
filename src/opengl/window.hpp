@@ -7,7 +7,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "screen.h"
+#include "screen.hpp"
 
 namespace OpenGL
 {    

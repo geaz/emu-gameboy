@@ -3,9 +3,9 @@
 #define MMU_H
 
 #include <chrono>
-#include "../cartridge.h"
-#include "../../ggb_enums.h"
-#include "../../ggb_constants.h"
+#include "../cartridge.hpp"
+#include "../../ggb_enums.hpp"
+#include "../../ggb_constants.hpp"
 
 namespace GGB
 {

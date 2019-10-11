@@ -2,10 +2,10 @@
 #ifndef GGBDEBUGGER_H
 #define GGBDEBUGGER_H
 
-#include "hardware/memory/mmu.h"
-#include "hardware/audio/apu.h"
-#include "hardware/cartridge.h"
-#include "hardware/cpu.h"
+#include "hardware/memory/mmu.hpp"
+#include "hardware/audio/apu.hpp"
+#include "hardware/cartridge.hpp"
+#include "hardware/cpu.hpp"
 
 namespace GGB
 {

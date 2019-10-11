@@ -4,11 +4,11 @@
 
 #include <functional>
 
-#include "groups/aritmetic.h"
-#include "groups/branch.h"
-#include "groups/transfer.h"
-#include "groups/misc.h"
-#include "groups/prefix.h"
+#include "groups/aritmetic.hpp"
+#include "groups/branch.hpp"
+#include "groups/transfer.hpp"
+#include "groups/misc.hpp"
+#include "groups/prefix.hpp"
 
 typedef uint8_t (*OpcodeFunc)(Cpu*);
 struct Instruction

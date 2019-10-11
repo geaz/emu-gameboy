@@ -1,6 +1,6 @@
 #include <stdexcept>
-#include "aritmetic.h"
-#include "../../hardware/cpu.h"
+#include "aritmetic.hpp"
+#include "../../hardware/cpu.hpp"
 
 namespace GGB::Hardware::Instructions
 {    

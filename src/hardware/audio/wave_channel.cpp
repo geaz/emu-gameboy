@@ -1,4 +1,4 @@
-#include "wave_channel.h"
+#include "wave_channel.hpp"
 #include <iostream>
 namespace GGB::Hardware::Audio
 {

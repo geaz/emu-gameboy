@@ -1,7 +1,7 @@
-#include "debugger.h"
+#include "debugger.hpp"
 
-#include "ggb_enums.h"
-#include "screens/string_helper.h"
+#include "ggb_enums.hpp"
+#include "screens/string_helper.hpp"
 
 namespace GGB
 {

@@ -1,6 +1,6 @@
 #include <stdexcept>
-#include "transfer.h"
-#include "../../hardware/cpu.h"
+#include "transfer.hpp"
+#include "../../hardware/cpu.hpp"
 
 namespace GGB::Hardware::Instructions
 {

@@ -2,7 +2,7 @@
 #ifndef PREFIX_H
 #define PREFIX_H
 
-#include "../../hardware/memory/register.h"
+#include "../../hardware/memory/register.hpp"
 
 namespace GGB::Hardware { class Cpu; };
 namespace GGB::Hardware::Instructions

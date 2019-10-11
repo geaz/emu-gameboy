@@ -2,8 +2,8 @@
 #ifndef DEBUGSCREEN_H
 #define DEBUGSCREEN_H
 
-#include "../opengl/screen.h"
-#include "../debugger.h"
+#include "../opengl/screen.hpp"
+#include "../debugger.hpp"
 
 namespace GGB
 {

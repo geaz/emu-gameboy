@@ -1,6 +1,6 @@
 #include <stdexcept>
-#include "misc.h"
-#include "../../hardware/cpu.h"
+#include "misc.hpp"
+#include "../../hardware/cpu.hpp"
 
 namespace GGB::Hardware::Instructions
 {

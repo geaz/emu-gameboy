@@ -3,7 +3,7 @@
 #define DAC_H
 
 #include "rtaudio.h"
-#include "hardware/audio/apu.h"
+#include "hardware/audio/apu.hpp"
 
 namespace GGB
 {

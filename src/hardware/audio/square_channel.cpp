@@ -1,4 +1,4 @@
-#include "square_channel.h"
+#include "square_channel.hpp"
 
 namespace GGB::Hardware::Audio
 {

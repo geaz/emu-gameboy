@@ -10,7 +10,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists-rtAudio.txt)
 file(GLOB_RECURSE EMU_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/libs/glad/src/glad.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 

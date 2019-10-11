@@ -3,8 +3,8 @@
 
 #include <imgui.h>
 
-#include "components_screen.h"
-#include "string_helper.h"
+#include "components_screen.hpp"
+#include "string_helper.hpp"
 
 namespace GGB 
 {

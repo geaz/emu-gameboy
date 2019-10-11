@@ -1,6 +1,6 @@
 #include <stdexcept>
-#include "branch.h"
-#include "../../hardware/cpu.h"
+#include "branch.hpp"
+#include "../../hardware/cpu.hpp"
 
 namespace GGB::Hardware::Instructions
 {

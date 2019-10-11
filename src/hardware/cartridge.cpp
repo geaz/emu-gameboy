@@ -1,6 +1,6 @@
 #include <fstream>
-#include "cartridge.h"
-#include "../ggb_constants.h"
+#include "cartridge.hpp"
+#include "../ggb_constants.hpp"
 
 namespace GGB::Hardware
 {

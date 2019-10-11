@@ -196,10 +196,10 @@ for group_name, opcode_groups in grouped_by_groupname.items():
         'output/groups/' + group_name + '.cpp')      
     tmpl_group_header.write_substitution(
         {'group_class_definitions': group_class_definitions, 'group_name_upper': group_name.upper() },
-        'output/groups/' + group_name + '.h')  
+        'output/groups/' + group_name + '.hpp')  
 
 tmpl_instruction_set.write_substitution(
     {'instruction_items': tmpl_instruction_set_item.get_substitutions(instruction_items),
      'prefix_items': tmpl_instruction_set_item.get_substitutions(prefix_items) },
-    'output/instruction_set.h'
+    'output/instruction_set.hpp'
 )

@@ -2,8 +2,8 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include "memory/mmu.h"
-#include "../ggb_enums.h"
+#include "memory/mmu.hpp"
+#include "../ggb_enums.hpp"
 
 namespace GGB
 {

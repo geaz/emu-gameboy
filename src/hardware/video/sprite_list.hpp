@@ -2,8 +2,8 @@
 #ifndef SPRITEDATA_H
 #define SPRITEDATA_H
 
-#include "color_palettes.h"
-#include "../memory/mmu.h"
+#include "color_palettes.hpp"
+#include "../memory/mmu.hpp"
 
 namespace GGB::Hardware::Video
 {

@@ -3,13 +3,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "dac.h"
-#include "opengl/window.h"
-#include "hardware/gameboy.h"
-#include "hardware/cartridge.h"
-#include "screens/debug_screen.h"
-#include "screens/components_screen.h"
-#include "screens/gameboy_screen.h"
+#include "dac.hpp"
+#include "opengl/window.hpp"
+#include "hardware/gameboy.hpp"
+#include "hardware/cartridge.hpp"
+#include "screens/debug_screen.hpp"
+#include "screens/components_screen.hpp"
+#include "screens/gameboy_screen.hpp"
 
 int main(int argc, char** args) {
     if(argc < 2)

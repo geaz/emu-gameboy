@@ -1,4 +1,4 @@
-#include "sprite_list.h"
+#include "sprite_list.hpp"
 
 namespace GGB::Hardware::Video
 {

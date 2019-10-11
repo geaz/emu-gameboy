@@ -1,6 +1,6 @@
 #include <stdexcept>
-#include "prefix.h"
-#include "../../hardware/cpu.h"
+#include "prefix.hpp"
+#include "../../hardware/cpu.hpp"
 
 namespace GGB::Hardware::Instructions
 {

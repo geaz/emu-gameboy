@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-#include "shader.h"
+#include "shader.hpp"
 
 namespace OpenGL
 {

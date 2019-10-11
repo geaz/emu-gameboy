@@ -2,9 +2,9 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include "memory/register.h"
-#include "memory/mmu.h"
-#include "../instructions/instruction_set.h"
+#include "memory/register.hpp"
+#include "memory/mmu.hpp"
+#include "../instructions/instruction_set.hpp"
 
 namespace GGB
 {

@@ -1,6 +1,6 @@
-#include "apu.h"
 #include <iostream>
 #include <algorithm>
+#include "apu.hpp"
 
 namespace GGB::Hardware
 {

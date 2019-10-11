@@ -2,7 +2,7 @@
 #ifndef NOISECHANNEL_H
 #define NOISECHANNEL_H
 
-#include "../memory/mmu.h"
+#include "../memory/mmu.hpp"
 
 namespace GGB::Hardware::Audio
 {

@@ -2,11 +2,11 @@
 #ifndef PPU_H
 #define PPU_H
 
-#include "tile_list.h"
-#include "sprite_list.h"
-#include "color_palettes.h"
-#include "background_maps.h"
-#include "../memory/mmu.h"
+#include "tile_list.hpp"
+#include "sprite_list.hpp"
+#include "color_palettes.hpp"
+#include "background_maps.hpp"
+#include "../memory/mmu.hpp"
 
 namespace GGB
 {

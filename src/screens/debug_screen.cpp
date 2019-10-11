@@ -7,9 +7,9 @@
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 
-#include "string_helper.h"
-#include "debug_screen.h"
-#include "components_screen.h"
+#include "string_helper.hpp"
+#include "debug_screen.hpp"
+#include "components_screen.hpp"
 
 namespace GGB
 {

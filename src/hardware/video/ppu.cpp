@@ -1,4 +1,4 @@
-#include "ppu.h"
+#include "ppu.hpp"
 #include <algorithm>
 
 namespace GGB::Hardware

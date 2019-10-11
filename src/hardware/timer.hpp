@@ -2,7 +2,7 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include "memory/mmu.h"
+#include "memory/mmu.hpp"
 
 namespace GGB::Hardware
 {

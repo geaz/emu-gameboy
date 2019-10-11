@@ -1,4 +1,4 @@
-#include "noise_channel.h"
+#include "noise_channel.hpp"
 
 namespace GGB::Hardware::Audio
 {

@@ -2,8 +2,8 @@
 #ifndef TILEDATA_H
 #define TILEDATA_H
 
-#include "color_palettes.h"
-#include "../memory/mmu.h"
+#include "color_palettes.hpp"
+#include "../memory/mmu.hpp"
 
 namespace GGB::Hardware::Video
 {

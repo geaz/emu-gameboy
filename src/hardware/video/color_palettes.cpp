@@ -1,4 +1,4 @@
-#include "color_palettes.h"
+#include "color_palettes.hpp"
 
 namespace GGB::Hardware::Video
 {

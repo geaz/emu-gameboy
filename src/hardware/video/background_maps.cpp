@@ -1,4 +1,4 @@
-#include "background_maps.h"
+#include "background_maps.hpp"
 
 namespace GGB::Hardware::Video
 {

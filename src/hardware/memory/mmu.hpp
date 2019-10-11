@@ -11,6 +11,11 @@ namespace GGB
 {
     namespace Hardware
     {
+        // The memory write event gets written during each call to the write method of the MMU.
+        // This way the depending components are able to check, if certain values in the memory
+        // changed during the last cycle, without reading the memory addresses each time.
+        // This should bring a small performance gain.
+        // Kind of a poor mans event handler :)
         struct MemoryWriteEvent
         {
             uint16_t address;
@@ -34,10 +39,11 @@ namespace GGB
                 Enum::LcdMode readLcdMode() const;
                 void writeLcdMode(const Enum::LcdMode lcdMode);
 
-                MemoryWriteEvent lastWriteEvent;
+                MemoryWriteEvent getLastWriteEvent() const;
 
             private:
                 Cartridge& cartridge;
+                MemoryWriteEvent lastWriteEvent;
                 // Because the mode gets rapidly read
                 // we also save it in this variable for faster access
                 Enum::LcdMode currentPpuMode = Enum::LcdMode::HBlank;

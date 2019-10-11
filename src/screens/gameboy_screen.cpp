@@ -102,8 +102,7 @@ namespace GGB
                         break;
                 }
             }        
-        }
-        
+        }        
         renderTexture(data);
     }
 
@@ -135,8 +134,7 @@ namespace GGB
                         break;
                 }
             }        
-        }
-        
+        }        
         renderTexture(data);
     }
 

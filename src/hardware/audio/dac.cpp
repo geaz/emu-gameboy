@@ -4,8 +4,8 @@ namespace GGB::Hardware::Audio
 {    
     Dac* DacPointer = NULL;
 
-    Dac::Dac() 
-        : sampleBufferLeft(Const::AudioBufferFrames * 4),
+    Dac::Dac() :
+        sampleBufferLeft(Const::AudioBufferFrames * 4),
         sampleBufferRight(Const::AudioBufferFrames * 4)
     {
         // Store Pointer for RtAudio callbacks
@@ -44,7 +44,7 @@ namespace GGB::Hardware::Audio
             sampleBufferRight.put((allRightChannels - 8) / 8);
         }
         // Wait with the start of the dac until we filled the buffer a bit
-        if(!dac.isStreamRunning() && sampleBufferLeft.size() >= Const::AudioBufferFrames * 1.5) 
+        if(!dac.isStreamRunning() && sampleBufferLeft.size() >= Const::AudioBufferFrames * 2) 
             dac.startStream();
     }
 

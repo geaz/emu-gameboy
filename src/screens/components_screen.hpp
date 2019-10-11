@@ -16,7 +16,7 @@ namespace GGB
 
     /**
      * The ComponentsScreen renders the memory of the Game Boy and
-     * the loaded cartridge. It closing / opening mechanism is triggered 
+     * the loaded cartridge. Its closing / opening mechanism is triggered 
      * by the Window Menubar of the DebugScreen.
      * The GUI gets rendered by ImGUI.
      **/

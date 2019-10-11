@@ -30,22 +30,21 @@ namespace GGB
         using Enum::CpuState;
         using Enum::CpuFlag;
 
+        // Start Window
         if(!GGB::ShowDebugScreen) return;
         ImGui::Begin("Debugger", &GGB::ShowDebugScreen, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar); 
         ImGui::SetWindowSize(ImVec2(275, 440), ImGuiCond_Always);
 
-        if (ImGui::BeginMenuBar())
-        {
-            if (ImGui::BeginMenu("Show"))
-            {
-                if (ImGui::MenuItem("Components")) GGB::ShowComponentsScreen = !GGB::ShowComponentsScreen;
-                if (ImGui::MenuItem("App Metrics")) ShowAppMetrics = !ShowAppMetrics ;
-                ImGui::EndMenu();
-            }
-            ImGui::EndMenuBar();
-        }
+        // Draw Menubar
+        ImGui::BeginMenuBar();
+        ImGui::BeginMenu("Show");
+        if (ImGui::MenuItem("Components")) GGB::ShowComponentsScreen = !GGB::ShowComponentsScreen;
+        if (ImGui::MenuItem("App Metrics")) ShowAppMetrics = !ShowAppMetrics ;
+        ImGui::EndMenu();
+        ImGui::EndMenuBar();
         if (ShowAppMetrics) ImGui::ShowMetricsWindow(&ShowAppMetrics);
 
+        // Draw general information
         ImGui::Text("CPU:");
         ImGui::SameLine(); 
         if(cpu.state == CpuState::RUNNING) ImGui::TextColored(ImVec4(0.00f, 0.42f, 1.00f, 1.00f), "RUNNING");
@@ -92,6 +91,7 @@ namespace GGB
         }
         ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
+        // Draw Flags
         ImGui::Text("Flags");
         ImGui::Separator();    
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
@@ -111,6 +111,7 @@ namespace GGB
         ImGui::PopItemWidth();
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
+        // Draw Registers
         ImGui::Text("Registers");
         ImGui::Separator();
         ImGui::Dummy(ImVec2(0.0f, 5.0f));  

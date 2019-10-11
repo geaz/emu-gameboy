@@ -12,7 +12,7 @@ namespace GGB
 
     /**
      * The DebugScreen renders the debugging view of the emulator.
-     * It closing / opening mechanism is triggered by the 'handleKeys'
+     * Its closing / opening mechanism is triggered by the 'handleKeys'
      * method in the GameBoyScreen. The GUI gets rendered by ImGUI.
      **/
     class DebugScreen : public OpenGL::Screen

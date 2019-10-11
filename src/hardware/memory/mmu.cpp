@@ -105,4 +105,9 @@ namespace GGB::Hardware
         writeIORegisterBit(Const::AddrRegLcdStatus, Const::FlagLcdStatusModeLow, lcdModeValue & 0x1);
         currentPpuMode = lcdMode;
     }
+
+    MemoryWriteEvent Mmu::getLastWriteEvent() const
+    {
+        return lastWriteEvent;
+    }
 }

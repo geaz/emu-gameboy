@@ -46,11 +46,6 @@ namespace GGB::Hardware
             Audio::WaveChannel waveChannel;
             Audio::NoiseChannel noiseChannel;
 
-            bool debugSquare1Enabled = true;
-            bool debugSquare2Enabled = true;
-            bool debugWaveEnabled = true;
-            bool debugNoiseEnabled = true;
-
         private:          
             void checkWaveStart();  
             void checkRestartTrigger();

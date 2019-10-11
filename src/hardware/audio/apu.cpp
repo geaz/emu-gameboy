@@ -32,27 +32,27 @@ namespace GGB::Hardware
 
     void Apu::checkRestartTrigger()
     {
-        if(mmu.lastWriteEvent.eventTime != lastRelevantMemoryEvent.eventTime)
+        if(mmu.getLastWriteEvent().eventTime != lastRelevantMemoryEvent.eventTime)
         {
-            MemoryWriteEvent writeEvent = mmu.lastWriteEvent;            
+            MemoryWriteEvent writeEvent = mmu.getLastWriteEvent();            
             if(writeEvent.address == Const::AddrRegChannel1Data && writeEvent.value & Const::FlagChannelRestart)
             {
-                lastRelevantMemoryEvent = mmu.lastWriteEvent;
+                lastRelevantMemoryEvent = mmu.getLastWriteEvent();
                 squareChannel1.restart();
             }
             else if(writeEvent.address == Const::AddrRegChannel2Data && writeEvent.value & Const::FlagChannelRestart)
             {
-                lastRelevantMemoryEvent = mmu.lastWriteEvent;
+                lastRelevantMemoryEvent = mmu.getLastWriteEvent();
                 squareChannel2.restart();
             }
             else if(writeEvent.address == Const::AddrRegChannel3Data && writeEvent.value & Const::FlagChannelRestart)
             {
-                lastRelevantMemoryEvent = mmu.lastWriteEvent;
+                lastRelevantMemoryEvent = mmu.getLastWriteEvent();
                 waveChannel.restart();
             }
             else if(writeEvent.address == Const::AddrRegChannel4Data && writeEvent.value & Const::FlagChannelRestart)
             {
-                lastRelevantMemoryEvent = mmu.lastWriteEvent;
+                lastRelevantMemoryEvent = mmu.getLastWriteEvent();
                 noiseChannel.restart();
             }
         }
@@ -111,23 +111,23 @@ namespace GGB::Hardware
             uint8_t volumeRight = 8 - ((volumeReg >> 4) & Const::FlagOutputVolume);
             
             uint8_t channelControl = mmu.read(Const::AddrRegChannelControl);
-            uint8_t square1OutputLeft = channelControl & Const::FlagChannel1ToOutput1 && debugSquare1Enabled;
-            uint8_t square1OutputRight = channelControl & Const::FlagChannel1ToOutput2 && debugSquare1Enabled;
+            uint8_t square1OutputLeft = channelControl & Const::FlagChannel1ToOutput1;
+            uint8_t square1OutputRight = channelControl & Const::FlagChannel1ToOutput2;
             sampleData.square1Left[sampleCounter] = square1OutputLeft ? squareChannel1.currentSample / volumeLeft : 0;
             sampleData.square1Right[sampleCounter] = square1OutputRight ? squareChannel1.currentSample / volumeRight : 0;
 
-            uint8_t square2OutputLeft = channelControl & Const::FlagChannel2ToOutput1 && debugSquare2Enabled;
-            uint8_t square2OutputRight = channelControl & Const::FlagChannel2ToOutput2 && debugSquare2Enabled;
+            uint8_t square2OutputLeft = channelControl & Const::FlagChannel2ToOutput1;
+            uint8_t square2OutputRight = channelControl & Const::FlagChannel2ToOutput2;
             sampleData.square2Left[sampleCounter] = square2OutputLeft ? squareChannel2.currentSample / volumeLeft : 0;
             sampleData.square2Right[sampleCounter] = square2OutputRight ? squareChannel2.currentSample / volumeRight : 0;
 
-            uint8_t waveOutputLeft = channelControl & Const::FlagChannel3ToOutput1 && debugWaveEnabled;
-            uint8_t waveOutputRight = channelControl & Const::FlagChannel3ToOutput2 && debugWaveEnabled;
+            uint8_t waveOutputLeft = channelControl & Const::FlagChannel3ToOutput1;
+            uint8_t waveOutputRight = channelControl & Const::FlagChannel3ToOutput2;
             sampleData.waveLeft[sampleCounter] = waveOutputLeft ? waveChannel.currentSample / volumeLeft : 0;
             sampleData.waveRight[sampleCounter] = waveOutputRight ? waveChannel.currentSample / volumeRight : 0;
 
-            uint8_t noiseOutputLeft = channelControl & Const::FlagChannel4ToOutput1 && debugWaveEnabled;
-            uint8_t noiseOutputRight = channelControl & Const::FlagChannel4ToOutput2 && debugWaveEnabled;
+            uint8_t noiseOutputLeft = channelControl & Const::FlagChannel4ToOutput1;
+            uint8_t noiseOutputRight = channelControl & Const::FlagChannel4ToOutput2;
             sampleData.noiseLeft[sampleCounter] = noiseOutputLeft ? noiseChannel.currentSample / volumeLeft : 0;
             sampleData.noiseRight[sampleCounter] = noiseOutputRight ? noiseChannel.currentSample / volumeRight : 0;
             

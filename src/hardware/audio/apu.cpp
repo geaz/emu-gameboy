@@ -9,17 +9,7 @@ namespace GGB::Hardware
         squareChannel1(mmu, square1Parameters),
         squareChannel2(mmu, square2Parameters),
         waveChannel(mmu),
-        noiseChannel(mmu)
-    {         
-        memset(square1BufferLeft, 0, Const::AudioBufferFrames);
-        memset(square1BufferRight, 0, Const::AudioBufferFrames);
-        memset(square2BufferLeft, 0, Const::AudioBufferFrames);
-        memset(square2BufferRight, 0, Const::AudioBufferFrames);
-        memset(waveBufferLeft, 0, Const::AudioBufferFrames);
-        memset(waveBufferRight, 0, Const::AudioBufferFrames);
-        memset(noiseBufferLeft, 0, Const::AudioBufferFrames);
-        memset(noiseBufferRight, 0, Const::AudioBufferFrames);
-    }
+        noiseChannel(mmu) { }
 
     void Apu::cycle(const uint8_t cycles)
     {
@@ -114,44 +104,37 @@ namespace GGB::Hardware
     void Apu::cycleSamples(const uint8_t cycles)
     {
         cycleCount += cycles;
-        while(cycleCount >= Const::CyclesAudioSample)
+        if(cycleCount >= Const::CyclesAudioSample)
         {
             uint8_t volumeReg = mmu.read(Const::AddrRegOutputControl);
             uint8_t volumeLeft = 8 - (volumeReg & Const::FlagOutputVolume);
             uint8_t volumeRight = 8 - ((volumeReg >> 4) & Const::FlagOutputVolume);
             
-            uint8_t square1OutputLeft = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel1ToOutput1) && debugSquare1Enabled;
-            uint8_t square1OutputRight = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel1ToOutput2) && debugSquare1Enabled;
-            square1BufferLeft[sampleCounter] = square1OutputLeft ? squareChannel1.currentSample / volumeLeft : 0;
-            square1BufferRight[sampleCounter] = square1OutputRight ? squareChannel1.currentSample / volumeRight : 0;
+            uint8_t channelControl = mmu.read(Const::AddrRegChannelControl);
+            uint8_t square1OutputLeft = channelControl & Const::FlagChannel1ToOutput1 && debugSquare1Enabled;
+            uint8_t square1OutputRight = channelControl & Const::FlagChannel1ToOutput2 && debugSquare1Enabled;
+            sampleData.square1Left[sampleCounter] = square1OutputLeft ? squareChannel1.currentSample / volumeLeft : 0;
+            sampleData.square1Right[sampleCounter] = square1OutputRight ? squareChannel1.currentSample / volumeRight : 0;
 
-            uint8_t square2OutputLeft = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel2ToOutput1) && debugSquare2Enabled;
-            uint8_t square2OutputRight = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel2ToOutput2) && debugSquare2Enabled;
-            square2BufferLeft[sampleCounter] = square2OutputLeft ? squareChannel2.currentSample / volumeLeft : 0;
-            square2BufferRight[sampleCounter] = square2OutputRight ? squareChannel2.currentSample / volumeRight : 0;
+            uint8_t square2OutputLeft = channelControl & Const::FlagChannel2ToOutput1 && debugSquare2Enabled;
+            uint8_t square2OutputRight = channelControl & Const::FlagChannel2ToOutput2 && debugSquare2Enabled;
+            sampleData.square2Left[sampleCounter] = square2OutputLeft ? squareChannel2.currentSample / volumeLeft : 0;
+            sampleData.square2Right[sampleCounter] = square2OutputRight ? squareChannel2.currentSample / volumeRight : 0;
 
-            uint8_t waveOutputLeft = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel3ToOutput1) && debugWaveEnabled;
-            uint8_t waveOutputRight = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel3ToOutput2) && debugWaveEnabled;
-            waveBufferLeft[sampleCounter] = waveOutputLeft ? waveChannel.currentSample / volumeLeft : 0;
-            waveBufferRight[sampleCounter] = waveOutputRight ? waveChannel.currentSample / volumeRight : 0;
+            uint8_t waveOutputLeft = channelControl & Const::FlagChannel3ToOutput1 && debugWaveEnabled;
+            uint8_t waveOutputRight = channelControl & Const::FlagChannel3ToOutput2 && debugWaveEnabled;
+            sampleData.waveLeft[sampleCounter] = waveOutputLeft ? waveChannel.currentSample / volumeLeft : 0;
+            sampleData.waveRight[sampleCounter] = waveOutputRight ? waveChannel.currentSample / volumeRight : 0;
 
-            uint8_t noiseOutputLeft = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel4ToOutput1) && debugWaveEnabled;
-            uint8_t noiseOutputRight = mmu.readIORegisterBit(Const::AddrRegChannelControl, Const::FlagChannel4ToOutput2) && debugWaveEnabled;
-            noiseBufferLeft[sampleCounter] = noiseOutputLeft ? noiseChannel.currentSample / volumeLeft : 0;
-            noiseBufferRight[sampleCounter] = noiseOutputRight ? noiseChannel.currentSample / volumeRight : 0;
+            uint8_t noiseOutputLeft = channelControl & Const::FlagChannel4ToOutput1 && debugWaveEnabled;
+            uint8_t noiseOutputRight = channelControl & Const::FlagChannel4ToOutput2 && debugWaveEnabled;
+            sampleData.noiseLeft[sampleCounter] = noiseOutputLeft ? noiseChannel.currentSample / volumeLeft : 0;
+            sampleData.noiseRight[sampleCounter] = noiseOutputRight ? noiseChannel.currentSample / volumeRight : 0;
             
             sampleCounter++;
-
             if(sampleCounter == Const::AudioBufferFrames)
             {
-                std::copy(square1BufferLeft, square1BufferLeft + Const::AudioBufferFrames, square1DataLeft);
-                std::copy(square1BufferRight, square1BufferRight + Const::AudioBufferFrames, square1DataRight);
-                std::copy(square2BufferLeft, square2BufferLeft + Const::AudioBufferFrames, square2DataLeft);
-                std::copy(square2BufferRight, square2BufferRight + Const::AudioBufferFrames, square2DataRight);
-                std::copy(waveBufferLeft, waveBufferLeft + Const::AudioBufferFrames, waveDataLeft);
-                std::copy(waveBufferRight, waveBufferRight + Const::AudioBufferFrames, waveDataRight);
-                std::copy(noiseBufferLeft, noiseBufferLeft + Const::AudioBufferFrames, noiseDataLeft);
-                std::copy(noiseBufferRight, noiseBufferRight + Const::AudioBufferFrames, noiseDataRight);
+                dac.feedSamples(sampleData);
                 sampleCounter = 0;
             }
             cycleCount -= Const::CyclesAudioSample;

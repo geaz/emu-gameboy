@@ -22,8 +22,8 @@ namespace GGB::Hardware::Audio
             }
 
         private:
-            bool lengthStop;
-            uint16_t length;
+            bool lengthStop = false;
+            uint16_t length = 0;
     };
 }
 

@@ -2,8 +2,8 @@
 
 ## Compatibility
 
-*It is not intended to provide a full compatibility for all available cartridges.*
-*Or to implement every single quirk of the Game Boy Hardware.*
+*It is not intended to provide a full compatibility for all available cartridges or games.*
+*For example: I just did a naive bank switching implementation without ROM handling. Just enought to run Blarggs CPU test rom.*
 
 This is a *programming experience project* and it does not aim to be a daily use emulator to play with. 
 Use other great emulators for this purpose. For example:
@@ -35,6 +35,8 @@ Which should be enough for most cases. There are more accurate methods like desc
 I also tried to get the timer implementation to behave like the real hardware.
 Most of the behaviours described in [The Cycle-Accurate Game Boy Docs](https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf) are working, passing most of [Mooneyes Timer Tests](https://github.com/Gekkio/mooneye-gb/tree/master/tests/acceptance/timer).
 In contrast to other implementations, I let the timer use the *correct* internal clock in memory to increase the TIMA and DIV.
+
+Given it was my first time doing sound programming, the APU works quite well, but not perfect.
 
 ## Controls
 

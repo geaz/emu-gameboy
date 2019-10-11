@@ -9,8 +9,7 @@ namespace GGB
         ppu(mmu),
         apu(mmu),
         input(Hardware::Input(mmu)),
-        timer(Hardware::Timer(mmu)),
-        debugger(cartridge, mmu, cpu, apu)
+        timer(Hardware::Timer(mmu))
     { }
 
     /**
@@ -48,7 +47,6 @@ namespace GGB
             timer.cycle(opCycles);
             apu.cycle(opCycles);
             input.cycle();
-            debugger.cycle();
             
             cycles -= opCycles;
         }     

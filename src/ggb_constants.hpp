@@ -38,7 +38,9 @@ namespace GGB::Const
     inline const uint16_t Cycles256Hz = CyclesCpu / 256;
     inline const uint16_t Cycles128Hz = CyclesCpu / 128;
     inline const uint32_t Cycles64Hz = CyclesCpu / 64;
-    inline const uint16_t CyclesAudioSample = CyclesCpu / AudioSampleRate; 
+    // We want to produce the samples a bit faster then consuming them
+    // For the sample production we set the sample rate a bit higher to reduce lags during playback
+    inline const uint16_t CyclesAudioSample = CyclesCpu / (AudioSampleRate + 250); 
     
     // We take the VBlank to syncronize the clock
     // The gameboy refreshes the screen ~60 times per seconds (CPU_CYCLES/FRAME_CYCLES)

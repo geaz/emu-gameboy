@@ -6,8 +6,9 @@
 #include <deque>
 #include <functional>
 
+#include "../hardware/cartridge.hpp"
+#include "../hardware/memory/mmu.hpp"
 #include "../opengl/screen.hpp"
-#include "../debugger.hpp"
 
 namespace GGB
 {    
@@ -22,7 +23,7 @@ namespace GGB
     class ComponentsScreen : public OpenGL::Screen
     {   
         public:
-            ComponentsScreen(Debugger& debugger);
+            ComponentsScreen(Hardware::Cartridge& cartridge, Hardware::Mmu& mmu);
 
             void update() override;
 
@@ -32,8 +33,9 @@ namespace GGB
                 const std::map<uint16_t, std::string> toolTipMap,
                 const uint32_t memorySize,
                 std::function<uint8_t (uint32_t)> memoryReadFunc);
-            
-            Debugger& debugger;
+
+            Hardware::Cartridge& cartridge;
+            Hardware::Mmu& mmu;
 
             std::map<uint16_t, std::string> memoryToolTips = {
                 { 0x0000, "Cartridge Bank 0 Start" },

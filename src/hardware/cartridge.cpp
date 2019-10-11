@@ -4,7 +4,7 @@
 
 namespace GGB::Hardware
 {
-    Cartridge::Cartridge(std::string path) : cartridgePath(path)
+    Cartridge::Cartridge(const std::string path) : cartridgePath(path)
     {
         std::ifstream cartridgeFile;
         cartridgeFile.open(cartridgePath, std::ifstream::binary);

@@ -6,7 +6,7 @@
 #include "../memory/mmu.hpp"
 #include "../../ggb_enums.hpp"
 #include "../../ggb_constants.hpp"
-
+#include "dac.hpp"
 #include "square_channel.hpp"
 #include "wave_channel.hpp"
 #include "noise_channel.hpp"
@@ -37,6 +37,7 @@ namespace GGB::Hardware
     {
         public:
             Apu(Mmu& mmu);
+            Audio::Dac dac;
         
             void cycle(const uint8_t cycles);
 
@@ -49,15 +50,6 @@ namespace GGB::Hardware
             bool debugSquare2Enabled = true;
             bool debugWaveEnabled = true;
             bool debugNoiseEnabled = true;
-
-            uint8_t square1DataRight[Const::AudioBufferFrames];
-            uint8_t square1DataLeft[Const::AudioBufferFrames];
-            uint8_t square2DataRight[Const::AudioBufferFrames];
-            uint8_t square2DataLeft[Const::AudioBufferFrames];
-            uint8_t waveDataRight[Const::AudioBufferFrames];
-            uint8_t waveDataLeft[Const::AudioBufferFrames];
-            uint8_t noiseDataRight[Const::AudioBufferFrames];
-            uint8_t noiseDataLeft[Const::AudioBufferFrames];
 
         private:          
             void checkWaveStart();  
@@ -76,15 +68,7 @@ namespace GGB::Hardware
             uint16_t sampleCounter = 0;
 
             MemoryWriteEvent lastRelevantMemoryEvent;
-
-            uint8_t square1BufferRight[Const::AudioBufferFrames];
-            uint8_t square1BufferLeft[Const::AudioBufferFrames];
-            uint8_t square2BufferRight[Const::AudioBufferFrames];
-            uint8_t square2BufferLeft[Const::AudioBufferFrames];
-            uint8_t waveBufferRight[Const::AudioBufferFrames];
-            uint8_t waveBufferLeft[Const::AudioBufferFrames];
-            uint8_t noiseBufferRight[Const::AudioBufferFrames];
-            uint8_t noiseBufferLeft[Const::AudioBufferFrames];
+            Audio::SampleData sampleData;
     };
 }
 

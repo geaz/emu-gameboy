@@ -2,8 +2,8 @@
 #ifndef DEBUGSCREEN_H
 #define DEBUGSCREEN_H
 
+#include "../hardware/cpu.hpp"
 #include "../opengl/screen.hpp"
-#include "../debugger.hpp"
 
 namespace GGB
 {
@@ -18,13 +18,13 @@ namespace GGB
     class DebugScreen : public OpenGL::Screen
     {   
         public:
-            DebugScreen(Debugger& debugger);
+            DebugScreen(Hardware::Cpu& cpu);
 
             void handleKeys(const int key, const int scancode, const int action, const int mods) override; 
             void update() override;
 
         private:
-            Debugger& debugger;
+            Hardware::Cpu& cpu;
     };
 }
 

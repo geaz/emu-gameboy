@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "dac.hpp"
 #include "opengl/window.hpp"
 #include "hardware/gameboy.hpp"
 #include "hardware/cartridge.hpp"
@@ -25,11 +24,9 @@ int main(int argc, char** args) {
         GGB::Const::LcdWidth * 2, 
         GGB::Const::LcdHeight * 2);
         
-    GGB::DebugScreen debugScreen(gameBoy.debugger);
-    GGB::ComponentsScreen componentsScreen(gameBoy.debugger); 
+    GGB::DebugScreen debugScreen(gameBoy.cpu);
+    GGB::ComponentsScreen componentsScreen(gameBoy.cartridge, gameBoy.mmu); 
     GGB::GameBoyScreen gameBoyScreen(gameBoy);   
-
-    GGB::Dac dac(gameBoy.apu);
 
     window.addScreen(&debugScreen);
     window.addScreen(&componentsScreen);

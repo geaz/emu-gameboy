@@ -10,7 +10,6 @@
 #include "video/ppu.hpp"
 #include "memory/mmu.hpp"
 #include "audio/apu.hpp"
-#include "../debugger.hpp"
 
 namespace GGB
 {
@@ -29,7 +28,6 @@ namespace GGB
             Hardware::Input input;
             Hardware::Timer timer;
             Hardware::Clock clock;
-            Debugger debugger;
     };
 }
 

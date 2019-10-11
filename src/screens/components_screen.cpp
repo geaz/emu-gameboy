@@ -10,7 +10,8 @@ namespace GGB
 {
     bool ShowComponentsScreen = false;
 
-    ComponentsScreen::ComponentsScreen(Debugger& debugger) : debugger(debugger) { }
+    ComponentsScreen::ComponentsScreen(Hardware::Cartridge& cartridge, Hardware::Mmu& mmu)
+        : cartridge(cartridge), mmu(mmu) { }
 
     void ComponentsScreen::update()
     { 
@@ -22,43 +23,15 @@ namespace GGB
         if(ImGui::BeginTabItem("Memory"))
         {
             drawMemoryMap("Memory", memoryToolTips, Const::MemorySize, 
-                [this] (uint32_t address) -> uint8_t { return debugger.mmu.read(address, true); });
+                [this] (uint32_t address) -> uint8_t { return mmu.read(address, true); });
             ImGui::EndTabItem();
         }
         if(ImGui::BeginTabItem("Cartridge"))
         {
-            std::string supported = debugger.cartridge.supported ? "True" : "False";
+            std::string supported = cartridge.supported ? "True" : "False";
             ImGui::InputText("Supported", &supported[0], 6, ImGuiInputTextFlags_ReadOnly);
-            drawMemoryMap("Cartridge", cartridgeToolTips, debugger.cartridge.cartridgeSize, 
-                [this] (uint32_t address) -> uint8_t { return debugger.cartridge.read(address); });
-            ImGui::EndTabItem();
-        }
-        if(ImGui::BeginTabItem("Audio"))
-        {      
-            ImGui::Checkbox("Channel 1 (Square - Env/Sweep)", &debugger.apu.debugSquare1Enabled);
-            ImGui::PushItemWidth(-50);
-            ImGui::PlotLines("Left", debugger.square1Left, IM_ARRAYSIZE(debugger.square1Left), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
-            ImGui::PlotLines("Right", debugger.square1Right, IM_ARRAYSIZE(debugger.square1Right), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
-            ImGui::PopItemWidth();   
-
-            ImGui::Checkbox("Channel 2 (Square - Env)", &debugger.apu.debugSquare2Enabled);
-            ImGui::PushItemWidth(-50);
-            ImGui::PlotLines("Left", debugger.square2Left, IM_ARRAYSIZE(debugger.square2Left), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
-            ImGui::PlotLines("Right", debugger.square2Right, IM_ARRAYSIZE(debugger.square2Right), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
-            ImGui::PopItemWidth();
-
-            ImGui::Checkbox("Channel 3 (Wave)", &debugger.apu.debugWaveEnabled);
-            ImGui::PushItemWidth(-50);
-            ImGui::PlotLines("Left", debugger.waveLeft, IM_ARRAYSIZE(debugger.waveLeft), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
-            ImGui::PlotLines("Right", debugger.waveRight, IM_ARRAYSIZE(debugger.waveRight), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
-            ImGui::PopItemWidth();
-
-            ImGui::Checkbox("Channel 4 (Noise)", &debugger.apu.debugNoiseEnabled);
-            ImGui::PushItemWidth(-50);
-            ImGui::PlotLines("Left", debugger.noiseLeft, IM_ARRAYSIZE(debugger.noiseLeft), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
-            ImGui::PlotLines("Right", debugger.noiseRight, IM_ARRAYSIZE(debugger.noiseRight), NULL, NULL, -1.0f, 1.0f, ImVec2(0,30));
-            ImGui::PopItemWidth();
-
+            drawMemoryMap("Cartridge", cartridgeToolTips, cartridge.cartridgeSize, 
+                [this] (uint32_t address) -> uint8_t { return cartridge.read(address); });
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();

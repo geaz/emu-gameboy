@@ -21,17 +21,20 @@ namespace GGB
         
         ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None);
         
-        ImGui::BeginTabItem("Memory");
-        drawMemoryMap("Memory", memoryToolTips, Const::MemorySize, 
-            [this] (uint32_t address) -> uint8_t { return mmu.read(address, true); });
-        ImGui::EndTabItem();
-
-        ImGui::BeginTabItem("Cartridge");
-        std::string supported = cartridge.supported ? "True" : "False";
-        ImGui::InputText("Supported", &supported[0], 6, ImGuiInputTextFlags_ReadOnly);
-        drawMemoryMap("Cartridge", cartridgeToolTips, cartridge.cartridgeSize, 
-            [this] (uint32_t address) -> uint8_t { return cartridge.read(address); });
-        ImGui::EndTabItem();
+        if(ImGui::BeginTabItem("Memory"))
+        {
+            drawMemoryMap("Memory", memoryToolTips, Const::MemorySize, 
+                [this] (uint32_t address) -> uint8_t { return mmu.read(address, true); });
+            ImGui::EndTabItem();
+        }      
+        if(ImGui::BeginTabItem("Cartridge"))
+        {
+            std::string supported = cartridge.supported ? "True" : "False";
+            ImGui::InputText("Supported", &supported[0], 6, ImGuiInputTextFlags_ReadOnly);
+            drawMemoryMap("Cartridge", cartridgeToolTips, cartridge.cartridgeSize, 
+                [this] (uint32_t address) -> uint8_t { return cartridge.read(address); });
+            ImGui::EndTabItem();
+        }        
 
         ImGui::EndTabBar();
         ImGui::End();

@@ -37,10 +37,12 @@ namespace GGB
 
         // Draw Menubar
         ImGui::BeginMenuBar();
-        ImGui::BeginMenu("Show");
-        if (ImGui::MenuItem("Components")) GGB::ShowComponentsScreen = !GGB::ShowComponentsScreen;
-        if (ImGui::MenuItem("App Metrics")) ShowAppMetrics = !ShowAppMetrics ;
-        ImGui::EndMenu();
+        if(ImGui::BeginMenu("Show"))
+        {
+            if (ImGui::MenuItem("Components")) GGB::ShowComponentsScreen = !GGB::ShowComponentsScreen;
+            if (ImGui::MenuItem("App Metrics")) ShowAppMetrics = !ShowAppMetrics ;
+            ImGui::EndMenu();
+        }
         ImGui::EndMenuBar();
         if (ShowAppMetrics) ImGui::ShowMetricsWindow(&ShowAppMetrics);
 

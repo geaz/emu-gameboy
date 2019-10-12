@@ -21,10 +21,10 @@ namespace GGB
             void process();
 
             Hardware::Cartridge& cartridge;
-            Hardware::Apu apu;
             Hardware::Mmu mmu;
             Hardware::Cpu cpu;
             Hardware::Ppu ppu;
+            Hardware::Apu apu;
             Hardware::Input input;
             Hardware::Timer timer;
             Hardware::Clock clock;

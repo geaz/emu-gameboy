@@ -157,7 +157,7 @@ namespace GGB::Hardware
                 ? (startBackgroundTileX + i) % 32
                 : startBackgroundTileX + i;
             uint8_t currentTileNr = currentBackgroundMap.data[startBackgroundTileY][tileNrX];
-            Video::Tile currentTile = tileList.loadBackgroundTile(currentTileNr);
+            Video::Tile currentTile = tileList.getBackgroundTile(currentTileNr);
             // each tile is 8 pixels wide
             for(int j = 0; j < 8; j++)
             {
@@ -188,7 +188,7 @@ namespace GGB::Hardware
             for(int tileX = 0; tileX < 32; tileX++)
             {
                 uint8_t currentTileNr = currentWindowMap.data[(lcdY - windowY) / 8][tileX];            
-                Video::Tile currentTile = tileList.loadWindowTile(currentTileNr);
+                Video::Tile currentTile = tileList.getWindowTile(currentTileNr);
                 for(int j = 0; j < 8; j++)
                 {
                     // Skip the first pixels, if the window start in the middle of the first tile
@@ -212,7 +212,6 @@ namespace GGB::Hardware
     {
         if(!mmu.readIORegisterBit(Const::AddrRegLcdControl, Const::FlagLcdControlObjOn, true)) return;
 
-        spriteList.updateSpriteInfo();
         obj0Palette = colorPalettes.getOBP0Palette();
         obj1Palette = colorPalettes.getOBP1Palette();
 
@@ -222,7 +221,7 @@ namespace GGB::Hardware
         Video::Sprite visibleSprites[Const::TotalSprites];
         for(int i = 0; i < Const::TotalSprites; i++)
         {
-            Video::Sprite currentSprite = spriteList.data[i];
+            Video::Sprite currentSprite = spriteList.getSprite(i);
 
             // Pos Y : Specifies the sprites vertical position on the screen (minus 16).
             // An offscreen value (for example, Y=0 or Y>=160) hides the sprite.
@@ -242,10 +241,10 @@ namespace GGB::Hardware
         {
             Video::Sprite currentSprite = visibleSprites[i];
             Video::Tile currentTile = currentSprite.bigSprite && lcdY >= currentSprite.posY - 8
-                ? tileList.loadSpriteTile(currentSprite.tileNr + 1)
-                : tileList.loadSpriteTile(currentSprite.tileNr);    
+                ? tileList.getSpriteTile(currentSprite.tileNr + 1)
+                : tileList.getSpriteTile(currentSprite.tileNr);    
             currentTile = currentSprite.flipY && currentSprite.bigSprite && lcdY >= currentSprite.posY - 8
-                ? tileList.loadSpriteTile(currentSprite.tileNr - 1)
+                ? tileList.getSpriteTile(currentSprite.tileNr - 1)
                 : currentTile;
             
             // If the numbers are not equal we loaded the 

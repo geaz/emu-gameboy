@@ -2,43 +2,81 @@
 
 namespace GGB::Hardware::Video
 {
-    TileList::TileList(Mmu& mmu) : mmu(mmu) { }
-
-    Tile TileList::loadBackgroundTile(const uint8_t tileNr) const
+    TileList::TileList(Mmu& mmu) : mmu(mmu) 
     {
-        // Each tile is 16 bytes long
+         mmu.registerOnAddrWrite([this](MemoryWriteEvent writeEvent) { onMmuWrite(writeEvent); });
+    }
+
+    Tile TileList::getBackgroundTile(const uint8_t tileNr)
+    {
         return mmu.readIORegisterBit(Const::AddrRegLcdControl, Const::FlagLcdControlBgData, true)
-            ? loadTileFromMem(Const::AddrTileData1, tileNr, (tileNr * 16))
-            : loadTileFromMem(Const::AddrTileData0, tileNr, ((static_cast<int8_t>(tileNr) + 128) * 16)); 
+            ? getTile(Const::AddrTileData1Start, tileNr)
+            : getTile(Const::AddrTileData0Start, static_cast<int8_t>(tileNr) + 128); 
     }
 
-    Tile TileList::loadWindowTile(const uint8_t tileNr) const
+    Tile TileList::getWindowTile(const uint8_t tileNr)
     {
-        return loadTileFromMem(Const::AddrTileData0, tileNr, ((static_cast<int8_t>(tileNr) + 128) * 16)); 
+        return getTile(Const::AddrTileData0Start, static_cast<int8_t>(tileNr) + 128); 
     }
 
-    Tile TileList::loadSpriteTile(const uint8_t tileNr) const
+    Tile TileList::getSpriteTile(const uint8_t tileNr)
     {
-        return loadTileFromMem(Const::AddrTileData1, tileNr, (tileNr * 16)); 
+        return getTile(Const::AddrTileData1Start, tileNr); 
     }
 
-    Tile TileList::loadTileFromMem(const uint16_t startAddr, const uint8_t tileNr, const int16_t tileMemStart) const
+    void TileList::onMmuWrite(MemoryWriteEvent writeEvent)
     {
-        Tile tile;
-        tile.nr = tileNr;
+        if(writeEvent.address >= Const::AddrTileData0Start && writeEvent.address <= Const::AddrTileData0End)
+            tile0MemUpdated = true;
+        else if(writeEvent.address >= Const::AddrTileData1Start && writeEvent.address <= Const::AddrTileData1End)
+            tile1MemUpdated = true;
+    }
 
-        uint16_t tileMemoryStart = (uint16_t)startAddr + tileMemStart;
-        for(int i = 0; i < 8; i++)
+    Tile TileList::getTile(const uint16_t startAddr, const uint8_t tileNr)
+    {
+        Tile returnValue;
+        if(startAddr == Const::AddrTileData0Start)
         {
-            uint8_t lineData1 = mmu.read(tileMemoryStart + (i * 2), true);
-            uint8_t lineData2 = mmu.read(tileMemoryStart + (i * 2) + 1, true);
-            for(int j = 7; j >= 0; j--)
-            {
-                uint8_t lowBit = (lineData1 >> j) & 0x1; 
-                uint8_t highBit =  (lineData2 >> j) & 0x1; 
-                tile.data[i][std::abs(j - 7)] = (highBit << 1) | lowBit;
+            if(tile0MemUpdated)
+            {                
+                updateTiles(tile0Data, startAddr);
+                tile0MemUpdated = false;
             }
+            returnValue = tile0Data[tileNr];
         }
-        return tile;
+        else if(startAddr == Const::AddrTileData1Start)
+        {
+            if(tile1MemUpdated)
+            {                
+                updateTiles(tile1Data, startAddr);
+                tile1MemUpdated = false;
+            }
+            returnValue = tile1Data[tileNr];
+        }
+        return returnValue;
+    }
+
+    void TileList::updateTiles(Tile* tileData, const uint16_t startAddr)
+    {
+        for(int i = 0; i < 256; i++)
+        {
+            Tile tile;
+            tile.nr = i;
+
+            // Each tile is 16 bytes long
+            uint16_t tileMemoryStart = (uint16_t)startAddr + (i * 16);
+            for(int i = 0; i < 8; i++)
+            {
+                uint8_t lineData1 = mmu.read(tileMemoryStart + (i * 2), true);
+                uint8_t lineData2 = mmu.read(tileMemoryStart + (i * 2) + 1, true);
+                for(int j = 7; j >= 0; j--)
+                {
+                    uint8_t lowBit = (lineData1 >> j) & 0x1; 
+                    uint8_t highBit =  (lineData2 >> j) & 0x1; 
+                    tile.data[i][std::abs(j - 7)] = (highBit << 1) | lowBit;
+                }
+            }
+            tileData[i] = tile;
+        }        
     }
 }

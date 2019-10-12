@@ -31,8 +31,6 @@ namespace GGB::Hardware
 
     void Mmu::write(const uint16_t address, const uint8_t value) 
     {
-        lastWriteEvent = { address, value, std::chrono::high_resolution_clock::now() };
-
         // If writing to LDCY I/O register, reset it
         if(address == Const::AddrRegLcdY) memory[address] = 0;
         // If writing to the Timer Divider, it also reset the internal clock!
@@ -58,6 +56,13 @@ namespace GGB::Hardware
         else if(address >= Const::AddrCartSwitchTriggerStart && address <= Const::AddrCartSwitchTriggerEnd) 
             cartridge.selectRomBank(value);
         else memory[address] = value; 
+        
+        // Call registered handlers
+        MemoryWriteEvent writeEvent = { address, value, std::chrono::high_resolution_clock::now() };
+        for(std::function<void (MemoryWriteEvent)> eventFunc : eventFuncList)
+        {
+            eventFunc(writeEvent);
+        }
     }
 
     void Mmu::rawWrite(const uint16_t address, const uint8_t value) 
@@ -106,8 +111,8 @@ namespace GGB::Hardware
         currentPpuMode = lcdMode;
     }
 
-    MemoryWriteEvent Mmu::getLastWriteEvent() const
+    void Mmu::registerOnAddrWrite(std::function<void (MemoryWriteEvent)> eventFunc)
     {
-        return lastWriteEvent;
+        eventFuncList.push_back(eventFunc);
     }
 }

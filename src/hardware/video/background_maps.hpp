@@ -16,13 +16,19 @@ namespace GGB::Hardware::Video
         public:
             BackgroundMaps(Mmu& mmu);
 
-            BackgroundMap getBackgroundMap() const;
-            BackgroundMap getWindowMap() const;
+            BackgroundMap getBackgroundMap();
+            BackgroundMap getWindowMap();
 
-        private:
-            BackgroundMap getMap(const uint8_t controlFlag) const;
+        private:            
+            void onMmuWrite(MemoryWriteEvent writeEvent);
+            BackgroundMap getMap(const uint8_t controlFlag);
+            BackgroundMap loadMap(const uint16_t startAddress) const;
 
             Mmu& mmu;    
+            bool mapData0MemUpdated = false;
+            bool mapData1MemUpdated = false;
+            BackgroundMap map0;
+            BackgroundMap map1;
     };
 }
 

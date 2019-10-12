@@ -47,8 +47,8 @@ namespace GGB::Hardware
             Audio::NoiseChannel noiseChannel;
 
         private:          
+            void onMmuWrite(MemoryWriteEvent writeEvent);
             void checkWaveStart();  
-            void checkRestartTrigger();
             void cycleLength(const uint8_t cycles);
             void cycleEnvelope(const uint8_t cycles);
             void cycleSweep(const uint8_t cycles);
@@ -62,8 +62,17 @@ namespace GGB::Hardware
             uint32_t cycleCountSweep = 0;
             uint16_t sampleCounter = 0;
 
-            MemoryWriteEvent lastRelevantMemoryEvent;
             Audio::SampleData sampleData;
+            uint8_t volumeLeft = 0;
+            uint8_t volumeRight = 0;
+            bool square1OutputLeft = false;
+            bool square1OutputRight = false;
+            bool square2OutputLeft = false;
+            bool square2OutputRight = false;
+            bool waveOutputLeft = false;
+            bool waveOutputRight = false;
+            bool noiseOutputRight = false;
+            bool noiseOutputLeft = false;
     };
 }
 

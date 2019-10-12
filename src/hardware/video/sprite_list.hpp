@@ -29,14 +29,15 @@ namespace GGB::Hardware::Video
         public:
             SpriteList(Mmu& mmu);
 
-            void updateSpriteInfo();
-
-            Sprite data[40]; 
+            Sprite getSprite(uint8_t index);
 
         private:
-            Mmu& mmu;
+            void onMmuWrite(MemoryWriteEvent writeEvent);
+            void updateSpriteInfo();
 
-            const uint16_t OAM_MEM_START = 0xFE00;  
+            Mmu& mmu;
+            Sprite data[40];
+            bool spriteDataMemUpdated = false;
     };
 }
 

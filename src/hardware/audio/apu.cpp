@@ -9,12 +9,14 @@ namespace GGB::Hardware
         squareChannel1(mmu, square1Parameters),
         squareChannel2(mmu, square2Parameters),
         waveChannel(mmu),
-        noiseChannel(mmu) { }
+        noiseChannel(mmu) 
+    { 
+        mmu.registerOnAddrWrite([this](MemoryWriteEvent writeEvent) { onMmuWrite(writeEvent); });
+    }
 
     void Apu::cycle(const uint8_t cycles)
     {
         checkWaveStart();
-        checkRestartTrigger();
 
         cycleLength(cycles);
         cycleEnvelope(cycles);
@@ -23,39 +25,44 @@ namespace GGB::Hardware
         cycleSamples(cycles);
     }
 
+    void Apu::onMmuWrite(MemoryWriteEvent writeEvent)
+    {
+        switch(writeEvent.address)
+        {
+            case Const::AddrRegOutputControl:                
+                volumeLeft = 8 - (writeEvent.value & Const::FlagOutputVolume);
+                volumeRight = 8 - ((writeEvent.value >> 4) & Const::FlagOutputVolume);
+                break;
+            case Const::AddrRegChannelControl:
+                square1OutputLeft = writeEvent.value & Const::FlagChannel1ToOutput1;
+                square1OutputRight = writeEvent.value & Const::FlagChannel1ToOutput2;                
+                square2OutputLeft = writeEvent.value & Const::FlagChannel2ToOutput1;
+                square2OutputRight = writeEvent.value & Const::FlagChannel2ToOutput2;
+                waveOutputLeft = writeEvent.value & Const::FlagChannel3ToOutput1;
+                waveOutputRight = writeEvent.value & Const::FlagChannel3ToOutput2;                
+                noiseOutputLeft = writeEvent.value & Const::FlagChannel4ToOutput1;
+                noiseOutputRight = writeEvent.value & Const::FlagChannel4ToOutput2;
+                break;
+            case Const::AddrRegChannel1Data:
+        	    if(writeEvent.value & Const::FlagChannelRestart) squareChannel1.restart();
+                break;
+            case Const::AddrRegChannel2Data:
+        	    if(writeEvent.value & Const::FlagChannelRestart) squareChannel2.restart();
+                break;
+            case Const::AddrRegChannel3Data:
+        	    if(writeEvent.value & Const::FlagChannelRestart) waveChannel.restart();
+                break;
+            case Const::AddrRegChannel4Data:
+        	    if(writeEvent.value & Const::FlagChannelRestart) noiseChannel.restart();
+                break;
+        }
+    }
+
     void Apu::checkWaveStart()
     {
         bool channel3On = mmu.readIORegisterBit(Const::AddrRegChannel3On, Const::FlagChannel3On);
         if(channel3On) waveChannel.start();
         else waveChannel.stop();
-    }
-
-    void Apu::checkRestartTrigger()
-    {
-        if(mmu.getLastWriteEvent().eventTime != lastRelevantMemoryEvent.eventTime)
-        {
-            MemoryWriteEvent writeEvent = mmu.getLastWriteEvent();            
-            if(writeEvent.address == Const::AddrRegChannel1Data && writeEvent.value & Const::FlagChannelRestart)
-            {
-                lastRelevantMemoryEvent = mmu.getLastWriteEvent();
-                squareChannel1.restart();
-            }
-            else if(writeEvent.address == Const::AddrRegChannel2Data && writeEvent.value & Const::FlagChannelRestart)
-            {
-                lastRelevantMemoryEvent = mmu.getLastWriteEvent();
-                squareChannel2.restart();
-            }
-            else if(writeEvent.address == Const::AddrRegChannel3Data && writeEvent.value & Const::FlagChannelRestart)
-            {
-                lastRelevantMemoryEvent = mmu.getLastWriteEvent();
-                waveChannel.restart();
-            }
-            else if(writeEvent.address == Const::AddrRegChannel4Data && writeEvent.value & Const::FlagChannelRestart)
-            {
-                lastRelevantMemoryEvent = mmu.getLastWriteEvent();
-                noiseChannel.restart();
-            }
-        }
     }
 
     void Apu::cycleLength(const uint8_t cycles)
@@ -105,29 +112,16 @@ namespace GGB::Hardware
     {
         cycleCount += cycles;
         if(cycleCount >= Const::CyclesAudioSample)
-        {
-            uint8_t volumeReg = mmu.read(Const::AddrRegOutputControl);
-            uint8_t volumeLeft = 8 - (volumeReg & Const::FlagOutputVolume);
-            uint8_t volumeRight = 8 - ((volumeReg >> 4) & Const::FlagOutputVolume);
-            
-            uint8_t channelControl = mmu.read(Const::AddrRegChannelControl);
-            uint8_t square1OutputLeft = channelControl & Const::FlagChannel1ToOutput1;
-            uint8_t square1OutputRight = channelControl & Const::FlagChannel1ToOutput2;
+        {            
             sampleData.square1Left[sampleCounter] = square1OutputLeft ? squareChannel1.currentSample / volumeLeft : 0;
             sampleData.square1Right[sampleCounter] = square1OutputRight ? squareChannel1.currentSample / volumeRight : 0;
 
-            uint8_t square2OutputLeft = channelControl & Const::FlagChannel2ToOutput1;
-            uint8_t square2OutputRight = channelControl & Const::FlagChannel2ToOutput2;
             sampleData.square2Left[sampleCounter] = square2OutputLeft ? squareChannel2.currentSample / volumeLeft : 0;
             sampleData.square2Right[sampleCounter] = square2OutputRight ? squareChannel2.currentSample / volumeRight : 0;
 
-            uint8_t waveOutputLeft = channelControl & Const::FlagChannel3ToOutput1;
-            uint8_t waveOutputRight = channelControl & Const::FlagChannel3ToOutput2;
             sampleData.waveLeft[sampleCounter] = waveOutputLeft ? waveChannel.currentSample / volumeLeft : 0;
             sampleData.waveRight[sampleCounter] = waveOutputRight ? waveChannel.currentSample / volumeRight : 0;
 
-            uint8_t noiseOutputLeft = channelControl & Const::FlagChannel4ToOutput1;
-            uint8_t noiseOutputRight = channelControl & Const::FlagChannel4ToOutput2;
             sampleData.noiseLeft[sampleCounter] = noiseOutputLeft ? noiseChannel.currentSample / volumeLeft : 0;
             sampleData.noiseRight[sampleCounter] = noiseOutputRight ? noiseChannel.currentSample / volumeRight : 0;
             

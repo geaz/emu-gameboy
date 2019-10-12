@@ -22,10 +22,14 @@ namespace GGB
                 ColorPalette getOBP0Palette();
                 ColorPalette getOBP1Palette();      
             
-            private:
+            private:                
+                void onMmuWrite(MemoryWriteEvent writeEvent); 
                 ColorPalette getPalette(const uint8_t colorData, const bool lowerIsTransparent);
 
                 Mmu& mmu;
+                ColorPalette bwPalette;
+                ColorPalette obj0Palette;
+                ColorPalette obj1Palette;
         };
     }
 }

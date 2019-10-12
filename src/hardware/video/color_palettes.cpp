@@ -2,24 +2,40 @@
 
 namespace GGB::Hardware::Video
 {
-    ColorPalettes::ColorPalettes(Mmu& mmu) : mmu(mmu) { }
+    ColorPalettes::ColorPalettes(Mmu& mmu) : mmu(mmu) 
+    {
+        mmu.registerOnAddrWrite([this](MemoryWriteEvent writeEvent) { onMmuWrite(writeEvent); });
+    }
 
     ColorPalette ColorPalettes::getBWPalette()
     {
-        uint8_t colorData = mmu.read(Const::AddrRegBgPalette, true);
-        return getPalette(colorData, false);
+        return bwPalette;
     }
 
     ColorPalette ColorPalettes::getOBP0Palette()
     {
-        uint8_t colorData = mmu.read(Const::AddrRegOBPalette0, true);
-        return getPalette(colorData, true);
+        return obj0Palette;
     }
 
     ColorPalette ColorPalettes::getOBP1Palette()
     {
-        uint8_t colorData = mmu.read(Const::AddrRegOBPalette1, true);
-        return getPalette(colorData, true);
+        return obj1Palette;
+    }
+    
+    void ColorPalettes::onMmuWrite(MemoryWriteEvent writeEvent)
+    {
+        switch(writeEvent.address)
+        {
+            case Const::AddrRegBgPalette:
+                bwPalette = getPalette(writeEvent.value, false);
+                break;
+            case Const::AddrRegOBPalette0:
+                obj0Palette = getPalette(writeEvent.value, true);
+                break;
+            case Const::AddrRegOBPalette1:
+                obj1Palette = getPalette(writeEvent.value, true);
+                break;
+        }
     }
 
     ColorPalette ColorPalettes::getPalette(const uint8_t colorData, const bool lowerIsTransparent)

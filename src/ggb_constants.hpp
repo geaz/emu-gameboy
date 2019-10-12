@@ -59,10 +59,16 @@ namespace GGB::Const
     inline const uint8_t CartTypeMBC1 = 0x1;
 
     // PPU Addresses
-    inline const uint16_t AddrTileData0 = 0x8800;
-    inline const uint16_t AddrTileData1 = 0x8000;
-    inline const uint16_t AddrBgMap0 = 0x9800;
-    inline const uint16_t AddrBgMap1 = 0x9C00; 
+    inline const uint16_t AddrTileData0Start = 0x8800;
+    inline const uint16_t AddrTileData0End = 0x97FF;
+    inline const uint16_t AddrTileData1Start = 0x8000;
+    inline const uint16_t AddrTileData1End = 0x8FFF;
+    inline const uint16_t AddrBgMap0Start = 0x9800;
+    inline const uint16_t AddrBgMap0End = 0x9BFF;
+    inline const uint16_t AddrBgMap1Start = 0x9C00;     
+    inline const uint16_t AddrBgMap1End = 0x9FFF;
+    inline const uint16_t AddrOAMStart = 0xFE00;
+    inline const uint16_t AddrOAMEnd = 0xFE9F;
 
     // APU Addresses
     inline const uint16_t AddrWaveRamStart = 0xFF30;

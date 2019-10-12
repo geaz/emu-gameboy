@@ -17,15 +17,20 @@ namespace GGB::Hardware::Video
         public:
             TileList(Mmu& mmu);
             
-            Tile loadBackgroundTile(const uint8_t tileNr) const;
-            Tile loadSpriteTile(const uint8_t tileNr) const;
-            Tile loadWindowTile(const uint8_t tileNr) const;
+            Tile getBackgroundTile(const uint8_t tileNr);
+            Tile getSpriteTile(const uint8_t tileNr);
+            Tile getWindowTile(const uint8_t tileNr);
 
         private:
-            Tile loadTileFromMem(const uint16_t startAddr, const uint8_t tileNr, const int16_t tileMemStart) const;
+            void onMmuWrite(MemoryWriteEvent writeEvent);
+            Tile getTile(const uint16_t startAddr, const uint8_t tileNr);
+            void updateTiles(Tile* tileData, const uint16_t startAddr);
 
             Mmu& mmu;  
-            Tile data0Cache[256], data1Cache[256];
+            Tile tile0Data[256];
+            Tile tile1Data[256];
+            bool tile0MemUpdated = false;
+            bool tile1MemUpdated = false;
     };
 }
 

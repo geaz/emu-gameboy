@@ -31,6 +31,7 @@ namespace GGB::Hardware::Audio
   
                 bool isWidth7Bit = false;
                 uint8_t divisor = 0;
+                uint16_t lfsr = 0x7FFF;
                 uint16_t cycleSampleUpdate = 0;
                 uint16_t cycleCount = 0;
     };

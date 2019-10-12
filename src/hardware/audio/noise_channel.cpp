@@ -22,6 +22,7 @@ namespace GGB::Hardware::Audio
         uint8_t noiseData = mmu.read(Const::AddrRegChannel4Counter);
         divisor = Const::AudioDivisorArray[noiseData & Const::FlagChannel4DividingRatio]; 
         isWidth7Bit = noiseData & Const::FlagChannel4CounterWidthMode;
+        lfsr = 0x7FFF;
 
         cycleSampleUpdate = divisor << ((noiseData & Const::FlagChannel4ShiftFreq) >> 4);
         cycleCount = 0;
@@ -53,6 +54,15 @@ namespace GGB::Hardware::Audio
 
     void NoiseChannel::updateSample()
     {
+        uint8_t bit0 = lfsr & 0x1;
+        uint8_t bit1 = (lfsr & 0x2) >> 1;
+        uint8_t xored = bit0 ^ bit1;
+
+        lfsr = (xored << 14) | (lfsr >> 1);
+        if(isWidth7Bit)
+            lfsr = (xored << 6) | (lfsr & 0x7FBF);
+
+        currentSample = (lfsr & 0x1) == 0 ? 1 : 0;
         if(!isRunning) currentSample = 0;
     }
 }

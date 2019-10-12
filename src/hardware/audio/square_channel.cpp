@@ -24,7 +24,8 @@ namespace GGB::Hardware::Audio
 
         // Nothing magical just the way the hardware calculates the channel frequency
         // see: https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware
-        cycleSampleUpdate = (2048 - getFrequency()) * 4;
+        currentFrequency = getFrequency();
+        cycleSampleUpdate = (2048 - currentFrequency) * 4;
         cycleCount = 0;
         sampleIndex = 0;
 
@@ -34,7 +35,7 @@ namespace GGB::Hardware::Audio
 
             uint8_t sweepData = mmu.read(channelParams.ChannelSweepAddr);
             sweepTime = (sweepData & Const::FlagChannelSweepTime) >> 4;
-            isSweepIncreasing = sweepData & Const::FlagChannelSweepIncrease;
+            isSweepDecreasing = sweepData & Const::FlagChannelSweepDecrease;
             sweepShift = sweepData & Const::FlagChannelSweepShift;
         }
     }
@@ -66,16 +67,33 @@ namespace GGB::Hardware::Audio
 
     void SquareChannel::sweepTick()
     {
-        if(sweepTime != 0)
+        // No sweep operation, if the the sweep time is zero
+        if(sweepTime == 0) return;
+
+        if(elaspsedSweepTime != sweepTime) elaspsedSweepTime++;
+        if(elaspsedSweepTime == sweepTime)
         {
-            if(elaspsedSweepTime != sweepTime) elaspsedSweepTime++;
-            if(elaspsedSweepTime != sweepTime)
+            int8_t sweepCorrection = isSweepDecreasing ? -1 : 1;
+            uint8_t sweepChange = (currentFrequency >> sweepShift) * sweepCorrection;
+
+            // overflow on decrease - do nothing
+            if(isSweepDecreasing && sweepChange > currentFrequency)
             {
-                int8_t sweepCorrection = isSweepIncreasing ? 1 : -1;
-                cycleSampleUpdate += (cycleSampleUpdate >> sweepShift) * sweepCorrection;
-                cycleCount = 0;
+                elaspsedSweepTime = 0;
             }
-            if(elaspsedSweepTime == sweepTime || cycleSampleUpdate > 2047) isRunning = false;
+            // overflow on increase - stop channel
+            else if(!isSweepDecreasing && sweepChange + currentFrequency > 2047)
+            { 
+                isRunning = false;
+            }
+            else
+            {
+                currentFrequency += sweepChange;
+                cycleSampleUpdate = (2048 - currentFrequency) * 4;
+                cycleCount = 0;
+                elaspsedSweepTime = 0;
+                setFrequency(currentFrequency);
+            }
         }        
     }
 
@@ -85,6 +103,14 @@ namespace GGB::Hardware::Audio
         uint16_t frequency = mmu.read(channelParams.ChannelFreqLowAddr);
         frequency |= (frequencyData & Const::FlagChannelFreq) << 8;
         return frequency;
+    }
+
+    void SquareChannel::setFrequency(uint16_t frequency)
+    {
+        uint8_t frequencyData = mmu.read(channelParams.ChannelDataAddr);
+        // AND 0xF8 deletes old frequency from the data and 0x700 takes the upper 3 bits of the frequency
+        mmu.write(channelParams.ChannelDataAddr, (frequencyData & 0xF8) | ((frequency & 0x700) >> 8));
+        mmu.write(channelParams.ChannelFreqLowAddr, frequency & 0xFF);
     }
 
     void SquareChannel::updateSample()

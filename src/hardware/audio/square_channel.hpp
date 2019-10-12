@@ -34,6 +34,7 @@ namespace GGB::Hardware::Audio
 
             private:
                 uint16_t getFrequency() const;
+                void setFrequency(uint16_t frequency);
                 void updateSample();     
 
                 Mmu& mmu;
@@ -46,7 +47,8 @@ namespace GGB::Hardware::Audio
                 uint8_t sweepShift = 0;
                 uint8_t sweepTime = 0;
                 uint8_t elaspsedSweepTime = 0;
-                bool isSweepIncreasing = false;
+                uint16_t currentFrequency = 0;
+                bool isSweepDecreasing = false;
 
                 uint8_t selectedDuty = 0;    
                 uint16_t sampleIndex = 0;

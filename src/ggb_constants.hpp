@@ -171,7 +171,7 @@ namespace GGB::Const
     inline const uint8_t FlagSpriteAttrPaletteNr = 16;  // Bit4   Palette number  **Non CGB Mode Only** (0=OBP0, 1=OBP1)    
 
     inline const uint8_t FlagChannelSweepTime = 112;    
-    inline const uint8_t FlagChannelSweepIncrease = 8;  
+    inline const uint8_t FlagChannelSweepDecrease = 8;  
     inline const uint8_t FlagChannelSweepShift = 7;   
     inline const uint8_t FlagChannelDuty = 192;
     inline const uint8_t FlagChannelLengthData = 63;           

@@ -26,14 +26,14 @@ namespace GGB::Hardware::Audio
                 // We are waiting until the elapsed ticks are equal
                 // to the evelope tick length. As soon as this happens
                 // we increase/decrease the current volume and reset the tick counter
-                if(elapsedTicks != envelopeTicks) elapsedTicks ++;
-                if(elapsedTicks == envelopeTicks)
+                elapsedTicks ++;
+                elapsedTicks %= envelopeTicks;
+                if(elapsedTicks == 0)
                 {
                     if(!isEnvelopeIncreasing && envelopeVolume != 0)
                         envelopeVolume--;
                     else if(isEnvelopeIncreasing && envelopeVolume != 15)
                         envelopeVolume++;
-                    elapsedTicks = 0;
                 }
             }
 

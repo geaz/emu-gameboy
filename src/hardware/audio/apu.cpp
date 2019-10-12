@@ -68,7 +68,7 @@ namespace GGB::Hardware
     void Apu::cycleLength(const uint8_t cycles)
     {        
         cycleCountLength += cycles;
-        while(cycleCountLength >= Const::Cycles256Hz)
+        if(cycleCountLength >= Const::Cycles256Hz)
         {
             squareChannel1.lengthTick();
             squareChannel2.lengthTick();
@@ -81,7 +81,7 @@ namespace GGB::Hardware
     void Apu::cycleEnvelope(const uint8_t cycles)
     {        
         cycleCountEnvelope += cycles;
-        while(cycleCountEnvelope >= Const::Cycles64Hz)
+        if(cycleCountEnvelope >= Const::Cycles64Hz)
         {
             squareChannel1.envelopeTick();
             squareChannel2.envelopeTick();
@@ -93,7 +93,7 @@ namespace GGB::Hardware
     void Apu::cycleSweep(const uint8_t cycles)
     {        
         cycleCountSweep += cycles;
-        while(cycleCountSweep >= Const::Cycles128Hz)
+        if(cycleCountSweep >= Const::Cycles128Hz)
         {
             squareChannel1.sweepTick();
             cycleCountSweep -= Const::Cycles128Hz;

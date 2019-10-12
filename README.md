@@ -14,6 +14,8 @@ Use other great emulators for this purpose. For example:
 
 ## Screenshots
 
+![GGB](pics/ggb.png)
+
 | Zelda   |      Tetris      |  Tennis |
 |-------------------|------------------|---------|
 | ![Zelda](pics/Zelda.gif) |  ![Tetris](pics/Tetris.gif) | ![Tennis](pics/Tennis.gif) |

@@ -1,0 +1,11 @@
+include(ExternalProject)
+
+set(PORTAUDIO_INCLUDE_DIR "${CMAKE_BINARY_DIR}/libs/portaudio/include/")
+set(PORTAUDIO_LIBRARY_DIR "${CMAKE_BINARY_DIR}/libs/portaudio/lib/")
+
+EXTERNALPROJECT_ADD(
+    pta
+    GIT_REPOSITORY https://git.assembla.com/portaudio.git
+    CMAKE_ARGS 
+        "-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/libs/portaudio"
+)

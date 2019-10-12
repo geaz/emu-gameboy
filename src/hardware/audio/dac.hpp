@@ -2,7 +2,7 @@
 #ifndef DAC_H
 #define DAC_H
 
-#include "rtaudio.h"
+#include "portaudio.h"
 #include "ring_buffer.hpp"
 #include "../../ggb_constants.hpp"
 
@@ -30,7 +30,7 @@ namespace GGB::Hardware::Audio
         private:            
             void populateStream(float* buffer);
 
-            RtAudio dac;
+            PaStream *stream;
             RingBuffer<float> sampleBufferLeft;
             RingBuffer<float> sampleBufferRight;
             unsigned int bufferFrames = Const::AudioBufferFrames;

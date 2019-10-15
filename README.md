@@ -1,4 +1,4 @@
-# GGB - A Game Boy emulator written in C++ (WIP)
+# GGB - A Game Boy emulator written in C++
 
 ## Compatibility
 
